@@ -1,31 +1,18 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import Copyright from "./Copyright";
 import {
   Container,
   Button,
-  CssBaseline,
   TextField,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
   Box,
   Typography,
 } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Match de Projetos
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -51,7 +38,6 @@ const Login = () => {
   const classes = useStyles();
   return (
     <Container component="main" maxWidth="xs">
-      <CssBaseline />
       <div className={classes.paper}>
         <Typography className={classes.title} variant="h4">
           {" "}
@@ -103,9 +89,7 @@ const Login = () => {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
+              <Link to="/signup">{"Don't have an account? Sign Up"}</Link>
             </Grid>
           </Grid>
         </form>
