@@ -34,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  title: {
+    marginBottom: theme.spacing(6),
+  },
+
   form: {
     width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
@@ -49,6 +53,10 @@ const Login = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        <Typography className={classes.title} variant="h4">
+          {" "}
+          Match de Projetos{" "}
+        </Typography>
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
