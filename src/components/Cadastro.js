@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -44,6 +44,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Cadastro = () => {
   const classes = useStyles();
+  const history = useHistory();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    history.push("/home");
+  }
   return (
     <>
       <Container className="paper" maxWidth="xs">
@@ -53,7 +59,7 @@ const Cadastro = () => {
         <Typography component="h1" variant="h5" align="center">
           Sign Up
         </Typography>
-        <form className={classes.form}>
+        <form className={classes.form} onSubmit={handleSubmit}>
           <TextField
             className={classes.textFieldInput}
             type="input"

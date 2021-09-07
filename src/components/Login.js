@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Copyright from "./Copyright";
 import {
   Container,
@@ -36,6 +36,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = () => {
   const classes = useStyles();
+  const history = useHistory();
+  function handleSubmit(e) {
+    e.preventDefault();
+    history.push("/home");
+  }
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
@@ -46,7 +51,7 @@ const Login = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
