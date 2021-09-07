@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 const CardHome = ({ info }) => {
   const classes = useStyles();
   return (
-    <Grid item xs={12} md={4} lg={3}>
+    <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card>
         <CardMedia className={classes.media} image={info.image} />
         <CardContent>
