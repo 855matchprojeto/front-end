@@ -6,6 +6,7 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     display: "flex",
     justifyContent: "space-between",
+    height: "15vh",
   },
 
   brand: {
@@ -22,16 +23,6 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     fontSize: "1rem",
   },
-
-  //   nav: {
-  //     backgroundColor: "red",
-  //     display: "flex",
-  //     justifyContent: "space-between",
-  //   },
-
-  //   navLink: {
-  //     display: "inline-block",
-  //   },
 }));
 
 const Header = () => {
@@ -45,7 +36,7 @@ const Header = () => {
             Match de Projetos
           </Typography>
           <nav className={classes.nav}>
-            <Link to="/" className={classes.navLink}>
+            <Link to="/home" className={classes.navLink}>
               Home
             </Link>
             <Link to="/" className={classes.navLink}>
@@ -53,6 +44,12 @@ const Header = () => {
             </Link>
             <Link to="/" className={classes.navLink}>
               Interesses
+            </Link>
+            <Link to="/perfil" className={classes.navLink}>
+              Perfil
+            </Link>
+            <Link to="/" className={classes.navLink}>
+              Sair
             </Link>
           </nav>
         </Toolbar>

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Card,
   Grid,
@@ -8,6 +9,7 @@ import {
   Button,
   makeStyles,
 } from "@material-ui/core";
+import { SettingsInputAntennaTwoTone } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -21,7 +23,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CardHome = ({ info }) => {
+  const [btnInteresse, setBtnInteresse] = useState(false);
   const classes = useStyles();
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card>

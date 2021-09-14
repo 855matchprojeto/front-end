@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "./Header";
+import Copyright from "./Copyright";
 import { Link } from "react-router-dom";
 import Cards from "./Cards";
 import {

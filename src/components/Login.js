@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
+import {useFormik} from 'formik'
 import Copyright from "./Copyright";
 import {
   Container,
@@ -11,8 +12,24 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
+// import {validationSchema} from '../Schema'
+import * as yup from "yup";
 
 import { makeStyles } from "@material-ui/core/styles";
+
+const validationSchema = yup.object({
+  // email: yup.string().email().required(),
+  // password: yup.string().required("Senha é obrigatória"),
+  email: yup
+    .string("Enter your email")
+    .email("Enter a valid email")
+    .required("Email is required"),
+  password: yup
+    .string("Enter your password")
+    .min(8, "Password should be of minimum 8 characters length")
+    .required("Password is required")
+});
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,10 +54,20 @@ const useStyles = makeStyles((theme) => ({
 const Login = () => {
   const classes = useStyles();
   const history = useHistory();
-  function handleSubmit(e) {
-    e.preventDefault();
-    history.push("/home");
-  }
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: ''
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      // alert(JSON.stringify(values, null, 5))
+      history.push('/home')
+    }
+
+  })
+  
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
@@ -51,28 +78,33 @@ const Login = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} onSubmit={handleSubmit} noValidate>
+        <form className={classes.form} onSubmit={formik.handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
-            required
             fullWidth
             id="email"
             label="Email Address"
             name="email"
             autoComplete="email"
+            value={formik.values.email}
             autoFocus
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
           <TextField
             variant="outlined"
             margin="normal"
-            required
             fullWidth
             name="password"
             label="Password"
+            value={formik.values.password}
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
