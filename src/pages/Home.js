@@ -1,8 +1,9 @@
 import React from "react";
-import Header from "./Header";
-import Copyright from "./Copyright";
+import Header from "../components/Header";
+import Copyright from "../components/Copyright";
+import Cards from "../components/Cards";
 import { Link } from "react-router-dom";
-import Cards from "./Cards";
+
 import {
   AppBar,
   Toolbar,

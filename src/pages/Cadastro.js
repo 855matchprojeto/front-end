@@ -8,7 +8,7 @@ import {
   Box,
   makeStyles,
 } from "@material-ui/core";
-import Copyright from "./Copyright";
+import Copyright from "../components/Copyright";
 
 const useStyles = makeStyles((theme) => ({
   paper: {

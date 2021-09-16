@@ -83,10 +83,10 @@ const Header = () => {
           <Link to="/home" className={classes.navLink}>
             Home
           </Link>
-          <Link to="/" className={classes.navLink}>
+          <Link to="/projetos" className={classes.navLink}>
             Projetos
           </Link>
-          <Link to="/" className={classes.navLink}>
+          <Link to="/interesses" className={classes.navLink}>
             Interesses
           </Link>
           <Link to="/perfil" className={classes.navLink}>
@@ -127,10 +127,10 @@ const Header = () => {
           <Link to="/home" className={classes.navLinkMobile}>
             Home
           </Link>
-          <Link to="/" className={classes.navLinkMobile}>
+          <Link to="/projetos" className={classes.navLinkMobile}>
             Projetos
           </Link>
-          <Link to="/" className={classes.navLinkMobile}>
+          <Link to="/interesses" className={classes.navLinkMobile}>
             Interesses
           </Link>
           <Link to="/perfil" className={classes.navLinkMobile}>

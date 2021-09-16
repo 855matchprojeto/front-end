@@ -1,11 +1,12 @@
 import React from "react";
+import Header from "../components/Header";
+
 import {
   Container,
   Typography,
   makeStyles,
   TextField,
 } from "@material-ui/core";
-import Header from "./Header";
 
 const useStyles = makeStyles((theme) => ({
   container: {

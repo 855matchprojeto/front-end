@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
+import Copyright from "../components/Copyright";
 import {useFormik} from 'formik'
-import Copyright from "./Copyright";
 import {
   Container,
   Button,
