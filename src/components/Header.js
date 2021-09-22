@@ -36,12 +36,39 @@ const useStyles = makeStyles((theme) => ({
     color: "inherit",
     fontSize: "1rem",
     borderLeft: "1px solid "+theme.palette.primary.main,
+    transition: "all 0.5s",
+
+    "&::before":{
+      content: '"»"',
+      top: "14px",
+      transition: "0.1s",
+      opacity: 0
+    },
+    "&::after":{
+      content: '"«"',
+      top: "14px",
+      transition: "0.1s",
+      opacity: 0
+    },
 
     "&:hover":{
-      borderLeft: "1px solid white",
-      transition: "transform .4s ease-in-out",
-      transform: "rotate(360deg)",
-    }
+      "&::before":{
+        content: '"»"',
+        color: theme.palette.primary.contrastText,
+        top: "14px",
+        transition: "0.5s",
+        opacity: 1
+      },
+      "&::after":{
+        content: '"«"',
+        color: theme.palette.primary.contrastText,
+        top: "14px",
+        transition: "0.5s",
+        opacity: 1
+      }
+    },
+    
+    
   },
   "@media (max-width: 900px)": {
     paddingLeft: 0,
@@ -61,11 +88,44 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     fontWeight: "bold",
     borderLeft: "1px solid "+theme.palette.primary.main,
+    
+    "&::before":{
+      content: '"»"',
+      top: "14px",
+      transition: "0.1s",
+      opacity: 0
+    },
+    "&::after":{
+      content: '"«"',
+      top: "14px",
+      transition: "0.1s",
+      opacity: 0
+    },
 
     "&:hover":{
-      borderLeft: "1px solid white",
-    }
+      "&::before":{
+        content: '"»"',
+        color: theme.palette.primary.contrastText,
+        top: "14px",
+        transition: "0.5s",
+        opacity: 1
+      },
+      "&::after":{
+        content: '"«"',
+        color: theme.palette.primary.contrastText,
+        top: "14px",
+        transition: "0.5s",
+        opacity: 1
+      }
+    },
+
   },
+  btnMenu:{
+    "&:hover":{
+      transition: "transform .4s ease-in-out",
+      transform: "rotate(360deg)",
+    }
+  }
 }));
 
 const Header = () => {
@@ -115,9 +175,9 @@ const Header = () => {
     };
     return (
       <Toolbar>
-        
+
         <IconButton {...{ color: "inherit", edge: "start", onClick: handleDrawerOpen }}>
-          <MenuIcon />
+          <MenuIcon className={classes.btnMenu}/>
         </IconButton>
 
         <Drawer
