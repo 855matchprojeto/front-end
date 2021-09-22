@@ -1,11 +1,10 @@
 import React from "react";
-import Header from "../components/Header";
+import Base from "./Base";
 
 const Interesses = () => {
     return(
-        <>
-            <Header />
-        </>
+        <Base>
+        </Base>
     )
 }
 

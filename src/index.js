@@ -15,7 +15,7 @@ import Interesses from "./pages/Interesses";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div className="App">
+    <>
 
       <CssBaseline />
 
@@ -48,7 +48,7 @@ ReactDOM.render(
         </Switch>
       </Router>
 
-    </div>
+    </>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -12,6 +12,7 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
+
 // import {validationSchema} from '../Schema'
 import * as yup from "yup";
 
@@ -55,29 +56,26 @@ const Login = () => {
   const classes = useStyles();
   const history = useHistory();
 
+  function fazerLogin(values){
+    history.push('/home')
+  }
+
   const formik = useFormik({
     initialValues: {
       email: '',
       password: ''
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      // alert(JSON.stringify(values, null, 5))
-      history.push('/home')
-    }
-
+    onSubmit: values => {fazerLogin(values)}
   })
   
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
-        <Typography className={classes.title} variant="h4">
-          {" "}
-          Match de Projetos{" "}
-        </Typography>
-        <Typography component="h1" variant="h5">
-          Login
-        </Typography>
+
+        <Typography className={classes.title} variant="h4">Match de Projetos</Typography>
+        <Typography component="h1" variant="h5"> Login </Typography>
+
         <form className={classes.form} onSubmit={formik.handleSubmit}>
           <TextField
             variant="outlined"
@@ -106,34 +104,27 @@ const Login = () => {
             onChange={formik.handleChange}
             error={formik.touched.password && Boolean(formik.errors.password)}
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
+          
+          <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Lembrar"/>
+
+          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
             Entrar
           </Button>
+
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
-                Esqueceu sua senha?
-              </Link>
+              <Link href="#" variant="body2" to="/#"> Esqueceu sua senha? </Link>
             </Grid>
+
             <Grid item xs>
               <Link to="/signup">{" Não tem uma conta? Cadastre-se"}</Link>
             </Grid>
           </Grid>
+
         </form>
       </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
+
+      <Box mt={8} mb={4}> <Copyright /> </Box>
     </Container>
   );
 };

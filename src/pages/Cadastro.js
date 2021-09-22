@@ -50,59 +50,26 @@ const Cadastro = () => {
     e.preventDefault();
     history.push("/home");
   }
+
   return (
     <>
       <Container className="paper" maxWidth="xs">
-        <Typography className={classes.title} align="center" variant="h4">
-          Match de Projetos
-        </Typography>
-        <Typography component="h1" variant="h5" align="center">
-          Cadastro
-        </Typography>
+        <Typography className={classes.title} align="center" variant="h4">{" Match de Projetos "}</Typography>
+        <Typography component="h1" variant="h5" align="center"> Cadastro </Typography>
+
         <form className={classes.form} onSubmit={handleSubmit}>
-          <TextField
-            className={classes.textFieldInput}
-            type="input"
-            label="Nome"
-          />
-          <TextField
-            className={classes.textFieldInput}
-            type="input"
-            label="Sobrenome"
-          />
-          <TextField
-            className={classes.textFieldInput}
-            type="email"
-            label="Email"
-          />
-          <TextField
-            className={classes.textFieldInput}
-            type="password"
-            label="Senha"
-          />
-          <TextField
-            className={classes.textFieldInput}
-            type="password"
-            label="Confirmar Senha"
-          />
-          <Button
-            className={classes.btnSubmit}
-            type="submit"
-            variant="contained"
-            color="primary"
-          >
+          <TextField className={classes.textFieldInput} type="input" label="Nome"/>
+          <TextField className={classes.textFieldInput} type="input" label="Sobrenome"/>
+          <TextField className={classes.textFieldInput} type="email" label="Email"/>
+          <TextField className={classes.textFieldInput} type="password" label="Senha"/>
+          <TextField className={classes.textFieldInput} type="password" label="Confirmar Senha"/>
+          <Button className={classes.btnSubmit} type="submit" variant="contained" color="primary">
             Cadastrar
           </Button>
         </form>
-        <Link className={classes.linkSignin} to="/">
-          <Typography variant="p" align="center">
-            Já tem uma conta? Logar
-          </Typography>
-        </Link>
 
-        <Box mt={8} mb={4}>
-          <Copyright />
-        </Box>
+        <Link className={classes.linkSignin} to="/"> Já tem uma conta? Logar </Link>
+        <Box mt={8} mb={4}> <Copyright /> </Box>
       </Container>
     </>
   );

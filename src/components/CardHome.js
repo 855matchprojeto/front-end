@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   Grid,
@@ -9,7 +9,7 @@ import {
   Button,
   makeStyles,
 } from "@material-ui/core";
-import { SettingsInputAntennaTwoTone } from "@material-ui/icons";
+// import { SettingsInputAntennaTwoTone } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -23,17 +23,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CardHome = ({ info }) => {
-  const [btnInteresse, setBtnInteresse] = useState(false);
+  //const [btnInteresse, setBtnInteresse] = useState(false);
   const classes = useStyles();
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card>
         <CardMedia className={classes.media} image={info.image} />
+
         <CardContent>
-          <Typography variant="subtite1">{info.title}</Typography>
+          <Typography variant="subtitle1">{info.title}</Typography>
           <p>{info.description}</p>
         </CardContent>
+        
         <CardActions className={classes.actions}>
           <Button color="primary">Tenho interesse</Button>
           <Button color="secondary">Saiba mais</Button>
