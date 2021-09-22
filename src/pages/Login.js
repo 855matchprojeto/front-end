@@ -82,7 +82,7 @@ const Login = () => {
             margin="normal"
             fullWidth
             id="email"
-            label="Email Address"
+            label="Endereço de email"
             name="email"
             autoComplete="email"
             value={formik.values.email}
@@ -95,8 +95,8 @@ const Login = () => {
             variant="outlined"
             margin="normal"
             fullWidth
-            name="password"
-            label="Password"
+            name="Senha"
+            label="Senha"
             value={formik.values.password}
             type="password"
             id="password"
@@ -117,14 +117,14 @@ const Login = () => {
             </Grid>
 
             <Grid item xs>
-              <Link to="/signup">{" Não tem uma conta? Cadastre-se"}</Link>
+              <Link to="/signup">{" Não tem conta? Cadastre-se"}</Link>
             </Grid>
           </Grid>
 
         </form>
       </div>
 
-      <Box mt={8} mb={4}> <Copyright /> </Box>
+      <Box mt={6} mb={4}> <Copyright /> </Box>
     </Container>
   );
 };

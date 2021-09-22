@@ -1,6 +1,7 @@
 import React from "react";
+
 import {
-  Card,
+Card,
   Grid,
   CardMedia,
   Typography,
@@ -9,16 +10,15 @@ import {
   Button,
   makeStyles,
 } from "@material-ui/core";
-// import { SettingsInputAntennaTwoTone } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
-    paddingTop: "56.25%",
+    paddingTop: "56.25%"
   },
   actions: {
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "space-around"
   },
 }));
 
@@ -38,7 +38,7 @@ const CardHome = ({ info }) => {
         
         <CardActions className={classes.actions}>
           <Button color="primary">Tenho interesse</Button>
-          <Button color="secondary">Saiba mais</Button>
+          <Button color="secondary" onClick={() =>  window.location.href='/projetoInfo'}>Saiba mais</Button>
         </CardActions>
       </Card>
     </Grid>
