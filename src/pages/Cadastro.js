@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import {useFormik} from 'formik'
 import {
   Container,
   Typography,
@@ -9,6 +10,8 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import Copyright from "../components/Copyright";
+
+import { Cadastrar } from "../services/api";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,63 +49,80 @@ const Cadastro = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    history.push("/home");
+  function fazerCadastro(usuario) {
+
+    const JSONuser = {
+      nome: usuario.nome + " " + usuario.sobrenome,
+      username: usuario.nome + " " + usuario.sobrenome,
+      password: usuario.password,
+      email: usuario.email
+    }
+
+    Cadastrar(JSONuser);
+    //console.log(usuario);
+    //history.push("/home");
   }
+
+  const formik = useFormik({
+    initialValues: {
+      nome: '',
+      sobrenome: '',
+      email: '',
+      password: '',
+      password2: ''
+    },
+    onSubmit: values => {fazerCadastro(values)}
+  })
+
   return (
     <>
       <Container className="paper" maxWidth="xs">
-        <Typography className={classes.title} align="center" variant="h4">
-          Match de Projetos
-        </Typography>
-        <Typography component="h1" variant="h5" align="center">
-          Sign Up
-        </Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
-          <TextField
-            className={classes.textFieldInput}
-            type="input"
-            label="Nome"
-          />
-          <TextField
-            className={classes.textFieldInput}
-            type="input"
-            label="Sobrenome"
-          />
-          <TextField
-            className={classes.textFieldInput}
-            type="email"
-            label="Email"
-          />
-          <TextField
-            className={classes.textFieldInput}
-            type="password"
-            label="Senha"
-          />
-          <TextField
-            className={classes.textFieldInput}
-            type="password"
-            label="Confirmar Senha"
-          />
-          <Button
-            className={classes.btnSubmit}
-            type="submit"
-            variant="contained"
-            color="primary"
-          >
+        <Typography className={classes.title} align="center" variant="h4">{" Match de Projetos "}</Typography>
+        <Typography component="h1" variant="h5" align="center"> Cadastro </Typography>
+
+        <form className={classes.form} onSubmit={formik.handleSubmit}>
+          <TextField className={classes.textFieldInput} 
+                     id="nome"
+                     type="input" 
+                     label="Nome" 
+                     value={formik.values.nome} 
+                     onChange={formik.handleChange}/>
+
+          <TextField className={classes.textFieldInput} 
+                     id="sobrenome"
+                     type="input" 
+                     label="Sobrenome" 
+                     value={formik.values.sobrenome} 
+                     onChange={formik.handleChange}/>
+
+          <TextField className={classes.textFieldInput} 
+                     id="email"
+                     type="email"
+                     label="Email" 
+                     value={formik.values.email} 
+                     onChange={formik.handleChange}/>
+
+          <TextField className={classes.textFieldInput} 
+                     id="password" 
+                     type="password" 
+                     label="Senha" 
+                     value={formik.values.password} 
+                     onChange={formik.handleChange}/>
+
+          <TextField className={classes.textFieldInput} 
+                     id="password2" 
+                     type="password" 
+                     label="Confirmar Senha" 
+                     value={formik.values.password2} 
+                     onChange={formik.handleChange}/>
+
+          <Button className={classes.btnSubmit} type="submit" variant="contained" color="primary">
             Cadastrar
           </Button>
         </form>
-        <Link className={classes.linkSignin} to="/">
-          <Typography variant="p" align="center">
-            Already have an account? Sign In
-          </Typography>
-        </Link>
 
-        <Box mt={8} mb={4}>
-          <Copyright />
-        </Box>
+        <Link className={classes.linkSignin} to="/"> Já tem uma conta? Logar </Link>
+        <Box mt={6} mb={4}> <Copyright /> </Box>
       </Container>
     </>
   );

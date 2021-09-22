@@ -12,10 +12,11 @@ import Home from "./pages/Home";
 import Perfil from "./pages/Perfil";
 import Projetos from "./pages/Projetos";
 import Interesses from "./pages/Interesses";
+import ProjetoInfo from "./pages/ProjetoInfo";
 
 ReactDOM.render(
   <React.StrictMode>
-    <div className="App">
+    <>
 
       <CssBaseline />
 
@@ -44,11 +45,15 @@ ReactDOM.render(
           <Route path="/perfil">
             <Perfil />
           </Route>
+
+          <Route path="/projetoInfo">
+            <ProjetoInfo />
+          </Route>
           
         </Switch>
       </Router>
 
-    </div>
+    </>
   </React.StrictMode>,
   document.getElementById("root")
 );

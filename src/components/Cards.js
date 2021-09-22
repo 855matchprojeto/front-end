@@ -4,7 +4,7 @@ import { Grid, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
   },
 }));
 
@@ -45,8 +45,10 @@ const Cards = () => {
   return (
     <>
       <Grid className={classes.grid} container spacing={2}>
-        {cards &&
-          cards.map((card, index) => <CardHome key={card.id} info={card} />)}
+        { 
+          cards &&
+          cards.map((card, index) => <CardHome key={card.id} info={card} />)
+        }
       </Grid>
     </>
   );

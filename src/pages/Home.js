@@ -1,21 +1,10 @@
 import React from "react";
-import Header from "../components/Header";
-import Copyright from "../components/Copyright";
+import Base from "./Base";
 import Cards from "../components/Cards";
-import { Link } from "react-router-dom";
 
 import {
-  AppBar,
-  Toolbar,
-  Typography,
   Container,
   makeStyles,
-  Grid,
-  Card,
-  CardMedia,
-  CardActions,
-  CardContent,
-  Button,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,12 +16,11 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const classes = useStyles();
   return (
-    <>
-      <Header />
-      <Container className={classes.container} maxWidth="lg">
+    <Base>
+      <Container className={classes.grid} maxWidth="lg">
         <Cards />
       </Container>
-    </>
+    </Base>
   );
 };
 
