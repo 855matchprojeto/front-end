@@ -10,11 +10,12 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import { Link } from "react-router-dom";
 
+
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     display: "flex",
     justifyContent: "space-between",
-    height: "15vh",
+    height: "5vh",
   },
 
   brand: {
@@ -28,27 +29,39 @@ const useStyles = makeStyles((theme) => ({
 
   navLink: {
     margin: theme.spacing(1, 5),
+    padding: theme.spacing(1),
     textDecoration: "none",
     color: "inherit",
     fontSize: "1rem",
+    borderLeft: "1px solid "+theme.palette.primary.main,
+
+    "&:hover":{
+      borderLeft: "1px solid white",
+      transition: "transform .4s ease-in-out",
+      transform: "rotate(360deg)",
+    }
   },
   "@media (max-width: 900px)": {
     paddingLeft: 0,
   },
   drawer: {
     backgroundColor: theme.palette.primary.main,
-    width: "50%",
+    width: "40%",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
   },
   navLinkMobile: {
-    margin: theme.spacing(1, 5),
+    margin: 8,
     textDecoration: "none",
     color: "white",
-    fontSize: "1.2rem",
-    padding: theme.spacing(3),
+    fontSize: "1rem",
+    padding: theme.spacing(1),
     fontWeight: "bold",
+    borderLeft: "1px solid "+theme.palette.primary.main,
+
+    "&:hover":{
+      borderLeft: "1px solid white",
+    }
   },
 }));
 

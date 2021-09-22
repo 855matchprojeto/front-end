@@ -57,7 +57,7 @@ const Cadastro = () => {
           Match de Projetos
         </Typography>
         <Typography component="h1" variant="h5" align="center">
-          Sign Up
+          Cadastro
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit}>
           <TextField
@@ -96,7 +96,7 @@ const Cadastro = () => {
         </form>
         <Link className={classes.linkSignin} to="/">
           <Typography variant="p" align="center">
-            Already have an account? Sign In
+            Já tem uma conta? Logar
           </Typography>
         </Link>
 

@@ -76,7 +76,7 @@ const Login = () => {
           Match de Projetos{" "}
         </Typography>
         <Typography component="h1" variant="h5">
-          Sign in
+          Login
         </Typography>
         <form className={classes.form} onSubmit={formik.handleSubmit}>
           <TextField
@@ -117,16 +117,16 @@ const Login = () => {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Entrar
           </Button>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
-                Forgot password?
+                Esqueceu sua senha?
               </Link>
             </Grid>
-            <Grid item>
-              <Link to="/signup">{"Don't have an account? Sign Up"}</Link>
+            <Grid item xs>
+              <Link to="/signup">{" Não tem uma conta? Cadastre-se"}</Link>
             </Grid>
           </Grid>
         </form>
