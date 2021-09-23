@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import Copyright from '../components/Copyright';
 import { Box,makeStyles } from "@material-ui/core";
 
+//--estilo--
 const useStyles = makeStyles((theme) => ({
     container: {
       display: "flex",
@@ -10,8 +11,10 @@ const useStyles = makeStyles((theme) => ({
       height: "calc(100vh - 64px)",
       paddingLeft: "5%",
       paddingRight: "5%",
+      justifyContent: "space-between"
     },
   }));
+//---------
 
 const Base = (props) => {
 
@@ -20,7 +23,7 @@ const Base = (props) => {
     return (
         <>
             <Header />
-            <div className={classes.container}  style={{justifyContent: "space-between"}}>
+            <div className={classes.container}>
                 {props.children}
                 <Box mt={4} mb={4}> <Copyright /> </Box>
             </div>

@@ -1,41 +1,20 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import {Link, useHistory } from "react-router-dom";
 import Copyright from "../components/Copyright";
 import {useFormik} from 'formik'
-import {
-  Container,
-  Button,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Grid,
-  Box,
-  Typography,
-} from "@material-ui/core";
+import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography} from "@material-ui/core";
+import * as yup from "yup";
+import {makeStyles} from "@material-ui/core/styles";
+import {Logar} from "../services/api";
 
 // import {validationSchema} from '../Schema'
-import * as yup from "yup";
 
-import { makeStyles } from "@material-ui/core/styles";
-
-const validationSchema = yup.object({
-  // email: yup.string().email().required(),
-  // password: yup.string().required("Senha é obrigatória"),
-  email: yup
-    .string("Enter your email")
-    .email("Enter a valid email")
-    .required("Email is required"),
-  password: yup
-    .string("Enter your password")
-    .min(8, "Password should be of minimum 8 characters length")
-    .required("Password is required")
-});
-
-
+//--estilo--
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
+    position: "relative",
     flexDirection: "column",
     alignItems: "center",
   },
@@ -51,13 +30,28 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+//---------
+
+const validationSchema = yup.object({
+  // email: yup.string().email().required(),
+  // password: yup.string().required("Senha é obrigatória"),
+  email: yup
+    .string("Enter your email")
+    .email("Enter a valid email")
+    .required("Email is required"),
+  password: yup
+    .string("Enter your password")
+    .min(8, "Password should be of minimum 8 characters length")
+    .required("Password is required")
+});
 
 const Login = () => {
   const classes = useStyles();
-  const history = useHistory();
+  //const history = useHistory();
 
   function fazerLogin(values){
-    history.push('/home')
+    Logar(values);
+    //history.push('/home')
   }
 
   const formik = useFormik({
@@ -83,26 +77,24 @@ const Login = () => {
             fullWidth
             id="email"
             label="Endereço de email"
-            name="email"
-            autoComplete="email"
             value={formik.values.email}
             autoFocus
             error={formik.touched.email && Boolean(formik.errors.email)}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
+
           <TextField
             variant="outlined"
             margin="normal"
             fullWidth
-            name="Senha"
-            label="Senha"
-            value={formik.values.password}
-            type="password"
             id="password"
-            autoComplete="current-password"
+            label="Senha"
+            type="password"
+            value={formik.values.password}
             onChange={formik.handleChange}
             error={formik.touched.password && Boolean(formik.errors.password)}
+            onBlur={formik.handleBlur}
           />
           
           <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Lembrar"/>
@@ -117,7 +109,7 @@ const Login = () => {
             </Grid>
 
             <Grid item xs>
-              <Link to="/signup">{" Não tem conta? Cadastre-se"}</Link>
+              <Link to="/signup">" Não tem conta? Cadastre-se"</Link>
             </Grid>
           </Grid>
 

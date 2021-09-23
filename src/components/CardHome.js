@@ -1,16 +1,7 @@
 import React from "react";
+import { Card, Grid, CardMedia, Typography, CardContent, CardActions, Button, makeStyles } from "@material-ui/core";
 
-import {
-Card,
-  Grid,
-  CardMedia,
-  Typography,
-  CardContent,
-  CardActions,
-  Button,
-  makeStyles,
-} from "@material-ui/core";
-
+//--estilo--
 const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
@@ -21,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-around"
   },
 }));
+//---------
 
 const CardHome = ({ info }) => {
   //const [btnInteresse, setBtnInteresse] = useState(false);

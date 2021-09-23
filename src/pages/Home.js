@@ -1,17 +1,15 @@
 import React from "react";
 import Base from "./Base";
 import Cards from "../components/Cards";
+import { Container, makeStyles } from "@material-ui/core";
 
-import {
-  Container,
-  makeStyles,
-} from "@material-ui/core";
-
+//--estilo--
 const useStyles = makeStyles((theme) => ({
   grid: {
     marginTop: theme.spacing(2),
   },
 }));
+//---------
 
 const Home = () => {
   const classes = useStyles();

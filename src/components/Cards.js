@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import CardHome from "./CardHome";
 import { Grid, makeStyles } from "@material-ui/core";
 
+//--estilo--
 const useStyles = makeStyles((theme) => ({
   grid: {
     marginTop: theme.spacing(1),
   },
 }));
+//---------
 
 const Cards = () => {
+
   const classes = useStyles();
+
   const [cards, setCards] = useState([
     // Estado apenas para simular as informações de projetos
     {

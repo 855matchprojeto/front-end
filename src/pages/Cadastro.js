@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import {useFormik} from 'formik'
-import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  makeStyles,
-} from "@material-ui/core";
+import { Container, Typography, TextField, Button, Box, makeStyles} from "@material-ui/core";
 import Copyright from "../components/Copyright";
-
 import { Cadastrar } from "../services/api";
 
+//--estilo--
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -45,20 +38,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
   },
 }));
+//---------
+
 const Cadastro = () => {
   const classes = useStyles();
-  const history = useHistory();
+  //const history = useHistory();
 
   function fazerCadastro(usuario) {
 
-    const JSONuser = {
-      nome: usuario.nome + " " + usuario.sobrenome,
-      username: usuario.nome + " " + usuario.sobrenome,
-      password: usuario.password,
-      email: usuario.email
-    }
-
-    Cadastrar(JSONuser);
+    Cadastrar(usuario);
     //console.log(usuario);
     //history.push("/home");
   }
@@ -77,7 +65,7 @@ const Cadastro = () => {
   return (
     <>
       <Container className="paper" maxWidth="xs">
-        <Typography className={classes.title} align="center" variant="h4">{" Match de Projetos "}</Typography>
+        <Typography className={classes.title} align="center" variant="h4">Match de Projetos</Typography>
         <Typography component="h1" variant="h5" align="center"> Cadastro </Typography>
 
         <form className={classes.form} onSubmit={formik.handleSubmit}>
