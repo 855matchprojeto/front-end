@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+
 import {Formik} from 'formik'
-import { Container, Typography, TextField, Button, Box, createTheme} from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import Copyright from "../components/Copyright";
-import { Cadastrar } from "../services/api";
 import * as Yup from "yup";
+import { Cadastrar } from "../services/api";
+
+import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar} from "@mui/material";
+import Copyright from "../components/Copyright";
+import { makeStyles } from "@mui/styles";
+
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 //--estilo--
 const theme = createTheme();
@@ -49,10 +53,15 @@ const useStyles = makeStyles( ({
 
 const Cadastro = () => {
   const classes = useStyles();
-  //const history = useHistory();
+  const history = useHistory();
 
-  //const [alert, setAlert] = useState(false);
-  //const [alertContent, setAlertContent] = useState('');
+  const [alert, setAlert] = useState(false);
+  const [severity, setSeverity] = useState('success');
+  const [alertContent, setAlertContent] = useState('');
+
+  function closeAlert(){
+    setAlert(false)
+  }
 
   // initial values / validation / sign up
   const values = {nome: '', sobrenome: '', email: '', password: '', password2: ''}
@@ -67,7 +76,7 @@ const Cadastro = () => {
       .required("campo obrigatório."),
     password: Yup.string()
       .min(8, "senha muito curta, deve ter ao minímo 8 caracteres.")
-      .matches("^(?=.*[0-9])(?=.*[!@#$&*])(?=.*[a-z])$","deve conter ao menos um número, letras e um caracter especial.")
+      .matches("[0-9]+[!@#$&*]+[a-z]+$","deve conter ao menos um número, letras e um caracter especial.")
       .required("campo obrigatório."),
     password2: Yup.string()
       .required("campo obrigatório.")
@@ -75,11 +84,26 @@ const Cadastro = () => {
   });
 
   async function fazerCadastro(usuario) {
-    let signup = await Cadastrar(usuario)
-    
-    if (signup.status === 200){
-      //let econf = await ConfirmaEmail()
-      //setAlert(true)
+
+    try 
+    {
+      const signup = await Cadastrar(usuario)
+
+      if(signup.status === 200)
+      {
+        setSeverity('success')
+        setAlertContent('Cadastrado com sucesso!')
+        setAlert(true)
+
+        await delay(5000)
+        history.push('/')
+      }
+    } 
+    catch (err) 
+    {
+      setSeverity('error')
+      setAlertContent(err.response.data.detail)
+      setAlert(true)
     }
   }
 
@@ -88,6 +112,12 @@ const Cadastro = () => {
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
+
+        <Snackbar open={alert} autoHideDuration={6000} onClose={closeAlert} anchorOrigin={{ vertical:'top', horizontal:'center'}}>
+          <Alert onClose={closeAlert} severity={severity} sx={{ width: '100%' }}>
+            {alertContent}
+          </Alert>
+        </Snackbar>
         
         <Typography className={classes.title} align="center" variant="h4">Match de Projetos</Typography>
         <Typography component="h1" variant="h5" align="center"> Cadastro </Typography>
@@ -100,25 +130,32 @@ const Cadastro = () => {
           {props => (
             <form className={classes.form} onSubmit={props.handleSubmit}>
               <TextField className={classes.textFieldInput} id="nome" name="nome" label="nome" 
-                value={props.values.nome} onChange={props.handleChange} error={props.errors.nome} helperText={props.errors.nome}
+                value={props.values.nome} onChange={props.handleChange} 
+                error={Boolean(props.touched.nome && props.errors.nome)} helperText={props.errors.nome}
               />
 
               <TextField className={classes.textFieldInput} id="sobrenome" name="sobrenome" label="sobrenome" 
-                value={props.values.sobrenome} onChange={props.handleChange}  error={props.errors.sobrenome} helperText={props.errors.sobrenome}
+                value={props.values.sobrenome} onChange={props.handleChange}  
+                error={Boolean(props.touched.sobrenome && props.errors.sobrenome)} helperText={props.errors.sobrenome}
               />
 
               <TextField className={classes.textFieldInput} id="email" name="email" label="email" 
-                error={props.errors.email} helperText={props.errors.email}
+                error={Boolean(props.touched.email && props.errors.email)}
+                helperText={props.errors.email}
                 value={props.values.email} onChange={props.handleChange}
               />
 
               <TextField className={classes.textFieldInput} id="password" name="password" label="senha" 
-                type="password" error={props.errors.password} helperText={props.errors.password}
+                type="password" 
+                error={Boolean(props.touched.password && props.errors.password)}
+                helperText={props.errors.password}
                 value={props.values.password} onChange={props.handleChange}
               />
 
               <TextField className={classes.textFieldInput} id="password2" name="password2" label="confirmação de senha" 
-                type="password" error={props.errors.password2} helperText={props.errors.password2}
+                type="password" 
+                error={Boolean(props.touched.password2 && props.errors.password2)}
+                helperText={props.errors.password2}
                 value={props.values.password2} onChange={props.handleChange}
               />
 
