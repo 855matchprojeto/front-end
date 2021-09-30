@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import CardHome from "./CardHome";
-import { Grid, makeStyles } from "@material-ui/core";
+import { Grid,createTheme } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 //--estilo--
-const useStyles = makeStyles((theme) => ({
+const theme = createTheme();
+
+const useStyles = makeStyles( ({
   grid: {
     marginTop: theme.spacing(1),
   },

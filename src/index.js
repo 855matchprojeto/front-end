@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-import { CssBaseline } from "@material-ui/core";
+import { CssBaseline } from "@mui/material";
 
 import "./index.css";
 
@@ -16,11 +16,13 @@ import Projetos from "./pages/Projetos";
 import Interesses from "./pages/Interesses";
 import ProjetoInfo from "./pages/ProjetoInfo";
 
+import { StyledEngineProvider } from '@mui/material/styles';
+
 const RouteProtection = () => {
-  const logado = false; // verificar token válido pela chamada de API
+  const logado = true; // verificar token válido pela chamada de API
 
   return(
-    <>
+    <StyledEngineProvider injectFirst>
       <CssBaseline />
 
       <Router>
@@ -38,7 +40,7 @@ const RouteProtection = () => {
           <Route path="*" component={Error} />
         </Switch>
       </Router>
-    </>
+    </StyledEngineProvider>
   )
 }
 

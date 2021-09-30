@@ -1,9 +1,12 @@
 import React from "react";
-import { Typography, makeStyles,Container,Box } from "@material-ui/core";
+import { Typography,Container,Box, createTheme } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import Copyright from "../components/Copyright";
 
 //--estilo--
-const useStyles = makeStyles((theme) => ({
+const theme = createTheme();
+
+const useStyles = makeStyles( ({
     paper: {
       marginTop: theme.spacing(8),
       display: "flex",

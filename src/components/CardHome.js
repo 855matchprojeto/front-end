@@ -1,8 +1,9 @@
 import React from "react";
-import { Card, Grid, CardMedia, Typography, CardContent, CardActions, Button, makeStyles } from "@material-ui/core";
+import { Card, Grid, CardMedia, Typography, CardContent, CardActions, Button } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 //--estilo--
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles( ({
   media: {
     height: 0,
     paddingTop: "56.25%"

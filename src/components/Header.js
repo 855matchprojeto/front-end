@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { AppBar, Toolbar, Typography, makeStyles, IconButton, Drawer} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import { AppBar, Toolbar, Typography, IconButton, Drawer, createTheme} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 
 //--estilo--
-const useStyles = makeStyles((theme) => ({
+const theme = createTheme();
+
+const useStyles = makeStyles( ({
   toolbar: {
     display: "flex",
     height: "64px",

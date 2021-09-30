@@ -2,15 +2,16 @@ import React from "react";
 import {Link, useHistory } from "react-router-dom";
 import Copyright from "../components/Copyright";
 import {useFormik} from 'formik'
-import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography} from "@material-ui/core";
+import {makeStyles} from "@mui/styles";
+import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography,createTheme } from "@mui/material";
 import * as yup from "yup";
-import {makeStyles} from "@material-ui/core/styles";
 import {Logar} from "../services/api";
 
-// import {validationSchema} from '../Schema'
-
 //--estilo--
-const useStyles = makeStyles((theme) => ({
+
+const theme = createTheme();
+
+const useStyles = makeStyles( ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -18,23 +19,28 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  
   title: {
-    marginBottom: theme.spacing(6),
+    marginBottom: theme.spacing(1),
+  },
+
+  textFieldInput: {
+    marginTop: theme.spacing(2),
   },
 
   form: {
     width: "100%", // Fix IE 11 issue.
+    display: "flex",
+    flexDirection: "column",
     marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(1, 0, 2),
   },
 }));
 //---------
 
 const validationSchema = yup.object({
-  // email: yup.string().email().required(),
-  // password: yup.string().required("Senha é obrigatória"),
   email: yup
     .string("Enter your email")
     .email("Enter a valid email")
@@ -73,10 +79,8 @@ const Login = () => {
         <Typography component="h1" variant="h5"> Login </Typography>
 
         <form className={classes.form} onSubmit={formik.handleSubmit}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
+          
+          <TextField className={classes.textFieldInput}
             id="email"
             label="Endereço de email"
             value={formik.values.email}
@@ -86,10 +90,7 @@ const Login = () => {
             onBlur={formik.handleBlur}
           />
 
-          <TextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
+          <TextField className={classes.textFieldInput}
             id="password"
             label="Senha"
             type="password"
@@ -101,9 +102,7 @@ const Login = () => {
           
           <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Lembrar"/>
 
-          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-            Entrar
-          </Button>
+          <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Entrar </Button>
 
           <Grid container>
             <Grid item xs>

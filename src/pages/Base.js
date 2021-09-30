@@ -1,10 +1,12 @@
 import React from 'react'
 import Header from "../components/Header";
 import Copyright from '../components/Copyright';
-import { Box,makeStyles } from "@material-ui/core";
+import { Box } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 //--estilo--
-const useStyles = makeStyles((theme) => ({
+
+const useStyles = makeStyles( ({
     container: {
       display: "flex",
       flexDirection: "column",
