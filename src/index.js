@@ -19,7 +19,7 @@ import ProjetoInfo from "./pages/ProjetoInfo";
 import { StyledEngineProvider } from '@mui/material/styles';
 
 const RouteProtection = () => {
-  const logado = true; // verificar token válido pela chamada de API
+  const logado = false; // verificar token válido pela chamada de API
 
   return(
     <StyledEngineProvider injectFirst>

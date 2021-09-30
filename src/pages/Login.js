@@ -1,14 +1,13 @@
 import React from "react";
 import {Link, useHistory } from "react-router-dom";
 import Copyright from "../components/Copyright";
-import {useFormik} from 'formik'
+import {Formik} from 'formik'
 import {makeStyles} from "@mui/styles";
 import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography,createTheme } from "@mui/material";
-import * as yup from "yup";
+import * as Yup from "yup";
 import {Logar} from "../services/api";
 
 //--estilo--
-
 const theme = createTheme();
 
 const useStyles = makeStyles( ({
@@ -40,20 +39,12 @@ const useStyles = makeStyles( ({
 }));
 //---------
 
-const validationSchema = yup.object({
-  email: yup
-    .string("Enter your email")
-    .email("Enter a valid email")
-    .required("Email is required"),
-  password: yup
-    .string("Enter your password")
-    .min(8, "Password should be of minimum 8 characters length")
-    .required("Password is required")
-});
-
 const Login = () => {
   const classes = useStyles();
   //const history = useHistory();
+
+  // initial values / validation / login
+  const values = {email: '', password: ''}
 
   async function fazerLogin(values){
 
@@ -62,14 +53,15 @@ const Login = () => {
     //history.push('/home')
   }
 
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: ''
-    },
-    validationSchema: validationSchema,
-    onSubmit: values => {fazerLogin(values)}
-  })
+  const validationSchema = Yup.object().shape({
+    email: Yup.string()
+      .email("email inválido.")
+      .required("digite seu email."),
+    password: Yup.string()
+      .required("digite sua senha.")
+  });
+
+  //---------------------------------------------
   
   return (
     <Container component="main" maxWidth="xs">
@@ -78,43 +70,42 @@ const Login = () => {
         <Typography className={classes.title} variant="h4">Match de Projetos</Typography>
         <Typography component="h1" variant="h5"> Login </Typography>
 
-        <form className={classes.form} onSubmit={formik.handleSubmit}>
-          
-          <TextField className={classes.textFieldInput}
-            id="email"
-            label="Endereço de email"
-            value={formik.values.email}
-            autoFocus
-            error={formik.touched.email && Boolean(formik.errors.email)}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
+        <Formik
+          initialValues = {values}
+          validationSchema = {validationSchema}
+          onSubmit = {values => {fazerLogin(values)}}
+        >
+          {props => (
+            <form className={classes.form} onSubmit={props.handleSubmit}>
 
-          <TextField className={classes.textFieldInput}
-            id="password"
-            label="Senha"
-            type="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            error={formik.touched.password && Boolean(formik.errors.password)}
-            onBlur={formik.handleBlur}
-          />
-          
-          <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Lembrar"/>
+              <TextField className={classes.textFieldInput} id="email" name="email" label="email" 
+                error={props.errors.email} helperText={props.errors.email}
+                value={props.values.email} onChange={props.handleChange}
+              />
 
-          <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Entrar </Button>
+              <TextField className={classes.textFieldInput} id="password" name="password" label="senha" 
+                type="password" error={props.errors.password} helperText={props.errors.password}
+                value={props.values.password} onChange={props.handleChange}
+              />
 
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2" to="/#">Esqueceu sua senha?</Link>
-            </Grid>
+              <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Logar </Button>
 
-            <Grid item xs>
-              <Link to="/signup">Não tem conta? Cadastre-se</Link>
-            </Grid>
-          </Grid>
+              <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Lembrar"/>
+              
+              <Grid container>
+                <Grid item xs>
+                  <Link href="#" variant="body2" to="/#">Esqueceu sua senha?</Link>
+                </Grid>
 
-        </form>
+                <Grid item xs>
+                  <Link to="/signup">Não tem conta? Cadastre-se</Link>
+                </Grid>
+              </Grid>
+
+            </form>
+          )}
+        </Formik>
+
       </div>
 
       <Box mt={6} mb={4}> <Copyright /> </Box>
