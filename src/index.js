@@ -17,7 +17,7 @@ import Interesses from "./pages/Interesses";
 import ProjetoInfo from "./pages/ProjetoInfo";
 
 const RouteProtection = () => {
-  const logado = true; // verificar token válido pela chamada de API
+  const logado = false; // verificar token válido pela chamada de API
 
   return(
     <>

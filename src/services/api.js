@@ -29,7 +29,7 @@ export const Cadastrar = async (usuario) => {
         email: usuario.email
     }
 
-    return API.post(url+"/users", JSONuser).then(res => res.data)
+    return API.post(url+"/users", JSONuser).then(res => res)
 }
 
 export const Logar = async (dados) => {
@@ -39,5 +39,5 @@ export const Logar = async (dados) => {
         password: dados.password 
     }
 
-    return API.post(url+"/users/token", JSONlogin).then(res => res.data)
+    return API.post(url+"/users/token", JSONlogin).then(res => res)
 }

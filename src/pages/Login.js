@@ -49,8 +49,10 @@ const Login = () => {
   const classes = useStyles();
   //const history = useHistory();
 
-  function fazerLogin(values){
-    Logar(values);
+  async function fazerLogin(values){
+
+    let Token = await Logar(values)
+    console.log(Token)
     //history.push('/home')
   }
 
@@ -105,11 +107,11 @@ const Login = () => {
 
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2" to="/#"> Esqueceu sua senha? </Link>
+              <Link href="#" variant="body2" to="/#">Esqueceu sua senha?</Link>
             </Grid>
 
             <Grid item xs>
-              <Link to="/signup">" Não tem conta? Cadastre-se"</Link>
+              <Link to="/signup">Não tem conta? Cadastre-se</Link>
             </Grid>
           </Grid>
 
