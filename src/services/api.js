@@ -46,3 +46,7 @@ export const Logar = async (dados) => {
 
     return API.post(url+"/users/token", JSONlogin).then(res => res)
 }
+
+export const Email = async (user) => {
+    return API.post(url+"/users/send-email-verification-link/"+user).then(res => res)
+}

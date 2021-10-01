@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 
 import {Formik} from 'formik'
 import * as Yup from "yup";
-import { Cadastrar } from "../services/api";
+import { Cadastrar, Email } from "../services/api";
 
 import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar} from "@mui/material";
 import Copyright from "../components/Copyright";
@@ -75,7 +75,7 @@ const Cadastro = () => {
       .required("campo obrigatório."),
     password: Yup.string()
       .min(8, "senha muito curta, deve ter ao minímo 8 caracteres.")
-      .matches("[0-9]+[!@#$&*]+[a-z]+$","deve conter ao menos um número, letras e um caracter especial.")
+      .matches("(?=.*[0-9])(?=.*[a-z A-Z])(?=.*[!@#$%^&*])","deve conter ao menos um número, letras e um caracter especial.")
       .required("campo obrigatório."),
     password2: Yup.string()
       .required("campo obrigatório.")
@@ -91,6 +91,8 @@ const Cadastro = () => {
       {
         setSeverity('success')
         setAlertContent('Cadastrado com sucesso!')
+        const email = await Email(signup.data.email)
+        
         setAlert(true)
 
         await delay(5000)
