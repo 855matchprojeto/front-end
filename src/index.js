@@ -17,9 +17,9 @@ import Interesses from "./pages/Interesses";
 import ProjetoInfo from "./pages/ProjetoInfo";
 
 import { StyledEngineProvider } from '@mui/material/styles';
+import { estaLogado } from "./services/auth";
 
 const RouteProtection = () => {
-  const logado = false; // verificar token válido pela chamada de API
 
   return(
     <StyledEngineProvider injectFirst>
@@ -27,15 +27,15 @@ const RouteProtection = () => {
 
       <Router>
         <Switch>
-          <Route exact path="/" render={() => !logado ? <Login/> : <Redirect to="/home" />}/>
-          <Route exact path="/signup" render={() => !logado ? <Cadastro/> : <Redirect to="/home" />}/>
+          <Route exact path="/" render={() => !estaLogado ? <Login/> : <Redirect to="/home" />}/>
+          <Route exact path="/signup" render={() => !estaLogado ? <Cadastro/> : <Redirect to="/home" />}/>
 
-          <Route exact path="/home" render={() => logado ? <Home/> : <Redirect to="/" />}/>
-          <Route exact path="/projetos" render={() => logado ? <Projetos/> : <Redirect to="/" />}/>
-          <Route exact path="/interesses" render={() => logado ? <Interesses/> : <Redirect to="/" />}/>
-          <Route exact path="/perfil" render={() => logado ? <Perfil/> : <Redirect to="/" />}/>
+          <Route exact path="/home" render={() => estaLogado  ? <Home/> : <Redirect to="/" />}/>
+          <Route exact path="/projetos" render={() => estaLogado  ? <Projetos/> : <Redirect to="/" />}/>
+          <Route exact path="/interesses" render={() => estaLogado  ? <Interesses/> : <Redirect to="/" />}/>
+          <Route exact path="/perfil" render={() => estaLogado  ? <Perfil/> : <Redirect to="/" />}/>
 
-          <Route exact path="/projetoInfo" render={() => logado ? <ProjetoInfo/> : <Redirect to="/" />}/>
+          <Route exact path="/projetoInfo" render={() => estaLogado  ? <ProjetoInfo/> : <Redirect to="/" />}/>
 
           <Route path="*" component={Error} />
         </Switch>

@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import {Link, useHistory } from "react-router-dom";
 import Copyright from "../components/Copyright";
 import {Formik} from 'formik'
 import {makeStyles} from "@mui/styles";
-import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography,createTheme } from "@mui/material";
+import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography,createTheme,Snackbar,Alert } from "@mui/material";
 import * as Yup from "yup";
 import {Logar} from "../services/api";
 
@@ -41,16 +41,36 @@ const useStyles = makeStyles( ({
 
 const Login = () => {
   const classes = useStyles();
-  //const history = useHistory();
+  const history = useHistory();
+
+  const [alert, setAlert] = useState(false);
+  const [severity, setSeverity] = useState('error');
+  const [alertContent, setAlertContent] = useState('');
+
+  function closeAlert(){
+    setAlert(false)
+  }
 
   // initial values / validation / login
   const values = {email: '', password: ''}
 
   async function fazerLogin(values){
+    try 
+    {
+      const Token = await Logar(values)
+      console.log(Token)
 
-    let Token = await Logar(values)
-    console.log(Token)
-    //history.push('/home')
+      if(Token.status === 200)
+      {
+        history.push('/Home')
+      }
+    } 
+    catch (err) 
+    {
+      console.log(err)
+      setAlertContent(err.response.data.detail)
+      setAlert(true)
+    }
   }
 
   const validationSchema = Yup.object().shape({
@@ -67,6 +87,12 @@ const Login = () => {
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
 
+        <Snackbar open={alert} autoHideDuration={6000} onClose={closeAlert} anchorOrigin={{ vertical:'top', horizontal:'center'}}>
+          <Alert onClose={closeAlert} severity={severity} sx={{ width: '100%' }}>
+            {alertContent}
+          </Alert>
+        </Snackbar>
+
         <Typography className={classes.title} variant="h4">Match de Projetos</Typography>
         <Typography component="h1" variant="h5"> Login </Typography>
 
@@ -79,19 +105,22 @@ const Login = () => {
             <form className={classes.form} onSubmit={props.handleSubmit}>
 
               <TextField className={classes.textFieldInput} id="email" name="email" label="email" 
-                error={props.errors.email} helperText={props.errors.email}
+                error={Boolean(props.touched.email && props.errors.email)} 
+                helperText={props.errors.email}
                 value={props.values.email} onChange={props.handleChange}
               />
 
               <TextField className={classes.textFieldInput} id="password" name="password" label="senha" 
-                type="password" error={props.errors.password} helperText={props.errors.password}
+                type="password" 
+                error={Boolean(props.touched.password && props.errors.password)}
+                helperText={props.errors.password}
                 value={props.values.password} onChange={props.handleChange}
               />
 
               <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Logar </Button>
 
               <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Lembrar"/>
-              
+
               <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2" to="/#">Esqueceu sua senha?</Link>

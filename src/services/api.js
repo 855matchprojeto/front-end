@@ -1,12 +1,15 @@
 import axios from "axios";
+import getToken from "../services/auth";
 
 let url = "https://authenticator-match-projetos.herokuapp.com";
 // https://authenticator-match-projetos.herokuapp.com/docs#/
 
 const API = axios.create({baseURL: url});
 
+
 API.interceptors.request.use(async (options) => {
     options.headers["Content-Type"] = "application/json"
+    //options.headers["X-Authorization"] = getToken
     return options
 })
 
@@ -38,6 +41,8 @@ export const Logar = async (dados) => {
         username: dados.email, 
         password: dados.password 
     }
+
+    console.log(JSONlogin)
 
     return API.post(url+"/users/token", JSONlogin).then(res => res)
 }

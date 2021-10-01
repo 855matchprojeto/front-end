@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, IconButton, Drawer, createTheme} from "@mu
 import { makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
+import { logout } from "../services/auth";
 
 //--estilo--
 const theme = createTheme();
@@ -191,7 +192,7 @@ const Header = () => {
           <Link to="/projetos" className={classes.navLinkMobile}> Projetos </Link>
           <Link to="/interesses" className={classes.navLinkMobile}> Interesses </Link>
           <Link to="/perfil" className={classes.navLinkMobile}> Perfil </Link>
-          <Link to="/" className={classes.navLinkMobile}> Sair </Link>
+          <Link to="/" onClick={logout} className={classes.navLinkMobile}> Sair </Link>
         </Drawer>
 
         <Typography className={classes.brand} variant="h6"> Match de Projetos </Typography>

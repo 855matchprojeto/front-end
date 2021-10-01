@@ -8,8 +8,7 @@ import { Cadastrar } from "../services/api";
 import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar} from "@mui/material";
 import Copyright from "../components/Copyright";
 import { makeStyles } from "@mui/styles";
-
-const delay = ms => new Promise(res => setTimeout(res, ms));
+import { delay } from "../services/util";
 
 //--estilo--
 const theme = createTheme();
@@ -84,7 +83,6 @@ const Cadastro = () => {
   });
 
   async function fazerCadastro(usuario) {
-
     try 
     {
       const signup = await Cadastrar(usuario)
