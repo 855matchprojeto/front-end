@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
-import { AppBar, Toolbar, Typography, IconButton, Drawer, createTheme} from "@mui/material";
+import { AppBar, Toolbar, Typography, IconButton, Drawer, Link, createTheme} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -156,11 +156,11 @@ const Header = () => {
         <Typography className={classes.brand} variant="h6"> Match de Projetos </Typography>
 
         <nav className={classes.nav}>
-          <Link to="/home" className={classes.navLink}> Home </Link>
-          <Link to="/projetos" className={classes.navLink}> Projetos </Link>
-          <Link to="/interesses" className={classes.navLink}> Interesses </Link>
-          <Link to="/perfil" className={classes.navLink}> Perfil </Link>
-          <Link to="/" onClick={() => logout()} className={classes.navLink}> Sair </Link>
+          <Link component={RouterLink} to="/home" className={classes.navLink}> Home </Link>
+          <Link component={RouterLink} to="/projetos" className={classes.navLink}> Projetos </Link>
+          <Link component={RouterLink} to="/interesses" className={classes.navLink}> Interesses </Link>
+          <Link component={RouterLink} to="/perfil" className={classes.navLink}> Perfil </Link>
+          <Link role='Button' onClick={() => logout()} className={classes.navLink}> Sair </Link>
         </nav>
 
       </Toolbar>
@@ -191,11 +191,11 @@ const Header = () => {
             },
           }}
         >
-          <Link to="/home" className={classes.navLinkMobile}> Home </Link>
-          <Link to="/projetos" className={classes.navLinkMobile}> Projetos </Link>
-          <Link to="/interesses" className={classes.navLinkMobile}> Interesses </Link>
-          <Link to="/perfil" className={classes.navLinkMobile}> Perfil </Link>
-          <Link to="/" onClick={() => logout()} className={classes.navLinkMobile}> Sair </Link>
+          <Link component={RouterLink} to="/home" className={classes.navLinkMobile}> Home </Link>
+          <Link component={RouterLink} to="/projetos" className={classes.navLinkMobile}> Projetos </Link>
+          <Link component={RouterLink} to="/interesses" className={classes.navLinkMobile}> Interesses </Link>
+          <Link component={RouterLink} to="/perfil" className={classes.navLinkMobile}> Perfil </Link>
+          <Link role='button' onClick={() => logout()} className={classes.navLinkMobile}> Sair </Link>
         </Drawer>
 
         <Typography className={classes.brand} variant="h6"> Match de Projetos </Typography>

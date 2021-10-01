@@ -1,13 +1,13 @@
 import React, {useState} from "react";
-import {Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+
 import Copyright from "../components/Copyright";
 import {Formik} from 'formik'
 import {makeStyles} from "@mui/styles";
-import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography,createTheme,Snackbar,Alert } from "@mui/material";
+import {Container, Button, TextField, Grid, Box, Typography,createTheme,Snackbar,Alert,Link } from "@mui/material";
 import * as Yup from "yup";
 import {Logar} from "../services/api";
 import {login} from "../services/auth";
-import { useHistory } from "react-router-dom";
 
 //--estilo--
 const theme = createTheme();
@@ -49,6 +49,10 @@ const Login = () => {
 
   function closeAlert(){
     setAlert(false)
+  }
+
+  function recuperarSenha(){
+    
   }
 
   // initial values / validation / login
@@ -117,15 +121,15 @@ const Login = () => {
 
               <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Logar </Button>
 
-              <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Lembrar"/>
+              {/*<FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Lembrar"/>*/}
 
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2" to="/#">Esqueceu sua senha?</Link>
+                  <Link role='button' onClick={() => recuperarSenha()}>Esqueceu sua senha?</Link>
                 </Grid>
 
                 <Grid item xs>
-                  <Link to="/signup">Não tem conta? Cadastre-se</Link>
+                  <Link role='button' component={RouterLink} to="/signup">Não tem conta? Cadastre-se</Link>
                 </Grid>
               </Grid>
 
