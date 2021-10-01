@@ -1,11 +1,11 @@
 import React from "react";
 import Base from "./Base";
 
-const Projetos = () => {
+const ProjetoInfo = () => {
     return(
         <Base>
         </Base>
     )
 }
 
-export default Projetos;
+export default ProjetoInfo;

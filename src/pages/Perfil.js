@@ -1,14 +1,12 @@
 import React from "react";
-import Header from "../components/Header";
+import Base from "./Base";
+import { Container, Typography, TextField, createTheme } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import {
-  Container,
-  Typography,
-  makeStyles,
-  TextField,
-} from "@material-ui/core";
+//--estilo--
+const theme = createTheme();
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(  ({
   container: {
     marginTop: theme.spacing(1),
     display: "flex",
@@ -28,41 +26,25 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
   },
 }));
+//---------
+
 const Perfil = () => {
   const classes = useStyles();
+  
   return (
-    <>
-      <Header />
+    <Base>
       <Container className={classes.container}>
-        <Typography className={classes.title} variant="h4">
-          Perfil
-        </Typography>
+
+        <Typography className={classes.title} variant="h4"> Perfil </Typography>
+
         <form className={classes.form}>
-          <TextField
-            className={classes.textField}
-            type="input"
-            label="Email"
-            value=""
-            placeholder="Email"
-            disabled
-          />
-          <TextField
-            className={classes.textField}
-            type="input"
-            label="Name"
-            value=""
-            placeholder="Name"
-          />
-          <TextField
-            className={classes.textField}
-            type="input"
-            label="Sobrenome"
-            value=""
-            placeholder="Sobrenome"
-          />
+          <TextField className={classes.textField} type="input" label="Email" value="" placeholder="Email" disabled/>
+          <TextField className={classes.textField} type="input" label="Name" value="" placeholder="Name"/>
+          <TextField className={classes.textField} type="input" label="Sobrenome" value="" placeholder="Sobrenome"/>
         </form>
+
       </Container>
-    </>
+    </Base>
   );
 };
 
