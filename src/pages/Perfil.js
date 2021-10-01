@@ -1,5 +1,4 @@
 import React from "react";
-import Base from "./Base";
 import { Container, Typography, TextField, createTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -32,7 +31,6 @@ const Perfil = () => {
   const classes = useStyles();
   
   return (
-    <Base>
       <Container className={classes.container}>
 
         <Typography className={classes.title} variant="h4"> Perfil </Typography>
@@ -44,7 +42,6 @@ const Perfil = () => {
         </form>
 
       </Container>
-    </Base>
   );
 };
 

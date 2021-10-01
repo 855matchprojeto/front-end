@@ -6,7 +6,7 @@ import {makeStyles} from "@mui/styles";
 import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography,createTheme,Snackbar,Alert } from "@mui/material";
 import * as Yup from "yup";
 import {Logar} from "../services/api";
-import { login } from "../services/auth";
+import {login} from "../services/auth";
 
 //--estilo--
 const theme = createTheme();

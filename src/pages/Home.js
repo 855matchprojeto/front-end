@@ -1,5 +1,4 @@
 import React from "react";
-import Base from "./Base";
 import Cards from "../components/Cards";
 import { Container, createTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -17,11 +16,9 @@ const useStyles = makeStyles( ({
 const Home = () => {
   const classes = useStyles();
   return (
-    <Base>
       <Container className={classes.grid} maxWidth="lg">
         <Cards />
       </Container>
-    </Base>
   );
 };
 

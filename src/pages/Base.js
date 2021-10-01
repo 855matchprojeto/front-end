@@ -27,7 +27,7 @@ const Base = (props) => {
             <Header />
             <div className={classes.container}>
                 {props.children}
-                <Box mt={4} mb={4}> <Copyright /> </Box>
+                <Box mt={6} mb={4} component={Copyright}/>
             </div>
         </>
     )

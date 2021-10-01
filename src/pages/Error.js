@@ -25,7 +25,7 @@ const Error = () => {
         <Typography component="h1" variant="h5"> Erro 404. Página não encontrada. </Typography>
       </div>
 
-      <Box mt={6} mb={4}> <Copyright /> </Box>
+      <Box mt={6} mb={4} component={Copyright}/>  
     </Container>
   );
 };

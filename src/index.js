@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-d
 import { CssBaseline } from "@mui/material";
 
 import "./index.css";
+import Base from "./pages/Base";
 
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
@@ -30,13 +31,15 @@ const RouteProtection = () => {
           <Route exact path="/" render={() => !estaLogado ? <Login/> : <Redirect to="/home" />}/>
           <Route exact path="/signup" render={() => !estaLogado ? <Cadastro/> : <Redirect to="/home" />}/>
 
-          <Route exact path="/home" render={() => estaLogado  ? <Home/> : <Redirect to="/" />}/>
-          <Route exact path="/projetos" render={() => estaLogado  ? <Projetos/> : <Redirect to="/" />}/>
-          <Route exact path="/interesses" render={() => estaLogado  ? <Interesses/> : <Redirect to="/" />}/>
-          <Route exact path="/perfil" render={() => estaLogado  ? <Perfil/> : <Redirect to="/" />}/>
+          <Base>
+            <Route exact path="/home" render={() => estaLogado  ? <Home/> : <Redirect to="/" />}/>
+            <Route exact path="/projetos" render={() => estaLogado  ? <Projetos/> : <Redirect to="/" />}/>
+            <Route exact path="/interesses" render={() => estaLogado  ? <Interesses/> : <Redirect to="/" />}/>
+            <Route exact path="/perfil" render={() => estaLogado  ? <Perfil/> : <Redirect to="/" />}/>
 
-          <Route exact path="/projetoInfo" render={() => estaLogado  ? <ProjetoInfo/> : <Redirect to="/" />}/>
-
+            <Route exact path="/projeto" render={() => estaLogado  ? <ProjetoInfo/> : <Redirect to="/" />}/>
+          </Base>
+          
           <Route path="*" component={Error} />
         </Switch>
       </Router>
