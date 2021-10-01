@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, Grid, CardMedia, Typography, CardContent, CardActions, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useHistory } from "react-router-dom";
 
 //--estilo--
 const useStyles = makeStyles( ({
@@ -18,6 +19,7 @@ const useStyles = makeStyles( ({
 const CardHome = ({ info }) => {
   //const [btnInteresse, setBtnInteresse] = useState(false);
   const classes = useStyles();
+  let history = useHistory();
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -31,7 +33,7 @@ const CardHome = ({ info }) => {
         
         <CardActions className={classes.actions}>
           <Button color="primary">Tenho interesse</Button>
-          <Button color="secondary" onClick={() =>  window.location.href='/projetoInfo'}>Saiba mais</Button>
+          <Button color="secondary" onClick={() =>  history.push('/projeto')}>Saiba mais</Button>
         </CardActions>
       </Card>
     </Grid>

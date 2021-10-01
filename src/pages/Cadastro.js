@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 import {Formik} from 'formik'
 import * as Yup from "yup";
 import { Cadastrar, Email } from "../services/api";
 
-import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar} from "@mui/material";
+import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar, Link } from "@mui/material";
 import Copyright from "../components/Copyright";
 import { makeStyles } from "@mui/styles";
 import { delay } from "../services/util";
@@ -52,7 +53,7 @@ const useStyles = makeStyles( ({
 
 const Cadastro = () => {
   const classes = useStyles();
-  const history = useHistory();
+  let history = useHistory();
 
   const [alert, setAlert] = useState(false);
   const [severity, setSeverity] = useState('success');
@@ -171,7 +172,7 @@ const Cadastro = () => {
           )}
         </Formik>
 
-        <Link className={classes.linkSignin} to="/"> Já tem uma conta? Logar </Link>
+        <Link className={classes.linkSignin} role='button' component={RouterLink} to="/"> Já tem uma conta? Logar </Link>
         <Box mt={6} mb={4}> <Copyright /> </Box>
       </div>
     </Container>
