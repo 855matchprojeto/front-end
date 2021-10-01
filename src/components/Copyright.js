@@ -1,14 +1,15 @@
-import { Typography, Link } from "@material-ui/core";
+import { Typography, Link } from "@mui/material";
 
-export default function Copyright() {
+const Copyright = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
+
       {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Match de Projetos
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
+      <Link color="inherit" href="https://mui.com/"> Match de Projetos </Link>
+      {" "} {new Date().getFullYear()} {"."}
+
     </Typography>
   );
 }
+
+export default Copyright;

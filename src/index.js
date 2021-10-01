@@ -1,54 +1,52 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { CssBaseline } from "@material-ui/core";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import { CssBaseline } from "@mui/material";
 
 import "./index.css";
 
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 
+import Error from "./pages/Error";
+
 import Home from "./pages/Home";
 import Perfil from "./pages/Perfil";
 import Projetos from "./pages/Projetos";
 import Interesses from "./pages/Interesses";
+import ProjetoInfo from "./pages/ProjetoInfo";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <div className="App">
+import { StyledEngineProvider } from '@mui/material/styles';
+import { estaLogado } from "./services/auth";
 
+const RouteProtection = () => {
+
+  return(
+    <StyledEngineProvider injectFirst>
       <CssBaseline />
 
       <Router>
         <Switch>
-          <Route path="/" exact>
-            <Login />
-          </Route>
+          <Route exact path="/" render={() => !estaLogado ? <Login/> : <Redirect to="/home" />}/>
+          <Route exact path="/signup" render={() => !estaLogado ? <Cadastro/> : <Redirect to="/home" />}/>
 
-          <Route path="/signup">
-            <Cadastro />
-          </Route>
+          <Route exact path="/home" render={() => estaLogado  ? <Home/> : <Redirect to="/" />}/>
+          <Route exact path="/projetos" render={() => estaLogado  ? <Projetos/> : <Redirect to="/" />}/>
+          <Route exact path="/interesses" render={() => estaLogado  ? <Interesses/> : <Redirect to="/" />}/>
+          <Route exact path="/perfil" render={() => estaLogado  ? <Perfil/> : <Redirect to="/" />}/>
 
-          <Route path="/home">
-            <Home />
-          </Route>
+          <Route exact path="/projetoInfo" render={() => estaLogado  ? <ProjetoInfo/> : <Redirect to="/" />}/>
 
-          <Route path="/projetos">
-            <Projetos />
-          </Route>
-
-          <Route path="/interesses">
-            <Interesses />
-          </Route>
-
-          <Route path="/perfil">
-            <Perfil />
-          </Route>
-          
+          <Route path="*" component={Error} />
         </Switch>
       </Router>
+    </StyledEngineProvider>
+  )
+}
 
-    </div>
+ReactDOM.render(
+  <React.StrictMode>
+    <RouteProtection/>
   </React.StrictMode>,
   document.getElementById("root")
 );
