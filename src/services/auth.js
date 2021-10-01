@@ -1,7 +1,14 @@
-export const getToken = () => localStorage.getItem("TOKEN");
-export const estaLogado = getToken;
+export const getToken = localStorage.getItem("TOKEN");
+export const estaLogado = Boolean(getToken);
 
-export const login = (token) => {localStorage.setItem("TOKEN", token)};
-export const logout = () => {localStorage.removeItem("TOKEN")};
+export function login(token)
+{
+    localStorage.setItem("TOKEN", token);
+    window.location.href = "/home";
+};
 
-export default getToken;
+export function logout()
+{
+    localStorage.removeItem("TOKEN");
+    window.location.href = "/";
+};

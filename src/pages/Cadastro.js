@@ -52,7 +52,7 @@ const useStyles = makeStyles( ({
 
 const Cadastro = () => {
   const classes = useStyles();
-  const history = useHistory();
+  let history = useHistory();
 
   const [alert, setAlert] = useState(false);
   const [severity, setSeverity] = useState('success');

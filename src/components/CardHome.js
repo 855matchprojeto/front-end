@@ -19,7 +19,6 @@ const useStyles = makeStyles( ({
 const CardHome = ({ info }) => {
   //const [btnInteresse, setBtnInteresse] = useState(false);
   const classes = useStyles();
-
   let history = useHistory();
 
   return (

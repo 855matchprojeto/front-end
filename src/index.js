@@ -25,7 +25,6 @@ const RouteProtection = () => {
   return(
     <StyledEngineProvider injectFirst>
       <CssBaseline />
-
       <Router>
         <Switch>
           <Route exact path="/" render={() => !estaLogado ? <Login/> : <Redirect to="/home" />}/>

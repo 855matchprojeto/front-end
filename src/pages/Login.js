@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Link, useHistory } from "react-router-dom";
+import {Link } from "react-router-dom";
 import Copyright from "../components/Copyright";
 import {Formik} from 'formik'
 import {makeStyles} from "@mui/styles";
@@ -7,6 +7,7 @@ import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typ
 import * as Yup from "yup";
 import {Logar} from "../services/api";
 import {login} from "../services/auth";
+import { useHistory } from "react-router-dom";
 
 //--estilo--
 const theme = createTheme();
@@ -42,7 +43,6 @@ const useStyles = makeStyles( ({
 
 const Login = () => {
   const classes = useStyles();
-  const history = useHistory();
 
   const [alert, setAlert] = useState(false);
   const [alertContent, setAlertContent] = useState('');
@@ -61,13 +61,11 @@ const Login = () => {
 
       if(Token.status === 200)
       {
-        login(Token.data.access_token)
-        history.push('/home')
+        login(Token.data.access_token);
       }
     } 
     catch (err) 
     {
-      console.log(err)
       setAlertContent(err.response.data.detail)
       setAlert(true)
     }
