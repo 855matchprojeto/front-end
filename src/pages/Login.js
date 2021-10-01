@@ -6,6 +6,7 @@ import {makeStyles} from "@mui/styles";
 import {Container, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography,createTheme,Snackbar,Alert } from "@mui/material";
 import * as Yup from "yup";
 import {Logar} from "../services/api";
+import { login } from "../services/auth";
 
 //--estilo--
 const theme = createTheme();
@@ -44,7 +45,6 @@ const Login = () => {
   const history = useHistory();
 
   const [alert, setAlert] = useState(false);
-  const [severity, setSeverity] = useState('error');
   const [alertContent, setAlertContent] = useState('');
 
   function closeAlert(){
@@ -52,17 +52,17 @@ const Login = () => {
   }
 
   // initial values / validation / login
-  const values = {email: '', password: ''}
+  const values = {username: '', password: ''}
 
   async function fazerLogin(values){
     try 
     {
-      const Token = await Logar(values)
-      console.log(Token)
+      const Token = await Logar(values);
 
       if(Token.status === 200)
       {
-        history.push('/Home')
+        login(Token.data.access_token)
+        history.push('/home')
       }
     } 
     catch (err) 
@@ -74,9 +74,8 @@ const Login = () => {
   }
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("email inválido.")
-      .required("digite seu email."),
+    username: Yup.string()
+      .required("digite seu username."),
     password: Yup.string()
       .required("digite sua senha.")
   });
@@ -88,7 +87,7 @@ const Login = () => {
       <div className={classes.paper}>
 
         <Snackbar open={alert} autoHideDuration={6000} onClose={closeAlert} anchorOrigin={{ vertical:'top', horizontal:'center'}}>
-          <Alert onClose={closeAlert} severity={severity} sx={{ width: '100%' }}>
+          <Alert onClose={closeAlert} severity="error" sx={{ width: '100%' }}>
             {alertContent}
           </Alert>
         </Snackbar>
@@ -104,14 +103,15 @@ const Login = () => {
           {props => (
             <form className={classes.form} onSubmit={props.handleSubmit}>
 
-              <TextField className={classes.textFieldInput} id="email" name="email" label="email" 
-                error={Boolean(props.touched.email && props.errors.email)} 
-                helperText={props.errors.email}
-                value={props.values.email} onChange={props.handleChange}
+              <TextField className={classes.textFieldInput} id="username" name="username" label="username" 
+                autoComplete="username" type="text"
+                error={Boolean(props.touched.username && props.errors.username)} 
+                helperText={props.errors.username}
+                value={props.values.username} onChange={props.handleChange}
               />
 
               <TextField className={classes.textFieldInput} id="password" name="password" label="senha" 
-                type="password" 
+                type="password" autoComplete="current-password"
                 error={Boolean(props.touched.password && props.errors.password)}
                 helperText={props.errors.password}
                 value={props.values.password} onChange={props.handleChange}

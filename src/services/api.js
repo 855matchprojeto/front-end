@@ -1,22 +1,18 @@
 import axios from "axios";
-import getToken from "../services/auth";
 
 let url = "https://authenticator-match-projetos.herokuapp.com";
-// https://authenticator-match-projetos.herokuapp.com/docs#/
 
 const API = axios.create({baseURL: url});
 
-
 API.interceptors.request.use(async (options) => {
     options.headers["Content-Type"] = "application/json"
-    //options.headers["X-Authorization"] = getToken
     return options
 })
 
 API.interceptors.response.use(
     res => { return res },
     error => {
-        if(error.response.status === 403 || error.response.status === 401){
+        if(error.response.status === 403){
             window.location.href = "/"
         }
         throw error
@@ -24,29 +20,28 @@ API.interceptors.response.use(
 )
 
 export const Cadastrar = async (usuario) => {
-
     const JSONuser = {
-        nome: usuario.nome + " " + usuario.sobrenome,
-        username: usuario.email,
+        nome:  `${usuario.nome} ${usuario.sobrenome}`,
+        username: usuario.username,
         password: usuario.password,
         email: usuario.email
     }
 
-    return API.post(url+"/users", JSONuser).then(res => res)
+    return API.post(`${url}/users`, JSONuser).then(res => res)
 }
 
 export const Logar = async (dados) => {
-
-    const JSONlogin = { 
-        username: dados.email, 
-        password: dados.password 
+    const config = {
+        headers: { 'content-type': 'application/x-www-form-urlencoded' }
     }
 
-    console.log(JSONlogin)
+    var frm = new FormData();
+    frm.append('username', dados.username);
+    frm.append('password', dados.password);
 
-    return API.post(url+"/users/token", JSONlogin).then(res => res)
+    return API.post(`${url}/users/token`,frm, config).then(res => res)
 }
 
 export const Email = async (user) => {
-    return API.post(url+"/users/send-email-verification-link/"+user).then(res => res)
+    return API.post(`${url}/users/send-email-verification-link/${user}`).then(res => res)
 }

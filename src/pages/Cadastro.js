@@ -63,9 +63,11 @@ const Cadastro = () => {
   }
 
   // initial values / validation / sign up
-  const values = {nome: '', sobrenome: '', email: '', password: '', password2: ''}
+  const values = {username: '', nome: '', sobrenome: '', email: '', password: '', password2: ''}
 
   const validationSchema = Yup.object().shape({
+    username: Yup.string()
+      .required("campo obrigatório."),
     nome: Yup.string()
       .required("campo obrigatório."),
     sobrenome: Yup.string()
@@ -91,7 +93,7 @@ const Cadastro = () => {
       {
         setSeverity('success')
         setAlertContent('Cadastrado com sucesso!')
-        const email = await Email(signup.data.email)
+        await Email(signup.data.username)
         
         setAlert(true)
 
@@ -129,6 +131,11 @@ const Cadastro = () => {
         >
           {props => (
             <form className={classes.form} onSubmit={props.handleSubmit}>
+              <TextField className={classes.textFieldInput} id="username" name="username" label="username" 
+                value={props.values.username} onChange={props.handleChange} 
+                error={Boolean(props.touched.username && props.errors.username)} helperText={props.errors.username}
+              />
+
               <TextField className={classes.textFieldInput} id="nome" name="nome" label="nome" 
                 value={props.values.nome} onChange={props.handleChange} 
                 error={Boolean(props.touched.nome && props.errors.nome)} helperText={props.errors.nome}
