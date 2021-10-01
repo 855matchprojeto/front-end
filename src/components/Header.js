@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  makeStyles,
-  IconButton,
-  Drawer,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import { AppBar, Toolbar, Typography, IconButton, Drawer, createTheme} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
+import { logout } from "../services/auth";
 
+//--estilo--
+const theme = createTheme();
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles( ({
   toolbar: {
     display: "flex",
     height: "64px",
@@ -127,6 +124,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }));
+//---------
 
 const Header = () => {
   const classes = useStyles();
@@ -194,7 +192,7 @@ const Header = () => {
           <Link to="/projetos" className={classes.navLinkMobile}> Projetos </Link>
           <Link to="/interesses" className={classes.navLinkMobile}> Interesses </Link>
           <Link to="/perfil" className={classes.navLinkMobile}> Perfil </Link>
-          <Link to="/" className={classes.navLinkMobile}> Sair </Link>
+          <Link to="/" onClick={logout} className={classes.navLinkMobile}> Sair </Link>
         </Drawer>
 
         <Typography className={classes.brand} variant="h6"> Match de Projetos </Typography>

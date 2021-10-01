@@ -1,17 +1,22 @@
 import React from 'react'
 import Header from "../components/Header";
 import Copyright from '../components/Copyright';
-import { Box,makeStyles } from "@material-ui/core";
+import { Box } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+//--estilo--
+
+const useStyles = makeStyles( ({
     container: {
       display: "flex",
       flexDirection: "column",
       height: "calc(100vh - 64px)",
       paddingLeft: "5%",
       paddingRight: "5%",
+      justifyContent: "space-between"
     },
   }));
+//---------
 
 const Base = (props) => {
 
@@ -20,7 +25,7 @@ const Base = (props) => {
     return (
         <>
             <Header />
-            <div className={classes.container}  style={{justifyContent: "space-between"}}>
+            <div className={classes.container}>
                 {props.children}
                 <Box mt={4} mb={4}> <Copyright /> </Box>
             </div>

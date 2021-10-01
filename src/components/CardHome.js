@@ -1,17 +1,9 @@
 import React from "react";
+import { Card, Grid, CardMedia, Typography, CardContent, CardActions, Button } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import {
-Card,
-  Grid,
-  CardMedia,
-  Typography,
-  CardContent,
-  CardActions,
-  Button,
-  makeStyles,
-} from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
+//--estilo--
+const useStyles = makeStyles( ({
   media: {
     height: 0,
     paddingTop: "56.25%"
@@ -21,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-around"
   },
 }));
+//---------
 
 const CardHome = ({ info }) => {
   //const [btnInteresse, setBtnInteresse] = useState(false);

@@ -1,8 +1,12 @@
 import React from "react";
 import Base from "./Base";
-import { Container, Typography, makeStyles, TextField } from "@material-ui/core";
+import { Container, Typography, TextField, createTheme } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+//--estilo--
+const theme = createTheme();
+
+const useStyles = makeStyles(  ({
   container: {
     marginTop: theme.spacing(1),
     display: "flex",
@@ -22,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
   },
 }));
+//---------
 
 const Perfil = () => {
   const classes = useStyles();
