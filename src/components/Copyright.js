@@ -6,8 +6,7 @@ const Copyright = () => {
 
       {"Copyright © "}
       <Link color="inherit" href="https://mui.com/"> Match de Projetos </Link>
-      {" "} {new Date().getFullYear()} {"."}
-
+      {` ${new Date().getFullYear()}.`} 
     </Typography>
   );
 }

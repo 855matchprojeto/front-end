@@ -3,7 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 
 import {Formik} from 'formik'
 import * as Yup from "yup";
-import { Cadastrar } from "../services/api";
+import { Cadastrar, Email } from "../services/api";
 
 import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar} from "@mui/material";
 import Copyright from "../components/Copyright";
@@ -63,9 +63,11 @@ const Cadastro = () => {
   }
 
   // initial values / validation / sign up
-  const values = {nome: '', sobrenome: '', email: '', password: '', password2: ''}
+  const values = {username: '', nome: '', sobrenome: '', email: '', password: '', password2: ''}
 
   const validationSchema = Yup.object().shape({
+    username: Yup.string()
+      .required("campo obrigatório."),
     nome: Yup.string()
       .required("campo obrigatório."),
     sobrenome: Yup.string()
@@ -75,7 +77,7 @@ const Cadastro = () => {
       .required("campo obrigatório."),
     password: Yup.string()
       .min(8, "senha muito curta, deve ter ao minímo 8 caracteres.")
-      .matches("[0-9]+[!@#$&*]+[a-z]+$","deve conter ao menos um número, letras e um caracter especial.")
+      .matches("(?=.*[0-9])(?=.*[a-z A-Z])(?=.*[!@#$%^&*])","deve conter ao menos um número, letras e um caracter especial.")
       .required("campo obrigatório."),
     password2: Yup.string()
       .required("campo obrigatório.")
@@ -91,6 +93,8 @@ const Cadastro = () => {
       {
         setSeverity('success')
         setAlertContent('Cadastrado com sucesso!')
+        await Email(signup.data.username)
+        
         setAlert(true)
 
         await delay(5000)
@@ -127,6 +131,11 @@ const Cadastro = () => {
         >
           {props => (
             <form className={classes.form} onSubmit={props.handleSubmit}>
+              <TextField className={classes.textFieldInput} id="username" name="username" label="username" 
+                value={props.values.username} onChange={props.handleChange} 
+                error={Boolean(props.touched.username && props.errors.username)} helperText={props.errors.username}
+              />
+
               <TextField className={classes.textFieldInput} id="nome" name="nome" label="nome" 
                 value={props.values.nome} onChange={props.handleChange} 
                 error={Boolean(props.touched.nome && props.errors.nome)} helperText={props.errors.nome}
