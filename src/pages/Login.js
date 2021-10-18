@@ -3,46 +3,14 @@ import { Link as RouterLink } from "react-router-dom";
 
 import Copyright from "../components/Copyright";
 import {Formik} from 'formik'
-import {makeStyles} from "@mui/styles";
-import {Container, Button, TextField, Grid, Box, Typography,createTheme,Snackbar,Alert,Link } from "@mui/material";
+import {Container, Button, TextField, Grid, Box, Typography,Snackbar,Alert,Link } from "@mui/material";
 import * as Yup from "yup";
 import {Logar} from "../services/api";
 import {login} from "../services/auth";
 
-//--estilo--
-const theme = createTheme();
 
-const useStyles = makeStyles( ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    position: "relative",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  
-  title: {
-    marginBottom: theme.spacing(1),
-  },
-
-  textFieldInput: {
-    marginTop: theme.spacing(2),
-  },
-
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    display: "flex",
-    flexDirection: "column",
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(1, 0, 2),
-  },
-}));
-//---------
 
 const Login = () => {
-  const classes = useStyles();
 
   const [alert, setAlert] = useState(false);
   const [alertContent, setAlertContent] = useState('');
@@ -86,7 +54,14 @@ const Login = () => {
   
   return (
     <Container component="main" maxWidth="xs">
-      <div className={classes.paper}>
+      <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
 
         <Snackbar open={alert} autoHideDuration={6000} onClose={closeAlert} anchorOrigin={{ vertical:'top', horizontal:'center'}}>
           <Alert onClose={closeAlert} severity="error" sx={{ width: '100%' }}>
@@ -94,8 +69,8 @@ const Login = () => {
           </Alert>
         </Snackbar>
 
-        <Typography className={classes.title} variant="h4">Match de Projetos</Typography>
-        <Typography component="h1" variant="h5"> Login </Typography>
+        <Typography variant="h4">Match de Projetos</Typography>
+        <Typography component="h1" variant="h5" sx={{mt: 2}}> Login </Typography>
 
         <Formik
           initialValues = {values}
@@ -103,41 +78,51 @@ const Login = () => {
           onSubmit = {values => {fazerLogin(values)}}
         >
           {props => (
-            <form className={classes.form} onSubmit={props.handleSubmit}>
+            <Box component="form" onSubmit={props.handleSubmit} sx={{ mt: 2}}>
 
-              <TextField className={classes.textFieldInput} id="username" name="username" label="username" 
+              <TextField 
+                id="username" 
+                name="username" 
+                label="Username"
+                margin="normal"
+                variant="outlined"
+                fullWidth
                 autoComplete="username" type="text"
                 error={Boolean(props.touched.username && props.errors.username)} 
                 helperText={props.errors.username}
                 value={props.values.username} onChange={props.handleChange}
               />
 
-              <TextField className={classes.textFieldInput} id="password" name="password" label="senha" 
+              <TextField 
+                id="password"
+                name="password" 
+                label="Senha" 
+                margin="normal"
+                fullWidth
                 type="password" autoComplete="current-password"
                 error={Boolean(props.touched.password && props.errors.password)}
                 helperText={props.errors.password}
                 value={props.values.password} onChange={props.handleChange}
               />
 
-              <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Logar </Button>
+              <Button type="submit" variant="contained" fullWidth color="primary"  sx={{ mt: 3, mb: 2 }}> Logar </Button>
 
-              {/*<FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Lembrar"/>*/}
 
               <Grid container>
                 <Grid item xs>
-                  <Link role='button' onClick={() => recuperarSenha()}>Esqueceu sua senha?</Link>
+                  <Link role='button' variant="body2" onClick={() => recuperarSenha()}>Esqueceu sua senha?</Link>
                 </Grid>
 
                 <Grid item xs>
-                  <Link role='button' component={RouterLink} to="/signup">Não tem conta? Cadastre-se</Link>
+                  <Link role='button' variant="body2" component={RouterLink} to="/signup">Não tem conta? Cadastre-se</Link>
                 </Grid>
               </Grid>
 
-            </form>
+            </Box>
           )}
         </Formik>
 
-      </div>
+      </Box>
 
       <Box mt={6} mb={4}> <Copyright /> </Box>
     </Container>

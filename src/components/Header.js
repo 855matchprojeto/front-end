@@ -64,7 +64,8 @@ const useStyles = makeStyles( ({
         top: "14px",
         transition: "0.5s",
         opacity: 1
-      }
+      },
+      cursor: 'pointer'
     },
     
     
