@@ -179,9 +179,7 @@ const Perfil = () => {
                           xs={12}
                           
                         >
-                          <Typography variant="subtitle1">
-                            Aqui vão as TAGS!
-                          </Typography>
+                          {/* As tags vão aqui! */}
                         </Grid>
                       </Grid>
                     </CardContent>
