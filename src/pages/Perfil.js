@@ -67,8 +67,8 @@ const Perfil = () => {
   };
   return (
     <>
-      <Box>
-        <Card style={{ minHeight: "100vh" }}>
+      <Box sx={{mb: 4}}>
+        <Card sx={{ minHeight: "100vh", mt: 4}}>
           <TabContext
             value={valueTab}
             color="primary"
@@ -76,7 +76,6 @@ const Perfil = () => {
           >
             <Box
               sx={{
-                borderBottom: 1,
                 width: "100%",
                 display: "flex",
                 justifyContent: "center",
@@ -94,8 +93,8 @@ const Perfil = () => {
             </Box>
             <TabPanel value="perfil">
               <Grid container spacing={2} sx={{ width: "100%" }}>
-                <Grid item xs={12} sm={4} sx={{ marginTop: 4 }}>
-                  <Card sx={{ marginTop: 4 }}>
+                <Grid item xs={12} sm={4}>
+                  <Card>
                     <CardHeader
                       title={
                         <Typography variant="h6" align="center">
@@ -105,8 +104,9 @@ const Perfil = () => {
                     />
 
                     <CardContent>
-                      <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <Box sx={{ display: "flex", justifyContent: "center"}}>
                         <img
+                          alt="Not Found"
                           src="./lebronJames.png"
                           style={{ width: "100px", height: "100px" }}
                         />
@@ -177,7 +177,7 @@ const Perfil = () => {
                         <Grid
                           item
                           xs={12}
-                          style={{ border: "1px solid black" }}
+                          
                         >
                           <Typography variant="subtitle1">
                             Aqui vão as TAGS!
@@ -281,14 +281,6 @@ const Perfil = () => {
                     </Card>
                   </Grid>
                 </Grid>
-                {/* <Fab
-                  color="primary"
-                  size="large"
-                  style={{ position: "absolute", bottom: 16, right: 16 }}
-                  href="/createproject"
-                >
-                  <AddIcon />
-                </Fab> */}
               </Box>
             </TabPanel>
             <TabPanel value="interesses"></TabPanel>
