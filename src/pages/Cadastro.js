@@ -132,7 +132,7 @@ const Cadastro = () => {
         >
           {props => (
             <form className={classes.form} onSubmit={props.handleSubmit}>
-              <TextField className={classes.textFieldInput} id="username" name="username" label="username" 
+              <TextField className={classes.textFieldInput} id="username" name="username" label="nome de usuário" 
                 value={props.values.username} onChange={props.handleChange} 
                 error={Boolean(props.touched.username && props.errors.username)} helperText={props.errors.username}
               />
