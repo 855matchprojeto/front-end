@@ -45,7 +45,7 @@ const Login = () => {
 
   const validationSchema = Yup.object().shape({
     username: Yup.string()
-      .required("digite seu username."),
+      .required("digite seu nome de usuário."),
     password: Yup.string()
       .required("digite sua senha.")
   });
@@ -83,7 +83,7 @@ const Login = () => {
               <TextField 
                 id="username" 
                 name="username" 
-                label="Username"
+                label="Nome de Usuário"
                 margin="normal"
                 variant="outlined"
                 fullWidth
