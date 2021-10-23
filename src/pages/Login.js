@@ -70,7 +70,7 @@ const Login = () => {
     } 
     catch (err) 
     {
-      setAlertContent(err.response.data.detail)
+      setAlertContent(err.response.data.message)
       setAlert(true)
     }
   }
