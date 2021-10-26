@@ -130,9 +130,12 @@ const useStyles = makeStyles({
     },
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
   btnMenu: {
     "&:hover": {
 =======
+=======
+>>>>>>> 9218ae0 (menu active tab style)
   activeMob: {
     borderLeft: "1px solid white"
   },
@@ -178,6 +181,7 @@ const Header = () => {
 
         <nav className={classes.nav}>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <Link component={RouterLink} to="/home" className={classes.navLink}>
             {" "}
             Home{" "}
@@ -203,6 +207,8 @@ const Header = () => {
             Sair{" "}
           </Link>
 =======
+=======
+>>>>>>> 9218ae0 (menu active tab style)
           <Link component={RouterLink} to="/home" activeClassName={classes.activeNav} className={classes.navLink}> Home </Link>
           <Link component={RouterLink} to="/projetos" activeClassName={classes.activeNav} className={classes.navLink}> Projetos </Link>
           <Link component={RouterLink} to="/interesses" activeClassName={classes.activeNav} className={classes.navLink}> Interesses </Link>
@@ -240,6 +246,7 @@ const Header = () => {
           }}
         >
 <<<<<<< HEAD
+<<<<<<< HEAD
           <Link
             component={RouterLink}
             to="/home"
@@ -273,6 +280,8 @@ const Header = () => {
             Sair{" "}
           </Link>
 =======
+=======
+>>>>>>> 9218ae0 (menu active tab style)
           <Link component={RouterLink} to="/home" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Home </Link>
           <Link component={RouterLink} to="/projetos" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Projetos </Link>
           <Link component={RouterLink} to="/interesses" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Interesses </Link>
