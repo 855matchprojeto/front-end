@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router-dom";
 
 import { AppBar, Toolbar, Typography, IconButton, Drawer, Link, createTheme} from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -70,6 +70,10 @@ const useStyles = makeStyles( ({
     
     
   },
+  activeNav: {
+    borderBottom: "1px solid white"
+  },
+
   "@media (max-width: 900px)": {
     paddingLeft: 0,
   },
@@ -120,6 +124,10 @@ const useStyles = makeStyles( ({
     },
 
   },
+  activeMob: {
+    borderLeft: "1px solid white"
+  },
+
   btnMenu:{
     "&:hover":{
       transition: "transform .4s ease-in-out",
@@ -157,10 +165,10 @@ const Header = () => {
         <Typography className={classes.brand} variant="h6"> Match de Projetos </Typography>
 
         <nav className={classes.nav}>
-          <Link component={RouterLink} to="/home" className={classes.navLink}> Home </Link>
-          <Link component={RouterLink} to="/projetos" className={classes.navLink}> Projetos </Link>
-          <Link component={RouterLink} to="/interesses" className={classes.navLink}> Interesses </Link>
-          <Link component={RouterLink} to="/perfil" className={classes.navLink}> Perfil </Link>
+          <Link component={RouterLink} to="/home" activeClassName={classes.activeNav} className={classes.navLink}> Home </Link>
+          <Link component={RouterLink} to="/projetos" activeClassName={classes.activeNav} className={classes.navLink}> Projetos </Link>
+          <Link component={RouterLink} to="/interesses" activeClassName={classes.activeNav} className={classes.navLink}> Interesses </Link>
+          <Link component={RouterLink} to="/perfil" activeClassName={classes.activeNav} className={classes.navLink}> Perfil </Link>
           <Link role='Button' onClick={() => logout()} className={classes.navLink}> Sair </Link>
         </nav>
 
@@ -192,10 +200,10 @@ const Header = () => {
             },
           }}
         >
-          <Link component={RouterLink} to="/home" className={classes.navLinkMobile}> Home </Link>
-          <Link component={RouterLink} to="/projetos" className={classes.navLinkMobile}> Projetos </Link>
-          <Link component={RouterLink} to="/interesses" className={classes.navLinkMobile}> Interesses </Link>
-          <Link component={RouterLink} to="/perfil" className={classes.navLinkMobile}> Perfil </Link>
+          <Link component={RouterLink} to="/home" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Home </Link>
+          <Link component={RouterLink} to="/projetos" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Projetos </Link>
+          <Link component={RouterLink} to="/interesses" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Interesses </Link>
+          <Link component={RouterLink} to="/perfil" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Perfil </Link>
           <Link role='button' onClick={() => logout()} className={classes.navLinkMobile}> Sair </Link>
         </Drawer>
 

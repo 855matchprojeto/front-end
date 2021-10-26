@@ -20,7 +20,8 @@ const Login = () => {
   }
 
   function recuperarSenha(){
-    
+    //setAlertContent(".")
+    //setAlert(true)
   }
 
   // initial values / validation / login
