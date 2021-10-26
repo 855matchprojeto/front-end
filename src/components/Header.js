@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router-dom";
 
 import {
   AppBar,
@@ -76,6 +76,10 @@ const useStyles = makeStyles({
       cursor: "pointer",
     },
   },
+  activeNav: {
+    borderBottom: "1px solid white"
+  },
+
   "@media (max-width: 900px)": {
     paddingLeft: 0,
   },
@@ -125,8 +129,17 @@ const useStyles = makeStyles({
       },
     },
   },
+<<<<<<< HEAD
   btnMenu: {
     "&:hover": {
+=======
+  activeMob: {
+    borderLeft: "1px solid white"
+  },
+
+  btnMenu:{
+    "&:hover":{
+>>>>>>> 997bfe1 (menu active tab style)
       transition: "transform .4s ease-in-out",
       transform: "rotate(360deg)",
     },
@@ -164,6 +177,7 @@ const Header = () => {
         </Typography>
 
         <nav className={classes.nav}>
+<<<<<<< HEAD
           <Link component={RouterLink} to="/home" className={classes.navLink}>
             {" "}
             Home{" "}
@@ -188,6 +202,13 @@ const Header = () => {
             {" "}
             Sair{" "}
           </Link>
+=======
+          <Link component={RouterLink} to="/home" activeClassName={classes.activeNav} className={classes.navLink}> Home </Link>
+          <Link component={RouterLink} to="/projetos" activeClassName={classes.activeNav} className={classes.navLink}> Projetos </Link>
+          <Link component={RouterLink} to="/interesses" activeClassName={classes.activeNav} className={classes.navLink}> Interesses </Link>
+          <Link component={RouterLink} to="/perfil" activeClassName={classes.activeNav} className={classes.navLink}> Perfil </Link>
+          <Link role='Button' onClick={() => logout()} className={classes.navLink}> Sair </Link>
+>>>>>>> 997bfe1 (menu active tab style)
         </nav>
       </Toolbar>
     );
@@ -218,6 +239,7 @@ const Header = () => {
             },
           }}
         >
+<<<<<<< HEAD
           <Link
             component={RouterLink}
             to="/home"
@@ -250,6 +272,13 @@ const Header = () => {
             {" "}
             Sair{" "}
           </Link>
+=======
+          <Link component={RouterLink} to="/home" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Home </Link>
+          <Link component={RouterLink} to="/projetos" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Projetos </Link>
+          <Link component={RouterLink} to="/interesses" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Interesses </Link>
+          <Link component={RouterLink} to="/perfil" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Perfil </Link>
+          <Link role='button' onClick={() => logout()} className={classes.navLinkMobile}> Sair </Link>
+>>>>>>> 997bfe1 (menu active tab style)
         </Drawer>
 
         <Typography className={classes.brand} variant="h6">
