@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
@@ -18,9 +18,10 @@ import {
   Chip,
 } from "@mui/material";
 
-import AddIcon from "@mui/icons-material/Add";
+import axios from "axios";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import { makeStyles } from "@mui/styles";
+import { getToken } from "../services/auth";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -84,7 +85,6 @@ const Perfil = () => {
       }
     } catch (err) {
       console.log(err);
-      console.log(typeof getToken);
     }
   };
 
