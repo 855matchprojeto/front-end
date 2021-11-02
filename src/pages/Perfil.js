@@ -15,6 +15,7 @@ import {
   Tab,
   Avatar,
   Fab,
+  Chip,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -60,6 +61,37 @@ const Perfil = () => {
     image: "https://source.unsplash.com/random",
   };
 
+  const [user, setUser] = useState({
+    name: "LeBron",
+    sobrenome: "James",
+    areas: ["Machine Learning", "Cálculo", "Algebra Linear"],
+    email: "lebron@teste.com",
+    curso: "Engenharia de Computação",
+  });
+
+  const getDataUsers = async () => {
+    const endpoint = "/profiles/user/me";
+    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    try {
+      const res = await axios.get(URL, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + getToken,
+        },
+      });
+      if (res.status === 200) {
+        setUser(res.data.data);
+      }
+    } catch (err) {
+      console.log(err);
+      console.log(typeof getToken);
+    }
+  };
+
+  useEffect(() => {
+    getDataUsers();
+  }, []);
+
   const classes = useStyles();
 
   const handleChange = (event, newValue) => {
@@ -67,8 +99,8 @@ const Perfil = () => {
   };
   return (
     <>
-      <Box sx={{mb: 4}}>
-        <Card sx={{ minHeight: "100vh", mt: 4}}>
+      <Box sx={{ mb: 4 }}>
+        <Card sx={{ minHeight: "100vh", mt: 4 }}>
           <TabContext
             value={valueTab}
             color="primary"
@@ -98,13 +130,13 @@ const Perfil = () => {
                     <CardHeader
                       title={
                         <Typography variant="h6" align="center">
-                          LeBron James
+                          {user && `${user.name} ${user.sobrenome}`}
                         </Typography>
                       }
                     />
 
                     <CardContent>
-                      <Box sx={{ display: "flex", justifyContent: "center"}}>
+                      <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <img
                           alt="Not Found"
                           src="./lebronJames.png"
@@ -130,6 +162,7 @@ const Perfil = () => {
                             variant="outlined"
                             placeholder="Email"
                             defaultValue="email@email.com"
+                            value={user && user.email}
                             fullWidth
                             disabled
                           />
@@ -143,6 +176,7 @@ const Perfil = () => {
                             variant="outlined"
                             placeholder="Name"
                             defaultValue="LeBron James"
+                            value={user && user.name}
                             fullWidth
                           />
                         </Grid>
@@ -154,6 +188,7 @@ const Perfil = () => {
                             label="Sobrenome"
                             variant="outlined"
                             placeholder="Sobrenome"
+                            value={user && user.sobrenome}
                             fullWidth
                           />
                         </Grid>
@@ -164,22 +199,26 @@ const Perfil = () => {
                             label="Curso"
                             variant="outlined"
                             placeholder="Engenharia de Computação"
+                            value={user && user.curso}
                             fullWidth
                           />
                         </Grid>
-                        <CardHeader
-                          title={
-                            <Typography variant="h6">
-                              Áreas de Interesse
-                            </Typography>
-                          }
-                        />
-                        <Grid
-                          item
-                          xs={12}
-                          
-                        >
-                          {/* As tags vão aqui! */}
+                        <Grid item xs={12}>
+                          <Typography variant="subtitle2">
+                            Áreas de Interesse
+                          </Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          {user.areas.map((area) => (
+                            <>
+                              <Chip
+                                variant="outlined"
+                                label={area}
+                                sx={{ mr: 2 }}
+                              />
+                            </>
+                          ))}
                         </Grid>
                       </Grid>
                     </CardContent>
