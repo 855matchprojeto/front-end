@@ -20,6 +20,8 @@ const Projetos = () => {
     titulo: "",
     descricao: "",
   });
+  const defaultImageUrl =
+    "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
 
   const [responsaveis, setResponsaveis] = useState([
     { name: "Lebron James", perfil: "Professor" },
@@ -121,7 +123,7 @@ const Projetos = () => {
                   }}
                 >
                   <img
-                    src={image && image}
+                    src={image ? image : defaultImageUrl}
                     alt="Not Found"
                     style={{ width: "100%", height: "100%" }}
                   />
@@ -223,14 +225,14 @@ const Projetos = () => {
                   type="input"
                   name="descricao"
                   multiline
-                  rows={6}
+                  rows={4}
                   value={fields.descricao}
                   fullWidth
                   label="Descrição do projeto"
                   onChange={(e) => handleChangeFields(e, null)}
                 />
               </Grid>
-              <Grid item xs={12} sx={{ mt: 2 }}>
+              <Grid item xs={12} sx={{ mt: 1 }}>
                 <Button
                   variant="contained"
                   onClick={handleCreateProject}
