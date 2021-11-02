@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Container,
   Grid,
@@ -10,8 +10,12 @@ import {
   Stack,
   Chip,
 } from "@mui/material";
+import UploadIcon from "@mui/icons-material/Upload";
+
+import axios from "axios";
 
 const Projetos = () => {
+  const imageRef = useRef();
   const [fields, setFields] = useState({
     titulo: "",
     descricao: "",
@@ -20,6 +24,8 @@ const Projetos = () => {
   const [responsaveis, setResponsaveis] = useState([
     { name: "Lebron James", perfil: "Professor" },
   ]);
+
+  const [imageFile, setImageFile] = useState(null);
 
   const cursos = [
     { label: "Administração" },
@@ -45,6 +51,7 @@ const Projetos = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [areasSelecionadas, setAreasSelecionadas] = useState([]);
   const [cursosSelecionados, setCursosSelecionados] = useState([]);
+  const [image, setImage] = useState(null);
 
   const handleChangeFields = (e) => {
     setFields({ ...fields, [e.target.name]: e.target.value });
@@ -57,47 +64,90 @@ const Projetos = () => {
     setCursosSelecionados(value);
   };
 
-  const handleCreateProject = (e) => {
+  const handleCreateProject = async (e) => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
+    setIsLoading(true);
+
+    const form = new FormData();
     const info = {
       ...fields,
       areas: areasSelecionadas,
       cursos: cursosSelecionados,
+      imageFile: imageFile,
     };
-    setIsLoading(true);
 
-    console.log(info);
+    form.append("titulo", fields.titulo);
+    form.append("descricao", fields.descricao);
+    form.append("areas", areasSelecionadas);
+    form.append("cursos", cursos);
+    form.append("image", imageFile, imageFile.name);
+
+    try {
+      const res = await axios.post("ENDPOINT", form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
 
     setIsLoading(false);
   };
 
+  const handleImageFile = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(URL.createObjectURL(e.target.files[0]));
+      setImageFile(e.target.files[0]);
+    }
+  };
+
   return (
-    <Container maxWidth="lg" sx={{ mb: 2 }}>
+    <Container maxWidth="lg" sx={{ mb: 5 }}>
       <Box sx={{ width: "100%" }}>
-        <Typography variant="h5" color="textSecondary" sx={{ mt: 2, mb: 2 }}>
+        <Typography variant="h5" color="textSecondary" sx={{ mt: 3, mb: 2 }}>
           Criar novo projeto
         </Typography>
 
         <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid item xs={6} sx={{ mt: 1 }}>
+          <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
             <Box>
               <Box>
                 <Box
                   sx={{
-                    width: "400px",
+                    width: "80%",
                     height: "300px",
                     bgcolor: "text.secondary",
                     mb: 2,
                   }}
-                ></Box>
+                >
+                  <img
+                    src={image && image}
+                    alt="Not Found"
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </Box>
                 <Box>
-                  <input type="file" />
+                  <input
+                    type="file"
+                    style={{ display: "none" }}
+                    ref={imageRef}
+                    onChange={(e) => handleImageFile(e)}
+                  />
+                  <Button
+                    variant="outlined"
+                    onClick={() => imageRef.current.click()}
+                    size="small"
+                    sx={{ mb: 4 }}
+                  >
+                    Upload
+                    <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
+                  </Button>
                 </Box>
               </Box>
             </Box>
           </Grid>
 
-          <Grid item xs={6} sx={{ mt: 1 }}>
+          <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
             <Grid container spacing={3}>
               <Grid item xs={12} sx={{ mb: 1 }}>
                 <TextField
@@ -167,14 +217,7 @@ const Projetos = () => {
                   />
                 </Stack>
               </Grid>
-              {/* 
-        <Grid item xs={12} sx={{ mb: 1 }}>
-          <Typography variant="subtitle2">
-            Responsáveis pela disciplina
-          </Typography>
-        </Grid> */}
 
-              {/* <Grid item xs={12}></Grid> */}
               <Grid item xs={12}>
                 <TextField
                   type="input"
@@ -187,7 +230,7 @@ const Projetos = () => {
                   onChange={(e) => handleChangeFields(e, null)}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{ mt: 2 }}>
                 <Button
                   variant="contained"
                   onClick={handleCreateProject}
