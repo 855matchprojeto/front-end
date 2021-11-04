@@ -11,10 +11,6 @@ API.interceptors.request.use(async (options) => {
 API.interceptors.response.use(
     res => { return res },
     error => {
-        if(error.response.status === 403)
-        {
-            window.location.href = "/"
-        }
         throw error
     }
 )
