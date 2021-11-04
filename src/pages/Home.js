@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Cards from "../components/Cards";
-import { Container, createTheme, Typography } from "@mui/material";
+import { Container, createTheme, Typography, Pagination } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -49,27 +49,71 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
 }));
 
 const useStyles = makeStyles( ({
+  
   grid: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(2)
+  },
+
+  pagination: {
+    width: "100%",
+    display: "flex",
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: theme.spacing(1)
   },
 }));
 //---------
 
+const valores = [
+  // Estado apenas para simular as informações de projetos
+  {
+    id: 1,
+    title: "Título 1",
+    description: "exemplo 1.",
+    image: "https://source.unsplash.com/random",
+  },
+  {
+    id: 2,
+    title: "Título 2",
+    description: "exemplo 2.",
+    image: "https://source.unsplash.com/random",
+  },
+  {
+    id: 3,
+    title: "Título 3",
+    description: "exemplo 3.",
+    image: "https://source.unsplash.com/random",
+  },
+  {
+    id: 4,
+    title: "Título 4",
+    description: "exemplo 4.",
+    image: "https://source.unsplash.com/random",
+  },
+];
+
 const Home = () => {
   const classes = useStyles();
 
-  //const [cardsProjetos, setCardsProjetos] = useState(null);
-  /*
+  const [cardsProjetos, setCardsProjetos] = useState(false);
+  
   useEffect(() => 
   {
-      async function getProjetos() {
- 
+      async function getProjetos() 
+      {
+        setCardsProjetos(valores);
       }
       
       getProjetos();
 
   }, [])
-  */
+
+  const [page, setPage] = React.useState(1);
+  const [pageCount, setPageCount] = React.useState(1);
+
+  const handlePage = (event, value) => {
+    setPage(value);
+  };
 
   return (
       <Container className={classes.grid} maxWidth="lg">
@@ -82,7 +126,21 @@ const Home = () => {
         </SearchBox>
 
         <Typography variant="h6"> Projetos </Typography>
-        <Cards />
+        <Cards valores={valores}/>
+
+        <Container className={classes.pagination}>
+          <Pagination 
+            count={pageCount} 
+            page={page} 
+            onChange={handlePage}
+            shape="rounded" 
+            variant="outlined" 
+            color="primary" 
+            size="small" 
+            showFirstButton 
+            showLastButton
+          />
+        </Container>
 
       </Container>
   );

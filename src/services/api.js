@@ -1,14 +1,15 @@
 import axios from "axios";
 
-let url = "https://authenticator-match-projetos.herokuapp.com";
-const API = axios.create({baseURL: url});
+// chamadas de Authenticator
+let urlAuth = "https://authenticator-match-projetos.herokuapp.com";
+const auth = axios.create({baseURL: urlAuth});
 
-API.interceptors.request.use(async (options) => {
+auth.interceptors.request.use(async (options) => {
     options.headers["Content-Type"] = "application/json"
     return options
 })
 
-API.interceptors.response.use(
+auth.interceptors.response.use(
     res => { return res },
     error => {
         throw error
@@ -24,7 +25,7 @@ export const Logar = async (dados) => {
     frm.append('username', dados.username);
     frm.append('password', dados.password);
 
-    return API.post(`/users/token`,frm, config).then(res => res)
+    return auth.post(`/users/token`,frm, config).then(res => res)
 }
 
 export const Cadastrar = async (usuario) => {
@@ -35,9 +36,17 @@ export const Cadastrar = async (usuario) => {
         email: usuario.email
     }
 
-    return API.post(`/users`, JSONuser).then(res => res)
+    return auth.post(`/users`, JSONuser).then(res => res)
 }
 
 export const Email = async (user) => {
-    return API.post(`/users/send-email-verification-link/${user}`).then(res => res)
+    return auth.post(`/users/send-email-verification-link/${user}`).then(res => res)
 }
+
+// chamadas de Perfil
+let urlPerfil = "https://perfis-match-projetos.herokuapp.com";
+const perf = axios.create({baseURL: urlPerfil});
+
+// chamadas de Projeto
+let urlProjeto = "https://projetos-match-projetos.herokuapp.com";
+const proj = axios.create({baseURL: urlProjeto});
