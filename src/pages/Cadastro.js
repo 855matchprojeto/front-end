@@ -132,39 +132,78 @@ const Cadastro = () => {
         >
           {props => (
             <form className={classes.form} onSubmit={props.handleSubmit}>
-              <TextField className={classes.textFieldInput} id="username" name="username" label="nome de usuário" 
-                value={props.values.username} onChange={props.handleChange} 
-                error={Boolean(props.touched.username && props.errors.username)} helperText={props.errors.username}
+              <TextField 
+                className={classes.textFieldInput} 
+                id="username" 
+                name="username" 
+                label="nome de usuário" 
+                value={props.values.username} 
+                onChange={props.handleChange} 
+                autoComplete="off"
+                error={Boolean(props.touched.username && props.errors.username)} 
+                helperText={props.errors.username}
               />
 
-              <TextField className={classes.textFieldInput} id="nome" name="nome" label="nome" 
-                value={props.values.nome} onChange={props.handleChange} 
-                error={Boolean(props.touched.nome && props.errors.nome)} helperText={props.errors.nome}
+              <TextField 
+                className={classes.textFieldInput} 
+                id="nome" 
+                name="nome" 
+                label="nome" 
+                value={props.values.nome} 
+                onChange={props.handleChange} 
+                autoComplete="off"
+                error={Boolean(props.touched.nome && props.errors.nome)} 
+                helperText={props.errors.nome}
               />
 
-              <TextField className={classes.textFieldInput} id="sobrenome" name="sobrenome" label="sobrenome" 
-                value={props.values.sobrenome} onChange={props.handleChange}  
-                error={Boolean(props.touched.sobrenome && props.errors.sobrenome)} helperText={props.errors.sobrenome}
+              <TextField 
+                className={classes.textFieldInput} 
+                id="sobrenome"
+                name="sobrenome" 
+                label="sobrenome" 
+                value={props.values.sobrenome} 
+                onChange={props.handleChange}  
+                autoComplete="off"
+                error={Boolean(props.touched.sobrenome && props.errors.sobrenome)} 
+                helperText={props.errors.sobrenome}
               />
 
-              <TextField className={classes.textFieldInput} id="email" name="email" label="email" 
+              <TextField 
+                className={classes.textFieldInput} 
+                id="email" 
+                name="email" 
+                label="email" 
                 error={Boolean(props.touched.email && props.errors.email)}
                 helperText={props.errors.email}
-                value={props.values.email} onChange={props.handleChange}
+                value={props.values.email} 
+                onChange={props.handleChange}
+                autoComplete="off"
               />
 
-              <TextField className={classes.textFieldInput} id="password" name="password" label="senha" 
+              <TextField 
+                className={classes.textFieldInput} 
+                id="password" 
+                name="password" 
+                label="senha" 
                 type="password" 
                 error={Boolean(props.touched.password && props.errors.password)}
                 helperText={props.errors.password}
-                value={props.values.password} onChange={props.handleChange}
+                value={props.values.password} 
+                onChange={props.handleChange}
+                autoComplete="off"
               />
 
-              <TextField className={classes.textFieldInput} id="password2" name="password2" label="confirmação de senha" 
+              <TextField 
+                className={classes.textFieldInput} 
+                id="password2" 
+                name="password2" 
+                label="confirmação de senha" 
                 type="password" 
                 error={Boolean(props.touched.password2 && props.errors.password2)}
                 helperText={props.errors.password2}
-                value={props.values.password2} onChange={props.handleChange}
+                value={props.values.password2} 
+                onChange={props.handleChange}
+                autoComplete="off"
               />
 
               <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Cadastrar </Button>

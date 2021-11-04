@@ -129,6 +129,9 @@ const useStyles = makeStyles({
       },
     },
   },
+  activeMobile: {
+    borderLeft: "1px solid white"
+  },
   btnMenu: {
     "&:hover": {
       transition: "transform .4s ease-in-out",
@@ -168,7 +171,7 @@ const Header = () => {
         </Typography>
 
         <nav className={classes.nav}>
-          <Link component={RouterLink} to="/home" className={classes.navLink}>
+          <Link component={RouterLink} to="/home" className={classes.navLink} activeClassName={classes.activeNav}>
             {" "}
             Home{" "}
           </Link>
@@ -176,11 +179,12 @@ const Header = () => {
             component={RouterLink}
             to="/projetos"
             className={classes.navLink}
+            activeClassName={classes.activeNav}
           >
             {" "}
             Criar Projeto{" "}
           </Link>
-          <Link component={RouterLink} to="/perfil" className={classes.navLink}>
+          <Link component={RouterLink} to="/perfil" className={classes.navLink} activeClassName={classes.activeNav}>
             {" "}
             Perfil{" "}
           </Link>
@@ -226,6 +230,7 @@ const Header = () => {
             component={RouterLink}
             to="/home"
             className={classes.navLinkMobile}
+            activeClassName={classes.activeMobile}
           >
             {" "}
             Home{" "}
@@ -234,14 +239,16 @@ const Header = () => {
             component={RouterLink}
             to="/projetos"
             className={classes.navLinkMobile}
+            activeClassName={classes.activeMobile}
           >
             {" "}
-            Projetos{" "}
+            Criar Projeto{" "}
           </Link>
           <Link
             component={RouterLink}
             to="/perfil"
             className={classes.navLinkMobile}
+            activeClassName={classes.activeMobile}
           >
             {" "}
             Perfil{" "}
@@ -250,6 +257,7 @@ const Header = () => {
             role="button"
             onClick={() => logout()}
             className={classes.navLinkMobile}
+            activeClassName={classes.activeMobile}
           >
             {" "}
             Sair{" "}
