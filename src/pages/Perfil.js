@@ -62,17 +62,10 @@ const Perfil = () => {
     image: "https://source.unsplash.com/random",
   };
 
-  const [user, setUser] = useState({
-    name: "LeBron",
-    sobrenome: "James",
-    areas: ["Machine Learning", "Cálculo", "Algebra Linear"],
-    email: "lebron@teste.com",
-    curso: "Engenharia de Computação",
-  });
+  const [user, setUser] = useState(null);
 
   const getDataUsers = async () => {
-    const endpoint = "/profiles/user/me";
-    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    const URL = `https://perfis-match-projetos.herokuapp.com/profiles/user/me`;
     try {
       const res = await axios.get(URL, {
         headers: {
@@ -81,11 +74,107 @@ const Perfil = () => {
         },
       });
       if (res.status === 200) {
-        setUser(res.data.data);
+        setUser({
+          name: res.data.nome_exibicao,
+          interesses: res.data.interesses,
+          cursos: res.data.cursos,
+          email: res.data.emails[0],
+        });
+        console.log(res.data);
       }
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const createUser = async () => {
+    const endpoint = "/profiles/user/me";
+    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    try {
+      const res = await axios.post(URL, user, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + getToken,
+        },
+      });
+      if (res.status === 200) {
+        setUser(res.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const adicionaCurso = async (id) => {
+    const endpoint = `/profiles/user/me/link-course/${id}`;
+    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    try {
+      const res = await axios.post(URL, "", {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + getToken,
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status === 201) {
+        console.log("Curso adicionado com sucesso.");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // Não será possivel alterar o email.
+  // const adicionaEmail = async () => {
+  //   const endpoint = "/profiles/user/me/perfil-email";
+  //   const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+  //   try {
+  //     const res = await axios.post(
+  //       URL,
+  //       { email: "lebron@teste.com" },
+  //       {
+  //         headers: {
+  //           Accept: "application/json",
+  //           Authorization: "Bearer " + getToken,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     if (res.status === 201) {
+  //       console.log(res.data);
+  //       console.log("POST");
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+  const adicionaIntresse = async (id) => {
+    const endpoint = `/profiles/user/me/link-interest/${id}`;
+    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    try {
+      const res = await axios.post(URL, "", {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + getToken,
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status === 201) {
+        console.log("Interesse adicionado com sucesso");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleEdit = () => {
+    // adicionaCurso();
+    console.log("edita o usuário");
+  };
+
+  const handleTextFieldChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   useEffect(() => {
@@ -130,7 +219,7 @@ const Perfil = () => {
                     <CardHeader
                       title={
                         <Typography variant="h6" align="center">
-                          {user && `${user.name} ${user.sobrenome}`}
+                          {user && `${user.name}`}
                         </Typography>
                       }
                     />
@@ -162,7 +251,7 @@ const Perfil = () => {
                             variant="outlined"
                             placeholder="Email"
                             defaultValue="email@email.com"
-                            value={user && user.email}
+                            value={user && user.email.email}
                             fullWidth
                             disabled
                           />
@@ -172,12 +261,14 @@ const Perfil = () => {
                           <TextField
                             className={classes.textField}
                             type="input"
-                            label="Name"
+                            label="Nome"
+                            name="name"
                             variant="outlined"
-                            placeholder="Name"
+                            placeholder="Nome"
                             defaultValue="LeBron James"
                             value={user && user.name}
                             fullWidth
+                            onChange={(e) => handleTextFieldChange()}
                           />
                         </Grid>
 
@@ -186,9 +277,10 @@ const Perfil = () => {
                             className={classes.textField}
                             type="input"
                             label="Sobrenome"
+                            name="sobrenome"
                             variant="outlined"
                             placeholder="Sobrenome"
-                            value={user && user.sobrenome}
+                            value={user ? "James" : "James"}
                             fullWidth
                           />
                         </Grid>
@@ -196,10 +288,11 @@ const Perfil = () => {
                           <TextField
                             className={classes.textField}
                             type="input"
-                            label="Curso"
+                            label="Cursos"
                             variant="outlined"
-                            placeholder="Engenharia de Computação"
-                            value={user && user.curso}
+                            // placeholder="Engenharia de Computação"
+                            value={user ? user.cursos[0].nome_exibicao : ""}
+                            // defaultValue="Engenharia de Computação"
                             fullWidth
                           />
                         </Grid>
@@ -210,15 +303,15 @@ const Perfil = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                          {user.areas.map((area) => (
-                            <>
+                          {user &&
+                            user.interesses.map((area, index) => (
                               <Chip
                                 variant="outlined"
-                                label={area}
+                                label={area.nome_exibicao}
                                 sx={{ mr: 2 }}
+                                key={index}
                               />
-                            </>
-                          ))}
+                            ))}
                         </Grid>
                       </Grid>
                     </CardContent>
@@ -230,7 +323,11 @@ const Perfil = () => {
                         marginBottom: "16px",
                       }}
                     >
-                      <Button variant="contained" color="primary">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleEdit()}
+                      >
                         Salvar
                       </Button>
                     </CardActions>
