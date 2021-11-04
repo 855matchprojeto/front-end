@@ -75,7 +75,8 @@ const Perfil = () => {
       });
       if (res.status === 200) {
         setUser({
-          name: res.data.nome_exibicao,
+          name: res.data.nome_exibicao.split(" ")[0],
+          sobrenome: res.data.nome_exibicao.split(" ")[1],
           interesses: res.data.interesses,
           cursos: res.data.cursos,
           email: res.data.emails[0],
@@ -280,7 +281,7 @@ const Perfil = () => {
                             name="sobrenome"
                             variant="outlined"
                             placeholder="Sobrenome"
-                            value={user ? "James" : "James"}
+                            value={user ? user.sobrenome : ""}
                             fullWidth
                           />
                         </Grid>
