@@ -117,7 +117,7 @@ const EsqueciSenha = () => {
         </Snackbar>
         
         <Typography className={classes.title} align="center" variant="h4">Match de Projetos</Typography>
-        <Typography component="h1" variant="h5" align="center"> Cadastro </Typography>
+        <Typography component="h1" variant="h5" align="center"> Esqueci minha senha </Typography>
 
         <Formik
           initialValues = {values}
@@ -146,12 +146,10 @@ const EsqueciSenha = () => {
                 value={props.values.password2} onChange={props.handleChange}
               />
 
-              <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Cadastrar </Button>
+              <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Continuar </Button>
             </form>
           )}
         </Formik>
-
-        <Link className={classes.linkSignin} role='button' component={RouterLink} to="/"> Já tem uma conta? Logar </Link>
         <Box mt={6} mb={4}> <Copyright /> </Box>
       </div>
     </Container>
