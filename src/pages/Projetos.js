@@ -70,28 +70,30 @@ const Projetos = () => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
-    const form = new FormData();
-    const info = {
-      ...fields,
-      areas: areasSelecionadas,
-      cursos: cursosSelecionados,
-      imageFile: imageFile,
-    };
+    // const form = new FormData();
+    // const info = {
+    //   ...fields,
+    //   areas: areasSelecionadas,
+    //   cursos: cursosSelecionados,
+    //   imageFile: imageFile,
+    // };
 
-    form.append("titulo", fields.titulo);
-    form.append("descricao", fields.descricao);
-    form.append("areas", areasSelecionadas);
-    form.append("cursos", cursos);
-    form.append("image", imageFile, imageFile.name);
+    // form.append("titulo", fields.titulo);
+    // form.append("descricao", fields.descricao);
+    // form.append("areas", areasSelecionadas);
+    // form.append("cursos", cursos);
+    // form.append("image", imageFile, imageFile.name);
 
-    try {
-      const res = await axios.post("ENDPOINT", form, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   const res = await axios.post("ENDPOINT", form, {
+    //     headers: { "Content-Type": "multipart/form-data" },
+    //   });
+    //   console.log(res);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+
+    console.log("Sucesso?");
 
     setIsLoading(false);
   };
@@ -166,7 +168,6 @@ const Projetos = () => {
                   <Autocomplete
                     multiple
                     options={cursos.map((curso) => curso.label)}
-                    defaultValue={[cursos[0].label]}
                     freeSolo
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
@@ -194,7 +195,6 @@ const Projetos = () => {
                   <Autocomplete
                     multiple
                     options={areas.map((area) => area.label)}
-                    defaultValue={[areas[0].label]}
                     name="areas"
                     id="areas"
                     freeSolo
