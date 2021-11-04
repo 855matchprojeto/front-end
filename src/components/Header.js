@@ -131,11 +131,14 @@ const useStyles = makeStyles({
   },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   btnMenu: {
     "&:hover": {
 =======
 =======
 >>>>>>> 9218ae0 (menu active tab style)
+=======
+>>>>>>> 4abc8493e789994c6f061256be4a5a1ed686ddb2
   activeMob: {
     borderLeft: "1px solid white"
   },
@@ -182,6 +185,7 @@ const Header = () => {
         <nav className={classes.nav}>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
           <Link component={RouterLink} to="/home" className={classes.navLink}>
             {" "}
             Home{" "}
@@ -209,6 +213,8 @@ const Header = () => {
 =======
 =======
 >>>>>>> 9218ae0 (menu active tab style)
+=======
+>>>>>>> 4abc8493e789994c6f061256be4a5a1ed686ddb2
           <Link component={RouterLink} to="/home" activeClassName={classes.activeNav} className={classes.navLink}> Home </Link>
           <Link component={RouterLink} to="/projetos" activeClassName={classes.activeNav} className={classes.navLink}> Projetos </Link>
           <Link component={RouterLink} to="/interesses" activeClassName={classes.activeNav} className={classes.navLink}> Interesses </Link>
@@ -247,6 +253,7 @@ const Header = () => {
         >
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
           <Link
             component={RouterLink}
             to="/home"
@@ -282,6 +289,8 @@ const Header = () => {
 =======
 =======
 >>>>>>> 9218ae0 (menu active tab style)
+=======
+>>>>>>> 4abc8493e789994c6f061256be4a5a1ed686ddb2
           <Link component={RouterLink} to="/home" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Home </Link>
           <Link component={RouterLink} to="/projetos" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Projetos </Link>
           <Link component={RouterLink} to="/interesses" className={classes.navLinkMobile} activeClassName={classes.activeMob}> Interesses </Link>
