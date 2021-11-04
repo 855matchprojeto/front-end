@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router-dom";
 
-import { AppBar, Toolbar, Typography, IconButton, Drawer, Link, createTheme} from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Drawer,
+  Link,
+  createTheme,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -10,7 +18,7 @@ import { logout } from "../services/auth";
 //--estilo--
 const theme = createTheme();
 
-const useStyles = makeStyles( ({
+const useStyles = makeStyles({
   toolbar: {
     display: "flex",
     height: "64px",
@@ -34,42 +42,44 @@ const useStyles = makeStyles( ({
     textDecoration: "none",
     color: "inherit",
     fontSize: "1rem",
-    borderLeft: "1px solid "+theme.palette.primary.main,
+    borderLeft: "1px solid " + theme.palette.primary.main,
     transition: "all 0.5s",
 
-    "&::before":{
+    "&::before": {
       content: '"»"',
       top: "14px",
       transition: "0.1s",
-      opacity: 0
+      opacity: 0,
     },
-    "&::after":{
+    "&::after": {
       content: '"«"',
       top: "14px",
       transition: "0.1s",
-      opacity: 0
+      opacity: 0,
     },
 
-    "&:hover":{
-      "&::before":{
+    "&:hover": {
+      "&::before": {
         content: '"»"',
         color: theme.palette.primary.contrastText,
         top: "14px",
         transition: "0.5s",
-        opacity: 1
+        opacity: 1,
       },
-      "&::after":{
+      "&::after": {
         content: '"«"',
         color: theme.palette.primary.contrastText,
         top: "14px",
         transition: "0.5s",
-        opacity: 1
+        opacity: 1,
       },
-      cursor: 'pointer'
+      cursor: "pointer",
     },
-    
-    
   },
+  activeNav: {
+    borderBottom: "1px solid white"
+  },
+
   "@media (max-width: 900px)": {
     paddingLeft: 0,
   },
@@ -87,46 +97,45 @@ const useStyles = makeStyles( ({
     fontSize: "1rem",
     padding: theme.spacing(1),
     fontWeight: "bold",
-    borderLeft: "1px solid "+theme.palette.primary.main,
-    
-    "&::before":{
+    borderLeft: "1px solid " + theme.palette.primary.main,
+
+    "&::before": {
       content: '"»"',
       top: "14px",
       transition: "0.1s",
-      opacity: 0
+      opacity: 0,
     },
-    "&::after":{
+    "&::after": {
       content: '"«"',
       top: "14px",
       transition: "0.1s",
-      opacity: 0
+      opacity: 0,
     },
 
-    "&:hover":{
-      "&::before":{
+    "&:hover": {
+      "&::before": {
         content: '"»"',
         color: theme.palette.primary.contrastText,
         top: "14px",
         transition: "0.5s",
-        opacity: 1
+        opacity: 1,
       },
-      "&::after":{
+      "&::after": {
         content: '"«"',
         color: theme.palette.primary.contrastText,
         top: "14px",
         transition: "0.5s",
-        opacity: 1
-      }
+        opacity: 1,
+      },
     },
-
   },
-  btnMenu:{
-    "&:hover":{
+  btnMenu: {
+    "&:hover": {
       transition: "transform .4s ease-in-out",
       transform: "rotate(360deg)",
-    }
-  }
-}));
+    },
+  },
+});
 //---------
 
 const Header = () => {
@@ -134,7 +143,6 @@ const Header = () => {
   const [view, setView] = useState({ mobileView: false, drawerOpen: false });
 
   useEffect(() => {
-    
     const setResponsiveView = () => {
       if (window.innerWidth < 900) {
         setView((previous) => ({ ...previous, mobileView: true }));
@@ -154,16 +162,37 @@ const Header = () => {
   const DisplayDesktop = () => {
     return (
       <Toolbar className={classes.toolbar}>
-        <Typography className={classes.brand} variant="h6"> Match de Projetos </Typography>
+        <Typography className={classes.brand} variant="h6">
+          {" "}
+          Match de Projetos{" "}
+        </Typography>
 
         <nav className={classes.nav}>
-          <Link component={RouterLink} to="/home" className={classes.navLink}> Home </Link>
-          <Link component={RouterLink} to="/projetos" className={classes.navLink}> Projetos </Link>
-          <Link component={RouterLink} to="/interesses" className={classes.navLink}> Interesses </Link>
-          <Link component={RouterLink} to="/perfil" className={classes.navLink}> Perfil </Link>
-          <Link role='Button' onClick={() => logout()} className={classes.navLink}> Sair </Link>
+          <Link component={RouterLink} to="/home" className={classes.navLink}>
+            {" "}
+            Home{" "}
+          </Link>
+          <Link
+            component={RouterLink}
+            to="/projetos"
+            className={classes.navLink}
+          >
+            {" "}
+            Criar Projeto{" "}
+          </Link>
+          <Link component={RouterLink} to="/perfil" className={classes.navLink}>
+            {" "}
+            Perfil{" "}
+          </Link>
+          <Link
+            role="Button"
+            onClick={() => logout()}
+            className={classes.navLink}
+          >
+            {" "}
+            Sair{" "}
+          </Link>
         </nav>
-
       </Toolbar>
     );
   };
@@ -177,9 +206,10 @@ const Header = () => {
     };
     return (
       <Toolbar>
-
-        <IconButton {...{ color: "inherit", edge: "start", onClick: handleDrawerOpen }}>
-          <MenuIcon className={classes.btnMenu}/>
+        <IconButton
+          {...{ color: "inherit", edge: "start", onClick: handleDrawerOpen }}
+        >
+          <MenuIcon className={classes.btnMenu} />
         </IconButton>
 
         <Drawer
@@ -192,22 +222,52 @@ const Header = () => {
             },
           }}
         >
-          <Link component={RouterLink} to="/home" className={classes.navLinkMobile}> Home </Link>
-          <Link component={RouterLink} to="/projetos" className={classes.navLinkMobile}> Projetos </Link>
-          <Link component={RouterLink} to="/interesses" className={classes.navLinkMobile}> Interesses </Link>
-          <Link component={RouterLink} to="/perfil" className={classes.navLinkMobile}> Perfil </Link>
-          <Link role='button' onClick={() => logout()} className={classes.navLinkMobile}> Sair </Link>
+          <Link
+            component={RouterLink}
+            to="/home"
+            className={classes.navLinkMobile}
+          >
+            {" "}
+            Home{" "}
+          </Link>
+          <Link
+            component={RouterLink}
+            to="/projetos"
+            className={classes.navLinkMobile}
+          >
+            {" "}
+            Projetos{" "}
+          </Link>
+          <Link
+            component={RouterLink}
+            to="/perfil"
+            className={classes.navLinkMobile}
+          >
+            {" "}
+            Perfil{" "}
+          </Link>
+          <Link
+            role="button"
+            onClick={() => logout()}
+            className={classes.navLinkMobile}
+          >
+            {" "}
+            Sair{" "}
+          </Link>
         </Drawer>
 
-        <Typography className={classes.brand} variant="h6"> Match de Projetos </Typography>
+        <Typography className={classes.brand} variant="h6">
+          {" "}
+          Match de Projetos{" "}
+        </Typography>
       </Toolbar>
     );
   };
 
   return (
-      <AppBar position="static">
-        {view.mobileView ? <DisplayMobile /> : <DisplayDesktop />}
-      </AppBar>
+    <AppBar position="static">
+      {view.mobileView ? <DisplayMobile /> : <DisplayDesktop />}
+    </AppBar>
   );
 };
 
