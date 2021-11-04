@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import Cards from "../components/Cards";
 import { Container, createTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -15,6 +15,20 @@ const useStyles = makeStyles( ({
 
 const Home = () => {
   const classes = useStyles();
+
+  //const [cardsProjetos, setCardsProjetos] = useState(null);
+  /*
+  useEffect(() => 
+  {
+      async function getProjetos() {
+ 
+      }
+      
+      getProjetos();
+
+  }, [])
+  */
+
   return (
       <Container className={classes.grid} maxWidth="lg">
         <Cards />

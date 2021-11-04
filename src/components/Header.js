@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router-dom";
 
 import {
   AppBar,
@@ -76,6 +76,10 @@ const useStyles = makeStyles({
       cursor: "pointer",
     },
   },
+  activeNav: {
+    borderBottom: "1px solid white"
+  },
+
   "@media (max-width: 900px)": {
     paddingLeft: 0,
   },
