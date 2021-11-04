@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
@@ -15,11 +15,13 @@ import {
   Tab,
   Avatar,
   Fab,
+  Chip,
 } from "@mui/material";
 
-import AddIcon from "@mui/icons-material/Add";
+import axios from "axios";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import { makeStyles } from "@mui/styles";
+import { getToken } from "../services/auth";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -60,6 +62,126 @@ const Perfil = () => {
     image: "https://source.unsplash.com/random",
   };
 
+  const [user, setUser] = useState(null);
+
+  const getDataUsers = async () => {
+    const URL = `https://perfis-match-projetos.herokuapp.com/profiles/user/me`;
+    try {
+      const res = await axios.get(URL, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + getToken,
+        },
+      });
+      if (res.status === 200) {
+        setUser({
+          name: res.data.nome_exibicao.split(" ")[0],
+          sobrenome: res.data.nome_exibicao.split(" ")[1],
+          interesses: res.data.interesses,
+          cursos: res.data.cursos,
+          email: res.data.emails[0],
+        });
+        console.log(res.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const createUser = async () => {
+    const endpoint = "/profiles/user/me";
+    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    try {
+      const res = await axios.post(URL, user, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + getToken,
+        },
+      });
+      if (res.status === 200) {
+        setUser(res.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const adicionaCurso = async (id) => {
+    const endpoint = `/profiles/user/me/link-course/${id}`;
+    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    try {
+      const res = await axios.post(URL, "", {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + getToken,
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status === 201) {
+        console.log("Curso adicionado com sucesso.");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // Não será possivel alterar o email.
+  // const adicionaEmail = async () => {
+  //   const endpoint = "/profiles/user/me/perfil-email";
+  //   const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+  //   try {
+  //     const res = await axios.post(
+  //       URL,
+  //       { email: "lebron@teste.com" },
+  //       {
+  //         headers: {
+  //           Accept: "application/json",
+  //           Authorization: "Bearer " + getToken,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     if (res.status === 201) {
+  //       console.log(res.data);
+  //       console.log("POST");
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+  const adicionaIntresse = async (id) => {
+    const endpoint = `/profiles/user/me/link-interest/${id}`;
+    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    try {
+      const res = await axios.post(URL, "", {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + getToken,
+          "Content-Type": "application/json",
+        },
+      });
+      if (res.status === 201) {
+        console.log("Interesse adicionado com sucesso");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleEdit = () => {
+    // adicionaCurso();
+    console.log("edita o usuário");
+  };
+
+  const handleTextFieldChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  useEffect(() => {
+    getDataUsers();
+  }, []);
+
   const classes = useStyles();
 
   const handleChange = (event, newValue) => {
@@ -67,8 +189,8 @@ const Perfil = () => {
   };
   return (
     <>
-      <Box sx={{mb: 4}}>
-        <Card sx={{ minHeight: "100vh", mt: 4}}>
+      <Box sx={{ mb: 4 }}>
+        <Card sx={{ minHeight: "100vh", mt: 4 }}>
           <TabContext
             value={valueTab}
             color="primary"
@@ -98,13 +220,13 @@ const Perfil = () => {
                     <CardHeader
                       title={
                         <Typography variant="h6" align="center">
-                          LeBron James
+                          {user && `${user.name}`}
                         </Typography>
                       }
                     />
 
                     <CardContent>
-                      <Box sx={{ display: "flex", justifyContent: "center"}}>
+                      <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <img
                           alt="Not Found"
                           src="./lebronJames.png"
@@ -130,6 +252,7 @@ const Perfil = () => {
                             variant="outlined"
                             placeholder="Email"
                             defaultValue="email@email.com"
+                            value={user && user.email.email}
                             fullWidth
                             disabled
                           />
@@ -139,11 +262,14 @@ const Perfil = () => {
                           <TextField
                             className={classes.textField}
                             type="input"
-                            label="Name"
+                            label="Nome"
+                            name="name"
                             variant="outlined"
-                            placeholder="Name"
+                            placeholder="Nome"
                             defaultValue="LeBron James"
+                            value={user && user.name}
                             fullWidth
+                            onChange={(e) => handleTextFieldChange()}
                           />
                         </Grid>
 
@@ -152,8 +278,10 @@ const Perfil = () => {
                             className={classes.textField}
                             type="input"
                             label="Sobrenome"
+                            name="sobrenome"
                             variant="outlined"
                             placeholder="Sobrenome"
+                            value={user ? user.sobrenome : ""}
                             fullWidth
                           />
                         </Grid>
@@ -161,25 +289,30 @@ const Perfil = () => {
                           <TextField
                             className={classes.textField}
                             type="input"
-                            label="Curso"
+                            label="Cursos"
                             variant="outlined"
-                            placeholder="Engenharia de Computação"
+                            // placeholder="Engenharia de Computação"
+                            value={user ? user.cursos[0].nome_exibicao : ""}
+                            // defaultValue="Engenharia de Computação"
                             fullWidth
                           />
                         </Grid>
-                        <CardHeader
-                          title={
-                            <Typography variant="h6">
-                              Áreas de Interesse
-                            </Typography>
-                          }
-                        />
-                        <Grid
-                          item
-                          xs={12}
-                          
-                        >
-                          {/* As tags vão aqui! */}
+                        <Grid item xs={12}>
+                          <Typography variant="subtitle2">
+                            Áreas de Interesse
+                          </Typography>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          {user &&
+                            user.interesses.map((area, index) => (
+                              <Chip
+                                variant="outlined"
+                                label={area.nome_exibicao}
+                                sx={{ mr: 2 }}
+                                key={index}
+                              />
+                            ))}
                         </Grid>
                       </Grid>
                     </CardContent>
@@ -191,7 +324,11 @@ const Perfil = () => {
                         marginBottom: "16px",
                       }}
                     >
-                      <Button variant="contained" color="primary">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleEdit()}
+                      >
                         Salvar
                       </Button>
                     </CardActions>
