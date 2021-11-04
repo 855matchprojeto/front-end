@@ -174,7 +174,7 @@ const Header = () => {
             className={classes.navLink}
           >
             {" "}
-            Projetos{" "}
+            Criar Projeto{" "}
           </Link>
           <Link component={RouterLink} to="/perfil" className={classes.navLink}>
             {" "}
