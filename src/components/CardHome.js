@@ -33,7 +33,7 @@ const CardHome = ({ info }) => {
         
         <CardActions className={classes.actions}>
           <Button color="primary">Tenho interesse</Button>
-          <Button color="secondary" onClick={() =>  history.push('/projeto')}>Saiba mais</Button>
+          <Button color="secondary" onClick={() =>  history.push('/projeto',{ data: info.id })}>Saiba mais</Button>
         </CardActions>
       </Card>
     </Grid>

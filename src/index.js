@@ -20,7 +20,6 @@ import Error from "./pages/Error";
 import Home from "./pages/Home";
 import Perfil from "./pages/Perfil";
 import Projetos from "./pages/Projetos";
-import Interesses from "./pages/Interesses";
 import ProjetoInfo from "./pages/ProjetoInfo";
 
 import { StyledEngineProvider } from "@mui/material/styles";
