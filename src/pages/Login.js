@@ -19,11 +19,6 @@ const Login = () => {
     setAlert(false)
   }
 
-  function recuperarSenha(){
-    //setAlertContent(".")
-    //setAlert(true)
-  }
-
   // initial values / validation / login
   const values = {username: '', password: ''}
 
@@ -111,7 +106,7 @@ const Login = () => {
 
               <Grid container>
                 <Grid item xs>
-                  <Link role='button' variant="body2" onClick={() => recuperarSenha()}>Esqueceu sua senha?</Link>
+                  <Link role='button' variant="body2" component={RouterLink} to="/forgotpassword">Esqueceu sua senha?</Link>
                 </Grid>
 
                 <Grid item xs>

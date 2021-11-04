@@ -13,6 +13,7 @@ import Base from "./pages/Base";
 
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
+import EsqueciSenha from "./pages/EsqueciSenha";
 
 import Error from "./pages/Error";
 
@@ -41,6 +42,14 @@ const RouteProtection = () => {
             path="/signup"
             render={() =>
               !estaLogado ? <Cadastro /> : <Redirect to="/home" />
+            }
+          />
+
+          <Route
+            exact
+            path="/forgotpassword"
+            render={() =>
+              <EsqueciSenha />
             }
           />
 
