@@ -16,6 +16,8 @@ import {
   Avatar,
   Fab,
   Chip,
+  Autocomplete,
+  Stack,
 } from "@mui/material";
 
 import axios from "axios";
@@ -52,8 +54,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const baseUrl = "https://perfis-match-projetos.herokuapp.com";
+
 const Perfil = () => {
   const [valueTab, setTabValue] = useState("perfil");
+  const [isLoading, setIsLoading] = useState(false);
   const info = {
     id: 1,
     title: "Título 1",
@@ -63,9 +68,53 @@ const Perfil = () => {
   };
 
   const [user, setUser] = useState(null);
+  const [allInteresses, setAllInteresses] = useState(null);
+  const [allCourses, setAllCourses] = useState(null);
 
+  const handleDelete = async (value) => {
+    const endpoint = `/profiles/user/me/link-interest/${value.id}`;
+    const URL = `${baseUrl}${endpoint}`;
+    const res = await axios.delete(URL, {
+      headers: {
+        Authorization: "Bearer " + getToken,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+    if (res.status === 204) {
+      setUser({
+        ...user,
+        interesses: user.interesses.filter(
+          (interesse) => interesse.nome_exibicao !== value.nome_exibicao
+        ),
+      });
+      console.log("Interesse removido com sucesso!");
+    }
+  };
+
+  const handleDeleteCourses = async (value) => {
+    const endpoint = `/profiles/user/me/link-course/${value.id}`;
+    const URL = `${baseUrl}${endpoint}`;
+    const res = await axios.delete(URL, {
+      headers: {
+        Authorization: "Bearer " + getToken,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+    if (res.status === 204) {
+      setUser({
+        ...user,
+        cursos: user.cursos.filter(
+          (curso) => curso.nome_exibicao !== value.nome_exibicao
+        ),
+      });
+      console.log("Curso removido com sucesso!");
+    }
+  };
   const getDataUsers = async () => {
-    const URL = `https://perfis-match-projetos.herokuapp.com/profiles/user/me`;
+    const endpoint = "/profiles/user/me";
+    const URL = `${baseUrl}${endpoint}`;
     try {
       const res = await axios.get(URL, {
         headers: {
@@ -88,27 +137,9 @@ const Perfil = () => {
     }
   };
 
-  const createUser = async () => {
-    const endpoint = "/profiles/user/me";
-    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
-    try {
-      const res = await axios.post(URL, user, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + getToken,
-        },
-      });
-      if (res.status === 200) {
-        setUser(res.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const adicionaCurso = async (id) => {
     const endpoint = `/profiles/user/me/link-course/${id}`;
-    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    const URL = `${baseUrl}${endpoint}`;
     try {
       const res = await axios.post(URL, "", {
         headers: {
@@ -125,34 +156,9 @@ const Perfil = () => {
     }
   };
 
-  // Não será possivel alterar o email.
-  // const adicionaEmail = async () => {
-  //   const endpoint = "/profiles/user/me/perfil-email";
-  //   const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
-  //   try {
-  //     const res = await axios.post(
-  //       URL,
-  //       { email: "lebron@teste.com" },
-  //       {
-  //         headers: {
-  //           Accept: "application/json",
-  //           Authorization: "Bearer " + getToken,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //     if (res.status === 201) {
-  //       console.log(res.data);
-  //       console.log("POST");
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
-  const adicionaIntresse = async (id) => {
+  const adicionaInteresse = async (id) => {
     const endpoint = `/profiles/user/me/link-interest/${id}`;
-    const URL = `https://perfis-match-projetos.herokuapp.com${endpoint}`;
+    const URL = `${baseUrl}${endpoint}`;
     try {
       const res = await axios.post(URL, "", {
         headers: {
@@ -169,17 +175,133 @@ const Perfil = () => {
     }
   };
 
-  const handleEdit = () => {
-    // adicionaCurso();
-    console.log("edita o usuário");
+  const getAllCourses = async () => {
+    const endpoint = "/courses";
+    const URL = `${baseUrl}${endpoint}`;
+
+    try {
+      const res = await axios.get(URL, {
+        headers: {
+          Authorization: "Bearer " + getToken,
+          Accept: "application/json",
+        },
+      });
+      if (res.status === 200 && res.statusText === "OK") {
+        setAllCourses(res.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleTextFieldChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+  const handleChangeCourses = async (value, teste) => {
+    const newCourse = user.cursos.find(
+      (curso) => curso.nome_exibicao === value.nome_exibicao
+    );
+
+    if (!newCourse) {
+      const endpoint = `/profiles/user/me/link-course/${value.id}`;
+      const URL = `${baseUrl}${endpoint}`;
+      try {
+        const res = await axios.post(URL, "", {
+          headers: {
+            Authorization: "Bearer " + getToken,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+        if (res.status === 201) {
+          console.log("ADICIONADO COM SUCESSO");
+          console.log(value);
+          setUser({ ...user, cursos: [...user.cursos, value] });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  const getInteresses = async () => {
+    const URL = `${baseUrl}/interests`;
+
+    try {
+      const res = await axios.get(URL, {
+        headers: {
+          Authorization: "Bearer " + getToken,
+        },
+      });
+
+      if (res.statusText === "OK") {
+        setAllInteresses(res.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    const endpoint = `/profiles/user/me`;
+    const URL = `${baseUrl}${endpoint}`;
+    const nome_exibicao = `${user.name} ${user.sobrenome}`;
+    try {
+      const res = await axios.patch(
+        URL,
+        { nome_exibicao },
+        {
+          headers: {
+            Authorization: "Bearer " + getToken,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        console.log("Nome foi atualizado");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setIsLoading(false);
+  };
+
+  const handleTextFieldChange = async (field, value) => {
+    if (value) {
+      if (field === "interesses") {
+        const newInterest = user.interesses.find(
+          (interesse) => interesse.nome_exibicao === value.nome_exibicao
+        );
+
+        if (!newInterest) {
+          const endpoint = `/profiles/user/me/link-interest/${value.id}`;
+          const URL = `${baseUrl}${endpoint}`;
+          try {
+            const res = await axios.post(URL, "", {
+              headers: {
+                Authorization: "Bearer " + getToken,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            });
+            if (res.status === 201) {
+              console.log("ADICIONADO COM SUCESSO");
+              console.log(value);
+              setUser({ ...user, interesses: [...user.interesses, value] });
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      } else {
+        setUser({ ...user, [field]: value });
+      }
+    }
   };
 
   useEffect(() => {
     getDataUsers();
+    getInteresses();
+    getAllCourses();
   }, []);
 
   const classes = useStyles();
@@ -268,8 +390,13 @@ const Perfil = () => {
                             placeholder="Nome"
                             defaultValue="LeBron James"
                             value={user && user.name}
+                            onChange={(e) =>
+                              handleTextFieldChange(
+                                e.target.name,
+                                e.target.value
+                              )
+                            }
                             fullWidth
-                            onChange={(e) => handleTextFieldChange()}
                           />
                         </Grid>
 
@@ -282,35 +409,92 @@ const Perfil = () => {
                             variant="outlined"
                             placeholder="Sobrenome"
                             value={user ? user.sobrenome : ""}
+                            onChange={(e) =>
+                              handleTextFieldChange(
+                                e.target.name,
+                                e.target.value
+                              )
+                            }
                             fullWidth
                           />
                         </Grid>
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            className={classes.textField}
-                            type="input"
-                            label="Cursos"
-                            variant="outlined"
-                            // placeholder="Engenharia de Computação"
-                            value={user ? user.cursos[0].nome_exibicao : ""}
-                            // defaultValue="Engenharia de Computação"
-                            fullWidth
-                          />
-                        </Grid>
+
                         <Grid item xs={12}>
+                          <Autocomplete
+                            options={allCourses && allCourses}
+                            getOptionLabel={(option) => option.nome_exibicao}
+                            name="cursos"
+                            id="cursos"
+                            freeSolo
+                            onChange={(e, value) => handleChangeCourses(value)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Cursos"
+                                placeholder="Cursos"
+                                fullWidth
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                        <Grid
+                          item
+                          xs={12}
+                          sx={{ display: "flex", flexWrap: "wrap" }}
+                        >
+                          {user &&
+                            user.cursos.map((curso, index) => (
+                              <Chip
+                                variant="outlined"
+                                label={curso.nome_exibicao}
+                                sx={{ mr: 1, mb: 1 }}
+                                key={index}
+                                onDelete={() => handleDeleteCourses(curso)}
+                              />
+                            ))}
+                        </Grid>
+
+                        <Grid item xs={12} sx={{ mb: 1 }}>
                           <Typography variant="subtitle2">
                             Áreas de Interesse
                           </Typography>
                         </Grid>
 
                         <Grid item xs={12}>
+                          <Autocomplete
+                            options={allInteresses && allInteresses}
+                            getOptionLabel={(option) => option.nome_exibicao}
+                            name="interesses"
+                            id="interesses"
+                            freeSolo
+                            onChange={(e, value) =>
+                              handleTextFieldChange("interesses", value)
+                            }
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Interesses"
+                                placeholder="Interesses"
+                                fullWidth
+                              />
+                            )}
+                          />
+                        </Grid>
+
+                        <Grid
+                          item
+                          xs={12}
+                          sx={{ display: "flex", flexWrap: "wrap" }}
+                        >
                           {user &&
                             user.interesses.map((area, index) => (
                               <Chip
                                 variant="outlined"
                                 label={area.nome_exibicao}
-                                sx={{ mr: 2 }}
+                                sx={{ mr: 1, mb: 1 }}
                                 key={index}
+                                onDelete={() => handleDelete(area)}
                               />
                             ))}
                         </Grid>
@@ -327,7 +511,8 @@ const Perfil = () => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => handleEdit()}
+                        onClick={() => handleSave()}
+                        disabled={isLoading}
                       >
                         Salvar
                       </Button>
