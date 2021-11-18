@@ -11,17 +11,21 @@ import {
   Chip,
 } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
+import { getToken } from "../services/auth";
 
 import axios from "axios";
 
 const EditProject = () => {
-  const imageRef = useRef();
-  const [fields, setFields] = useState({
-    titulo: "",
-    descricao: "",
-  });
   const defaultImageUrl =
     "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
+  const imageRef = useRef();
+  const [fields, setFields] = useState({
+    image: defaultImageUrl,
+    titulo: "Projeto Teste",
+    cursos: [],
+    areas: [],
+    descricao: "Esse é um projeto Teste",
+  });
 
   const [responsaveis, setResponsaveis] = useState([
     { name: "Lebron James", perfil: "Professor" },
@@ -29,31 +33,69 @@ const EditProject = () => {
 
   const [imageFile, setImageFile] = useState(null);
 
-  const cursos = [
-    { label: "Administração" },
-    { label: "Matemática" },
-    { label: "Engenharia de Computação" },
-    { label: "Medicina" },
-    { label: "Enfermagem" },
-    { label: "Ciencia da Computação" },
-    { label: "Física" },
-    { label: "Engenharia Elétrica" },
-  ];
-
-  const areas = [
-    { label: "Cálculo" },
-    { label: "Mecânica" },
-    { label: "Machine Learning" },
-    { label: "Web Development" },
-    { label: "Resistência dos Materiais" },
-    { label: "Álgebra Linear" },
-    { label: "Física Quântica" },
-  ];
-
   const [isLoading, setIsLoading] = useState(false);
-  const [areasSelecionadas, setAreasSelecionadas] = useState([]);
-  const [cursosSelecionados, setCursosSelecionados] = useState([]);
+  const [areasSelecionadas, setAreasSelecionadas] = useState([
+    {
+      id: 3,
+      nome_referencia: "dev_sustentavel",
+      nome_exibicao: "Desenvolvimento Sustentável",
+      descricao: "",
+    },
+    {
+      id: 2,
+      nome_referencia: "algoritmos",
+      nome_exibicao: "Algoritmos",
+      descricao: "",
+    },
+  ]);
+  const [cursosSelecionados, setCursosSelecionados] = useState([
+    {
+      id: 4,
+      nome_exibicao: "Engenharia da Computação",
+      nome_referencia: "engenharia_comp",
+      descricao: "",
+    },
+    {
+      id: 3,
+      nome_exibicao: "Ciência da Computação",
+      nome_referencia: "ciencia_comp",
+      descricao: "",
+    },
+  ]);
+  const [allInteresses, setAllInteresses] = useState(null);
+  const [allCourses, setAllCourses] = useState(null);
   const [image, setImage] = useState(null);
+
+  const getInteresses = async () => {
+    const URL = "https://perfis-match-projetos.herokuapp.com/interests";
+    try {
+      const res = await axios.get(URL, {
+        headers: {
+          Authorization: "Bearer " + getToken,
+          Accept: "application/json",
+        },
+      });
+      setAllInteresses(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getCursos = async () => {
+    const URL = "https://perfis-match-projetos.herokuapp.com/courses";
+    try {
+      const res = await axios.get(URL, {
+        headers: {
+          Authorization: "Bearer " + getToken,
+          Accept: "application/json",
+        },
+      });
+      setAllCourses(res.data);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleChangeFields = (e) => {
     setFields({ ...fields, [e.target.name]: e.target.value });
@@ -106,14 +148,15 @@ const EditProject = () => {
   };
 
   useEffect(() => {
-    console.log("Busca as informações desse projeto!");
+    getInteresses();
+    getCursos();
   }, []);
 
   return (
     <Container maxWidth="lg" sx={{ mb: 5 }}>
       <Box sx={{ width: "100%" }}>
         <Typography variant="h5" color="textSecondary" sx={{ mt: 3, mb: 2 }}>
-          Editar Projeto
+          Projeto Teste
         </Typography>
 
         <Grid container spacing={2} sx={{ mt: 1 }}>
@@ -171,13 +214,15 @@ const EditProject = () => {
                 <Stack spacing={3} sx={{ width: "100%" }}>
                   <Autocomplete
                     multiple
-                    options={cursos.map((curso) => curso.label)}
+                    options={allCourses && allCourses}
                     freeSolo
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    defaultValue={cursosSelecionados}
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
                         <Chip
                           variant="outlined"
-                          label={option}
+                          label={option.nome_exibicao}
                           {...getTagProps({ index })}
                         />
                       ))
@@ -198,15 +243,17 @@ const EditProject = () => {
                 <Stack spacing={3} sx={{ width: "100%" }}>
                   <Autocomplete
                     multiple
-                    options={areas.map((area) => area.label)}
+                    options={allInteresses && allInteresses}
+                    getOptionLabel={(option) => option.nome_exibicao}
                     name="areas"
                     id="areas"
                     freeSolo
+                    defaultValue={areasSelecionadas}
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
                         <Chip
                           variant="outlined"
-                          label={option}
+                          label={option.nome_exibicao}
                           {...getTagProps({ index })}
                         />
                       ))
