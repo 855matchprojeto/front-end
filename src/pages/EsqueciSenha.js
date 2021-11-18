@@ -4,7 +4,7 @@ import { Link as RouterLink } from "react-router-dom";
 
 import {Formik} from 'formik'
 import * as Yup from "yup";
-import { Cadastrar, Email } from "../services/api";
+import { Email } from "../services/api";
 
 import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar, Link } from "@mui/material";
 import Copyright from "../components/Copyright";
@@ -70,24 +70,18 @@ const EsqueciSenha = () => {
     email: Yup.string()
       .email("email inválido")
       .required("campo obrigatório."),
-    password: Yup.string()
-      .min(8, "senha muito curta, deve ter ao minímo 8 caracteres.")
-      .matches("(?=.*[0-9])(?=.*[a-z A-Z])(?=.*[!@#$%^&*])","deve conter ao menos um número, letras e um caracter especial.")
-      .required("campo obrigatório."),
-    password2: Yup.string()
-      .required("campo obrigatório.")
-      .oneOf([Yup.ref('password'), null], 'senhas devem ser iguais.')
   });
 
-  async function fazerCadastro(usuario) {
+  async function enviarEmail(usuario) {
     try 
     {
-      const signup = await Cadastrar(usuario)
+      // TODO: - cadastrar usuário
+      const signup = await Email(usuario)
 
       if(signup.status === 200)
       {
         setSeverity('success')
-        setAlertContent('Cadastrado com sucesso!')
+        setAlertContent('Email enviado com sucesso!')
         await Email(signup.data.username)
         
         setAlert(true)
@@ -122,31 +116,28 @@ const EsqueciSenha = () => {
         <Formik
           initialValues = {values}
           validationSchema = {validationSchema}
-          onSubmit = {values => {fazerCadastro(values)}}
+          onSubmit = {values => {enviarEmail(values)}}
         >
           {props => (
-            <form className={classes.form} onSubmit={props.handleSubmit}>
-              <TextField className={classes.textFieldInput} id="email" name="email" label="email" 
+            <form className={classes.form} onSubmit={props.handleSubmit} sx={{ mt: 2}}>
+
+              <TextField
+                className={classes.textFieldInput}
+                id="email"
+                name="email"
+                label="Email"
                 error={Boolean(props.touched.email && props.errors.email)}
                 helperText={props.errors.email}
-                value={props.values.email} onChange={props.handleChange}
+                value={props.values.email}
+                onChange={props.handleChange}
+                autoComplete="off"
               />
 
-              <TextField className={classes.textFieldInput} id="password" name="password" label="senha" 
-                type="password" 
-                error={Boolean(props.touched.password && props.errors.password)}
-                helperText={props.errors.password}
-                value={props.values.password} onChange={props.handleChange}
-              />
-
-              <TextField className={classes.textFieldInput} id="password2" name="password2" label="confirmação de senha" 
-                type="password" 
-                error={Boolean(props.touched.password2 && props.errors.password2)}
-                helperText={props.errors.password2}
-                value={props.values.password2} onChange={props.handleChange}
-              />
-
-              <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Continuar </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth color="primary"
+                className={classes.submit}> Enviar e-mail de recuperação </Button>
             </form>
           )}
         </Formik>
