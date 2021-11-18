@@ -24,6 +24,7 @@ import axios from "axios";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import { makeStyles } from "@mui/styles";
 import { getToken } from "../services/auth";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 const baseUrl = "https://perfis-match-projetos.herokuapp.com";
 
 const Perfil = () => {
+  const history = useHistory();
   const [valueTab, setTabValue] = useState("perfil");
   const [isLoading, setIsLoading] = useState(false);
   const info = {
@@ -547,7 +549,15 @@ const Perfil = () => {
                             mr: 2,
                           }}
                         >
-                          <Button color="primary">Editar</Button>
+                          <Button
+                            color="primary"
+                            onClick={() => {
+                              console.log("Teste");
+                              history.push("/editproject");
+                            }}
+                          >
+                            Editar
+                          </Button>
                         </Box>
                       </CardActions>
                     </Card>
@@ -570,7 +580,15 @@ const Perfil = () => {
                             mr: 2,
                           }}
                         >
-                          <Button color="primary">Editar</Button>
+                          <Button
+                            color="primary"
+                            onClick={() => {
+                              console.log("Teste");
+                              history.push("/editproject");
+                            }}
+                          >
+                            Editar
+                          </Button>
                         </Box>
                       </CardActions>
                     </Card>
@@ -593,7 +611,14 @@ const Perfil = () => {
                             mr: 2,
                           }}
                         >
-                          <Button color="primary" disabled>
+                          <Button
+                            color="primary"
+                            onClick={() => {
+                              console.log("Teste");
+                              history.push("/editproject");
+                            }}
+                            disabled
+                          >
                             Editar
                           </Button>
                         </Box>

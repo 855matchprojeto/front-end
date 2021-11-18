@@ -21,6 +21,7 @@ import Home from "./pages/Home";
 import Perfil from "./pages/Perfil";
 import Projetos from "./pages/Projetos";
 import ProjetoInfo from "./pages/ProjetoInfo";
+import EditProject from "./pages/EditProject";
 
 import { StyledEngineProvider } from "@mui/material/styles";
 import { estaLogado } from "./services/auth";
@@ -44,13 +45,7 @@ const RouteProtection = () => {
             }
           />
 
-          <Route
-            exact
-            path="/forgotpassword"
-            render={() =>
-              <EsqueciSenha />
-            }
-          />
+          <Route exact path="/forgotpassword" render={() => <EsqueciSenha />} />
 
           <Base>
             <Route
@@ -74,6 +69,13 @@ const RouteProtection = () => {
               path="/projeto"
               render={() =>
                 estaLogado ? <ProjetoInfo /> : <Redirect to="/" />
+              }
+            />
+            <Route
+              exact
+              path="/editproject"
+              render={() =>
+                estaLogado ? <EditProject /> : <Redirect to="/" />
               }
             />
           </Base>
