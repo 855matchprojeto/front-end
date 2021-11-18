@@ -1,19 +1,27 @@
 import React from "react";
-import { Card, Grid, CardMedia, Typography, CardContent, CardActions, Button } from "@mui/material";
+import {
+  Card,
+  Grid,
+  CardMedia,
+  Typography,
+  CardContent,
+  CardActions,
+  Button,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router-dom";
 
 //--estilo--
-const useStyles = makeStyles( ({
+const useStyles = makeStyles({
   media: {
     height: 0,
-    paddingTop: "56.25%"
+    paddingTop: "56.25%",
   },
   actions: {
     display: "flex",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
-}));
+});
 //---------
 
 const CardHome = ({ info }) => {
@@ -30,10 +38,15 @@ const CardHome = ({ info }) => {
           <Typography variant="subtitle1">{info.title}</Typography>
           <p>{info.description}</p>
         </CardContent>
-        
+
         <CardActions className={classes.actions}>
           <Button color="primary">Tenho interesse</Button>
-          <Button color="secondary" onClick={() =>  history.push('/projeto',{ data: info.id })}>Saiba mais</Button>
+          <Button
+            color="secondary"
+            onClick={() => history.push("/projeto", { data: info.id })}
+          >
+            Detalhes
+          </Button>
         </CardActions>
       </Card>
     </Grid>

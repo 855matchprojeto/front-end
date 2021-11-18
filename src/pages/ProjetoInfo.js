@@ -17,9 +17,9 @@ const ProjetoInfo = () => {
   const [tenhoInteresse, setTenhoInteresse] = useState(false);
   const [projeto, setProjeto] = useState({
     id: 4,
-    title: "Título 4",
+    title: "Projeto Teste",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id neque aliquam vestibulum morbi. Enim ut tellus elementum sagittis vitae et leo duis ut. Malesuada fames ac turpis egestas integer eget. Augue neque gravida in fermentum et. Elementum nibh tellus molestie nunc non blandit massa enim. Cum sociis natoque penatibus et magnis dis. At urna condimentum mattis pellentesque id. Luctus venenatis lectus magna fringilla urna porttitor rhoncus dolor. Convallis aenean et tortor at risus viverra adipiscing at in.",
     image: "https://source.unsplash.com/random",
     areas: [
       "Machine Learning",
@@ -42,30 +42,81 @@ const ProjetoInfo = () => {
   };
 
   return (
-    <Container maxWidh="lg" sx={{ mb: 5 }}>
-      <Box>
+    <Container
+      maxWidh="lg"
+      sx={{
+        mb: 5,
+        color: "text.secondary",
+      }}
+    >
+      <Box
+        sx={{
+          color: "text.secondary",
+        }}
+      >
         <Card sx={{ mt: 2 }}>
-          <CardMedia
-            component="img"
-            image={projeto.image}
-            height="300"
-            sx={{ margin: "auto", width: "50%" }}
-          />
+          <Box
+            sx={{
+              width: "100%",
+              bgcolor: "#dedede",
+            }}
+          >
+            <CardMedia
+              component="img"
+              image={projeto.image}
+              height="300"
+              sx={{ margin: "auto", width: "100%" }}
+            />
+          </Box>
           <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sx={{ mt: 2 }}>
-                <Typography variant="h6" sx={{ color: "text.secondary" }}>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                p: 3,
+              }}
+            >
+              <Grid item xs={12}>
+                <Typography variant="h5" sx={{ color: "text.secondary" }}>
                   {projeto.title}
                 </Typography>
               </Grid>
-              <Grid item xs={12}>
-                <Typography variant="subtitle2">Descrição:</Typography>
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  mt: 2,
+                }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  sx={{ color: "text.secondary", fontWeight: "bold" }}
+                >
+                  Descrição:
+                </Typography>
               </Grid>
               <Grid item xs={12}>
-                {projeto.description}
+                <Typography
+                  variant="body"
+                  align="justify"
+                  sx={{ color: "text.secondary" }}
+                >
+                  {projeto.description}
+                </Typography>
               </Grid>
-              <Grid item xs={12}>
-                <Typography variant="subtitle2">Cursos Envolvidos:</Typography>
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  mt: 2,
+                }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: "bold", color: "text.secondary" }}
+                >
+                  Cursos Envolvidos:
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Box sx={{ display: "flex" }}>
@@ -77,7 +128,12 @@ const ProjetoInfo = () => {
                 </Box>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="subtitle2">Áreas Envolvidas:</Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{ fontWeight: "bold", color: "text.secondary", mt: 2 }}
+                >
+                  Áreas Envolvidas:
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Box sx={{ display: "flex" }}>
@@ -92,7 +148,7 @@ const ProjetoInfo = () => {
           </CardContent>
           <CardActions sx={{ display: "flex", justifyContent: "end" }}>
             <Button
-              variant="outlined"
+              variant="contained"
               color={!tenhoInteresse ? "primary" : "error"}
               onClick={() => handleInteresse()}
               sx={{ mr: 3, mb: 2 }}
