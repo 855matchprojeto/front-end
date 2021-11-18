@@ -9,6 +9,7 @@ import {
   Autocomplete,
   Stack,
   Chip,
+  Card,
 } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 
@@ -106,13 +107,13 @@ const Projetos = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mb: 5 }}>
-      <Box sx={{ width: "100%" }}>
-        <Typography variant="h5" color="textSecondary" sx={{ mt: 3, mb: 2 }}>
+    <Container maxWidth="xl" sx={{ mb: 5 }}>
+      <Card sx={{ width: "100%", p: 4, mt: 2 }}>
+        <Typography variant="h5" color="textSecondary" sx={{ mb: 2 }}>
           Criar novo projeto
         </Typography>
 
-        <Grid container spacing={2} sx={{ mt: 1 }}>
+        <Grid container spacing={1}>
           <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
             <Box>
               <Box>
@@ -153,7 +154,7 @@ const Projetos = () => {
 
           <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sx={{ mb: 1 }}>
+              <Grid item xs={12}>
                 <TextField
                   type="input"
                   name="titulo"
@@ -163,7 +164,7 @@ const Projetos = () => {
                   onChange={(e) => handleChangeFields(e, null)}
                 />
               </Grid>
-              <Grid item xs={12} sx={{ mb: 1 }}>
+              <Grid item xs={12}>
                 <Stack spacing={3} sx={{ width: "100%" }}>
                   <Autocomplete
                     multiple
@@ -190,7 +191,7 @@ const Projetos = () => {
                   />
                 </Stack>
               </Grid>
-              <Grid item xs={12} sx={{ mb: 1 }}>
+              <Grid item xs={12}>
                 <Stack spacing={3} sx={{ width: "100%" }}>
                   <Autocomplete
                     multiple
@@ -232,11 +233,12 @@ const Projetos = () => {
                   onChange={(e) => handleChangeFields(e, null)}
                 />
               </Grid>
-              <Grid item xs={12} sx={{ mt: 1 }}>
+              <Grid item xs={12}>
                 <Button
                   variant="contained"
                   onClick={handleCreateProject}
                   disabled={isLoading}
+                  size="small"
                 >
                   Criar projeto
                 </Button>
@@ -244,7 +246,7 @@ const Projetos = () => {
             </Grid>
           </Grid>
         </Grid>
-      </Box>
+      </Card>
     </Container>
   );
 };
