@@ -20,6 +20,7 @@ import {
   Stack,
 } from "@mui/material";
 
+import { useSnackbar } from "notistack";
 import axios from "axios";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import { makeStyles } from "@mui/styles";
@@ -58,16 +59,45 @@ const useStyles = makeStyles((theme) => ({
 const baseUrl = "https://perfis-match-projetos.herokuapp.com";
 
 const Perfil = () => {
+  const perfilImageUrl =
+    "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
   const [valueTab, setTabValue] = useState("perfil");
   const [isLoading, setIsLoading] = useState(false);
-  const info = {
-    id: 1,
-    title: "Título 1",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
-    image: "https://source.unsplash.com/random",
-  };
+  const meusProjetos = [
+    {
+      id: 1,
+      title: "Título 1",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
+      image: "https://source.unsplash.com/random",
+    },
+    {
+      id: 2,
+      title: "Título 2",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
+      image: "https://source.unsplash.com/random",
+    },
+  ];
+
+  const tenhoInteresse = [
+    {
+      id: 3,
+      title: "Título 3",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
+      image: "https://source.unsplash.com/random",
+    },
+    {
+      id: 4,
+      title: "Título 4",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
+      image: "https://source.unsplash.com/random",
+    },
+  ];
 
   const [user, setUser] = useState(null);
   const [allInteresses, setAllInteresses] = useState(null);
@@ -196,29 +226,31 @@ const Perfil = () => {
     }
   };
 
-  const handleChangeCourses = async (value, teste) => {
-    const newCourse = user.cursos.find(
-      (curso) => curso.nome_exibicao === value.nome_exibicao
-    );
+  const handleChangeCourses = async (value) => {
+    if (value) {
+      const newCourse = user.cursos.find(
+        (curso) => curso.nome_exibicao === value.nome_exibicao
+      );
 
-    if (!newCourse) {
-      const endpoint = `/profiles/user/me/link-course/${value.id}`;
-      const URL = `${baseUrl}${endpoint}`;
-      try {
-        const res = await axios.post(URL, "", {
-          headers: {
-            Authorization: "Bearer " + getToken,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
-        if (res.status === 201) {
-          console.log("ADICIONADO COM SUCESSO");
-          console.log(value);
-          setUser({ ...user, cursos: [...user.cursos, value] });
+      if (!newCourse) {
+        const endpoint = `/profiles/user/me/link-course/${value.id}`;
+        const URL = `${baseUrl}${endpoint}`;
+        try {
+          const res = await axios.post(URL, "", {
+            headers: {
+              Authorization: "Bearer " + getToken,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+          if (res.status === 201) {
+            console.log("ADICIONADO COM SUCESSO");
+            console.log(value);
+            setUser({ ...user, cursos: [...user.cursos, value] });
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } catch (err) {
-        console.log(err);
       }
     }
   };
@@ -259,7 +291,13 @@ const Perfil = () => {
       );
 
       if (res.status === 200) {
-        console.log("Nome foi atualizado");
+        enqueueSnackbar("Dados atualizados com sucesso!", {
+          anchorOrigin: {
+            horizontal: "right",
+            vertical: "top",
+          },
+          variant: "success",
+        });
       }
     } catch (err) {
       console.log(err);
@@ -353,7 +391,7 @@ const Perfil = () => {
                       <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <img
                           alt="Not Found"
-                          src="./lebronJames.png"
+                          src={perfilImageUrl}
                           style={{ width: "100px", height: "100px" }}
                         />
                       </Box>
@@ -531,104 +569,103 @@ const Perfil = () => {
                 }}
               >
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <Card>
-                      <CardMedia className={classes.media} image={info.image} />
-                      <CardContent>
-                        <Typography variant="subtitle1">
-                          {info.title}
-                        </Typography>
-                        <p>{info.description}</p>
-                      </CardContent>
-                      <CardActions>
-                        <Box
-                          sx={{
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "end",
-                            mr: 2,
-                          }}
-                        >
-                          <Button
-                            color="primary"
-                            onClick={() => {
-                              console.log("Teste");
-                              history.push("/editproject");
-                            }}
-                          >
-                            Editar
-                          </Button>
-                        </Box>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <Card>
-                      <CardMedia className={classes.media} image={info.image} />
-                      <CardContent>
-                        <Typography variant="subtitle1">
-                          {info.title}
-                        </Typography>
-                        <p>{info.description}</p>
-                      </CardContent>
-                      <CardActions>
-                        <Box
-                          sx={{
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "end",
-                            mr: 2,
-                          }}
-                        >
-                          <Button
-                            color="primary"
-                            onClick={() => {
-                              console.log("Teste");
-                              history.push("/editproject");
-                            }}
-                          >
-                            Editar
-                          </Button>
-                        </Box>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={6} md={4} lg={3}>
-                    <Card>
-                      <CardMedia className={classes.media} image={info.image} />
-                      <CardContent>
-                        <Typography variant="subtitle1">
-                          {info.title}
-                        </Typography>
-                        <p>{info.description}</p>
-                      </CardContent>
-                      <CardActions>
-                        <Box
-                          sx={{
-                            width: "100%",
-                            display: "flex",
-                            justifyContent: "end",
-                            mr: 2,
-                          }}
-                        >
-                          <Button
-                            color="primary"
-                            onClick={() => {
-                              console.log("Teste");
-                              history.push("/editproject");
-                            }}
-                            disabled
-                          >
-                            Editar
-                          </Button>
-                        </Box>
-                      </CardActions>
-                    </Card>
-                  </Grid>
+                  {meusProjetos &&
+                    meusProjetos.map((projeto) => (
+                      <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <Card>
+                          <CardMedia
+                            className={classes.media}
+                            image={projeto.image}
+                          />
+                          <CardContent>
+                            <Typography variant="subtitle1">
+                              {projeto.title}
+                            </Typography>
+                            <p>{projeto.description}</p>
+                          </CardContent>
+                          <CardActions>
+                            <Box
+                              sx={{
+                                width: "100%",
+                                display: "flex",
+                                justifyContent: "end",
+                                mr: 2,
+                              }}
+                            >
+                              <Button
+                                color="primary"
+                                onClick={() => {
+                                  console.log("Teste");
+                                  history.push("/editproject");
+                                }}
+                              >
+                                Editar
+                              </Button>
+                              <Button
+                                color="secondary"
+                                onClick={() => {
+                                  console.log("Teste");
+                                  history.push("/projeto");
+                                }}
+                              >
+                                Detalhes
+                              </Button>
+                            </Box>
+                          </CardActions>
+                        </Card>
+                      </Grid>
+                    ))}
                 </Grid>
               </Box>
             </TabPanel>
-            <TabPanel value="interesses"></TabPanel>
+            <TabPanel value="interesses">
+              <Box
+                sx={{
+                  position: "relative",
+                  width: "100%",
+                }}
+              >
+                <Grid container spacing={2}>
+                  {tenhoInteresse &&
+                    tenhoInteresse.map((projeto) => (
+                      <Grid item xs={12} sm={6} md={4} lg={3}>
+                        <Card>
+                          <CardMedia
+                            className={classes.media}
+                            image={projeto.image}
+                          />
+                          <CardContent>
+                            <Typography variant="subtitle1">
+                              {projeto.title}
+                            </Typography>
+                            <p>{projeto.description}</p>
+                          </CardContent>
+                          <CardActions>
+                            <Box
+                              sx={{
+                                width: "100%",
+                                display: "flex",
+                                justifyContent: "end",
+                                mr: 2,
+                              }}
+                            >
+                              <Button
+                                color="secondary"
+                                onClick={() => {
+                                  console.log("Teste");
+                                  history.push("/projeto");
+                                }}
+                              >
+                                Detalhes
+                              </Button>
+                            </Box>
+                          </CardActions>
+                        </Card>
+                      </Grid>
+                    ))}
+                </Grid>
+              </Box>
+            </TabPanel>
           </TabContext>
         </Card>
       </Box>

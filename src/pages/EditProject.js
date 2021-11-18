@@ -9,6 +9,7 @@ import {
   Autocomplete,
   Stack,
   Chip,
+  Card,
 } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { getToken } from "../services/auth";
@@ -16,11 +17,10 @@ import { getToken } from "../services/auth";
 import axios from "axios";
 
 const EditProject = () => {
-  const defaultImageUrl =
-    "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
+  const imageUrl = "https://source.unsplash.com/random";
   const imageRef = useRef();
   const [fields, setFields] = useState({
-    image: defaultImageUrl,
+    image: imageUrl,
     titulo: "Projeto Teste",
     cursos: [],
     areas: [],
@@ -153,14 +153,14 @@ const EditProject = () => {
   }, []);
 
   return (
-    <Container maxWidth="lg" sx={{ mb: 5 }}>
-      <Box sx={{ width: "100%" }}>
-        <Typography variant="h5" color="textSecondary" sx={{ mt: 3, mb: 2 }}>
+    <Container maxWidth="xl" sx={{ mb: 5 }}>
+      <Card sx={{ width: "100%", p: 4, mt: 1 }}>
+        <Typography variant="h5" color="textSecondary" sx={{ mb: 3 }}>
           Projeto Teste
         </Typography>
 
-        <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
+        <Grid container spacing={2} sx={{ mb: 3 }}>
+          <Grid item xs={12} sm={6} sx>
             <Box>
               <Box>
                 <Box
@@ -172,7 +172,7 @@ const EditProject = () => {
                   }}
                 >
                   <img
-                    src={image ? image : defaultImageUrl}
+                    src={image ? image : imageUrl}
                     alt="Not Found"
                     style={{ width: "100%", height: "100%" }}
                   />
@@ -198,9 +198,9 @@ const EditProject = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
+          <Grid item xs={12} sm={6}>
             <Grid container spacing={3}>
-              <Grid item xs={12} sx={{ mb: 1 }}>
+              <Grid item xs={12}>
                 <TextField
                   type="input"
                   name="titulo"
@@ -210,7 +210,7 @@ const EditProject = () => {
                   onChange={(e) => handleChangeFields(e, null)}
                 />
               </Grid>
-              <Grid item xs={12} sx={{ mb: 1 }}>
+              <Grid item xs={12}>
                 <Stack spacing={3} sx={{ width: "100%" }}>
                   <Autocomplete
                     multiple
@@ -239,7 +239,7 @@ const EditProject = () => {
                   />
                 </Stack>
               </Grid>
-              <Grid item xs={12} sx={{ mb: 1 }}>
+              <Grid item xs={12}>
                 <Stack spacing={3} sx={{ width: "100%" }}>
                   <Autocomplete
                     multiple
@@ -276,7 +276,7 @@ const EditProject = () => {
                   type="input"
                   name="descricao"
                   multiline
-                  rows={4}
+                  rows={3}
                   value={fields.descricao}
                   fullWidth
                   label="Descrição do projeto"
@@ -295,7 +295,7 @@ const EditProject = () => {
             </Grid>
           </Grid>
         </Grid>
-      </Box>
+      </Card>
     </Container>
   );
 };

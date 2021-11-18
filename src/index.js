@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { SnackbarProvider } from "notistack";
 import {
   BrowserRouter as Router,
   Route,
@@ -89,7 +90,9 @@ const RouteProtection = () => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <RouteProtection />
+    <SnackbarProvider>
+      <RouteProtection />
+    </SnackbarProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
