@@ -1,67 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import Cards from "../components/Cards";
 import { Container, createTheme, Typography, Pagination } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
+import SearchIcon from "@mui/icons-material/Search";
+import { styled, alpha } from "@mui/material/styles";
+import InputBase from "@mui/material/InputBase";
 
 //--estilo--
 const theme = createTheme();
 
-const SearchBox = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '100%',
+const SearchBox = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "100%",
 
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up("sm")]: {
     marginLeft: theme.spacing(1),
-    width: 'auto',
-  }
+    width: "auto",
+  },
 }));
 
-const SearchField = styled('div')(({ theme }) => ({
+const SearchField = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 1),
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   backgroundColor: "#CFCFCF",
-  '&:hover': {
+  "&:hover": {
     backgroundColor: alpha("#CFCFCF", 0.5),
   },
 }));
 
 const StyledInput = styled(InputBase)(({ theme }) => ({
-  '& .MuiInputBase-input': {
+  "& .MuiInputBase-input": {
     backgroundColor: "inherit",
-    
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch',
+
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
       },
     },
   },
 }));
 
-const useStyles = makeStyles( ({
-  
+const useStyles = makeStyles({
   grid: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
 
   pagination: {
     width: "100%",
     display: "flex",
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(1)
+    alignItems: "center",
+    justifyContent: "center",
+    padding: theme.spacing(1),
   },
-}));
+});
 //---------
 
 const valores = [
@@ -96,17 +95,14 @@ const Home = () => {
   const classes = useStyles();
 
   const [cardsProjetos, setCardsProjetos] = useState(false);
-  
-  useEffect(() => 
-  {
-      async function getProjetos() 
-      {
-        setCardsProjetos(valores);
-      }
-      
-      getProjetos();
 
-  }, [])
+  useEffect(() => {
+    async function getProjetos() {
+      setCardsProjetos(valores);
+    }
+
+    getProjetos();
+  }, []);
 
   const [page, setPage] = React.useState(1);
   const [pageCount, setPageCount] = React.useState(1);
@@ -116,33 +112,34 @@ const Home = () => {
   };
 
   return (
-      <Container className={classes.grid} maxWidth="lg">
-        
-        <SearchBox>
-            <SearchField>
-              <SearchIcon />
-              <StyledInput placeholder="Pesquisar" inputProps={{ 'aria-label': 'search' }}/>
-            </SearchField>
-        </SearchBox>
-
-        <Typography variant="h6"> Projetos </Typography>
-        <Cards valores={valores}/>
-
-        <Container className={classes.pagination}>
-          <Pagination 
-            count={pageCount} 
-            page={page} 
-            onChange={handlePage}
-            shape="rounded" 
-            variant="outlined" 
-            color="primary" 
-            size="small" 
-            showFirstButton 
-            showLastButton
+    <Container className={classes.grid} maxWidth="lg">
+      <SearchBox>
+        <SearchField>
+          <SearchIcon />
+          <StyledInput
+            placeholder="Pesquisar"
+            inputProps={{ "aria-label": "search" }}
           />
-        </Container>
+        </SearchField>
+      </SearchBox>
 
+      <Typography variant="h6"> Projetos </Typography>
+      <Cards valores={valores} />
+
+      <Container className={classes.pagination}>
+        <Pagination
+          count={pageCount}
+          page={page}
+          onChange={handlePage}
+          shape="rounded"
+          variant="outlined"
+          color="primary"
+          size="small"
+          showFirstButton
+          showLastButton
+        />
       </Container>
+    </Container>
   );
 };
 

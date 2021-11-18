@@ -113,7 +113,7 @@ const Projetos = () => {
           Criar novo projeto
         </Typography>
 
-        <Grid container spacing={1}>
+        <Grid container spacing={1} sx={{ mb: 3 }}>
           <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
             <Box>
               <Box>
@@ -226,7 +226,7 @@ const Projetos = () => {
                   type="input"
                   name="descricao"
                   multiline
-                  rows={4}
+                  rows={3}
                   value={fields.descricao}
                   fullWidth
                   label="Descrição do projeto"

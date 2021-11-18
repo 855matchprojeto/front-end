@@ -43,7 +43,7 @@ const ProjetoInfo = () => {
 
   return (
     <Container
-      maxWidh="lg"
+      maxWidth="md"
       sx={{
         mb: 5,
         color: "text.secondary",
@@ -65,7 +65,7 @@ const ProjetoInfo = () => {
               component="img"
               image={projeto.image}
               height="300"
-              sx={{ margin: "auto", width: "100%" }}
+              sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}
             />
           </Box>
           <CardContent>

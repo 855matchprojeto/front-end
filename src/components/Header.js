@@ -29,6 +29,10 @@ const useStyles = makeStyles({
 
   brand: {
     flexGrow: 1,
+    "&:hover": {
+      cursor: "pointer",
+      textDecoration: "none",
+    },
   },
   nav: {
     flexGrow: 3,
@@ -77,7 +81,7 @@ const useStyles = makeStyles({
     },
   },
   activeNav: {
-    borderBottom: "1px solid white"
+    borderBottom: "1px solid white",
   },
 
   "@media (max-width: 900px)": {
@@ -130,7 +134,7 @@ const useStyles = makeStyles({
     },
   },
   activeMobile: {
-    borderLeft: "1px solid white"
+    borderLeft: "1px solid white",
   },
   btnMenu: {
     "&:hover": {
@@ -165,13 +169,21 @@ const Header = () => {
   const DisplayDesktop = () => {
     return (
       <Toolbar className={classes.toolbar}>
-        <Typography className={classes.brand} variant="h6">
-          {" "}
-          Match de Projetos{" "}
-        </Typography>
-
+        <Link
+          component={RouterLink}
+          className={classes.brand}
+          to="/"
+          sx={{ color: "inherit" }}
+        >
+          <Typography variant="h6">Match de Projetos</Typography>
+        </Link>
         <nav className={classes.nav}>
-          <Link component={RouterLink} to="/home" className={classes.navLink} activeClassName={classes.activeNav}>
+          <Link
+            component={RouterLink}
+            to="/home"
+            className={classes.navLink}
+            activeClassName={classes.activeNav}
+          >
             {" "}
             Home{" "}
           </Link>
@@ -184,7 +196,12 @@ const Header = () => {
             {" "}
             Criar Projeto{" "}
           </Link>
-          <Link component={RouterLink} to="/perfil" className={classes.navLink} activeClassName={classes.activeNav}>
+          <Link
+            component={RouterLink}
+            to="/perfil"
+            className={classes.navLink}
+            activeClassName={classes.activeNav}
+          >
             {" "}
             Perfil{" "}
           </Link>
