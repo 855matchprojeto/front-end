@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Container,
   Typography,
   TextField,
   Grid,
@@ -11,21 +10,29 @@ import {
   CardMedia,
   Box,
   Button,
-  Tabs,
   Tab,
-  Avatar,
-  Fab,
   Chip,
-  Autocomplete,
-  Stack,
+  Autocomplete
 } from "@mui/material";
 
 import { useSnackbar } from "notistack";
-import axios from "axios";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import { makeStyles } from "@mui/styles";
-import { getToken } from "../services/auth";
 import { useHistory } from "react-router-dom";
+
+import { doHandleDelete } from "../services/api_perfil";
+import { doHandleDeleteCourses } from "../services/api_perfil";
+import { doGetDataUser } from "../services/api_perfil";
+
+import { doAdicionaCurso } from "../services/api_perfil";
+import { doAdicionaInteresse } from "../services/api_perfil";
+
+import { doGetAllCourses } from "../services/api_perfil";
+import { doHandleChangeCourses } from "../services/api_perfil";
+import { doGetInteresses } from "../services/api_perfil";
+import { doHandleSave } from "../services/api_perfil";
+import { doHandleTextFieldChange } from "../services/api_perfil";
+
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -56,15 +63,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const baseUrl = "https://perfis-match-projetos.herokuapp.com";
-
 const Perfil = () => {
-  const perfilImageUrl =
-    "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
+  const perfilImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const [valueTab, setTabValue] = useState("perfil");
   const [isLoading, setIsLoading] = useState(false);
+
   const meusProjetos = [
     {
       id: 1,
@@ -103,16 +108,10 @@ const Perfil = () => {
   const [allInteresses, setAllInteresses] = useState(null);
   const [allCourses, setAllCourses] = useState(null);
 
-  const handleDelete = async (value) => {
-    const endpoint = `/profiles/user/me/link-interest/${value.id}`;
-    const URL = `${baseUrl}${endpoint}`;
-    const res = await axios.delete(URL, {
-      headers: {
-        Authorization: "Bearer " + getToken,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
+  async function handleDelete(value) 
+  {
+    const res = await doHandleDelete(value);
+
     if (res.status === 204) {
       setUser({
         ...user,
@@ -122,18 +121,12 @@ const Perfil = () => {
       });
       console.log("Interesse removido com sucesso!");
     }
-  };
+  }
 
-  const handleDeleteCourses = async (value) => {
-    const endpoint = `/profiles/user/me/link-course/${value.id}`;
-    const URL = `${baseUrl}${endpoint}`;
-    const res = await axios.delete(URL, {
-      headers: {
-        Authorization: "Bearer " + getToken,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
+  async function handleDeleteCourses(value)
+  {
+    const res = await doHandleDeleteCourses(value);
+
     if (res.status === 204) {
       setUser({
         ...user,
@@ -143,17 +136,13 @@ const Perfil = () => {
       });
       console.log("Curso removido com sucesso!");
     }
-  };
-  const getDataUsers = async () => {
-    const endpoint = "/profiles/user/me";
-    const URL = `${baseUrl}${endpoint}`;
+  }
+
+  async function getDataUser()
+  {
     try {
-      const res = await axios.get(URL, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + getToken,
-        },
-      });
+      const res = await doGetDataUser();
+
       if (res.status === 200) {
         setUser({
           name: res.data.nome_exibicao.split(" ")[0],
@@ -162,108 +151,52 @@ const Perfil = () => {
           cursos: res.data.cursos,
           email: res.data.emails[0],
         });
-        console.log(res.data);
       }
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const adicionaCurso = async (id) => {
-    const endpoint = `/profiles/user/me/link-course/${id}`;
-    const URL = `${baseUrl}${endpoint}`;
+  async function getAllCourses()
+  {
     try {
-      const res = await axios.post(URL, "", {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + getToken,
-          "Content-Type": "application/json",
-        },
-      });
-      if (res.status === 201) {
-        console.log("Curso adicionado com sucesso.");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+      const res = await doGetAllCourses();
 
-  const adicionaInteresse = async (id) => {
-    const endpoint = `/profiles/user/me/link-interest/${id}`;
-    const URL = `${baseUrl}${endpoint}`;
-    try {
-      const res = await axios.post(URL, "", {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + getToken,
-          "Content-Type": "application/json",
-        },
-      });
-      if (res.status === 201) {
-        console.log("Interesse adicionado com sucesso");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const getAllCourses = async () => {
-    const endpoint = "/courses";
-    const URL = `${baseUrl}${endpoint}`;
-
-    try {
-      const res = await axios.get(URL, {
-        headers: {
-          Authorization: "Bearer " + getToken,
-          Accept: "application/json",
-        },
-      });
       if (res.status === 200 && res.statusText === "OK") {
         setAllCourses(res.data);
       }
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const handleChangeCourses = async (value) => {
-    if (value) {
-      const newCourse = user.cursos.find(
-        (curso) => curso.nome_exibicao === value.nome_exibicao
-      );
+  async function adicionaCurso(value)
+  {
+      if (value) {
+        const newCourse = user.cursos.find(
+          (curso) => curso.nome_exibicao === value.nome_exibicao
+        );
 
-      if (!newCourse) {
-        const endpoint = `/profiles/user/me/link-course/${value.id}`;
-        const URL = `${baseUrl}${endpoint}`;
-        try {
-          const res = await axios.post(URL, "", {
-            headers: {
-              Authorization: "Bearer " + getToken,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          });
-          if (res.status === 201) {
-            console.log("ADICIONADO COM SUCESSO");
-            console.log(value);
-            setUser({ ...user, cursos: [...user.cursos, value] });
+        if (!newCourse) {
+          try {
+            const res = await doHandleChangeCourses(value);
+
+            if (res.status === 201) {
+              console.log("ADICIONADO COM SUCESSO");
+              console.log(value);
+              setUser({ ...user, cursos: [...user.cursos, value] });
+            }
+          } catch (err) {
+            console.log(err);
           }
-        } catch (err) {
-          console.log(err);
         }
-      }
     }
-  };
+  }
 
-  const getInteresses = async () => {
-    const URL = `${baseUrl}/interests`;
-
+  async function getInteresses()
+  {
     try {
-      const res = await axios.get(URL, {
-        headers: {
-          Authorization: "Bearer " + getToken,
-        },
-      });
+      const res = await doGetInteresses();
 
       if (res.statusText === "OK") {
         setAllInteresses(res.data);
@@ -271,24 +204,15 @@ const Perfil = () => {
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const handleSave = async () => {
+  async function handleSave()
+  {
     setIsLoading(true);
-    const endpoint = `/profiles/user/me`;
-    const URL = `${baseUrl}${endpoint}`;
     const nome_exibicao = `${user.name} ${user.sobrenome}`;
+
     try {
-      const res = await axios.patch(
-        URL,
-        { nome_exibicao },
-        {
-          headers: {
-            Authorization: "Bearer " + getToken,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await doHandleSave(nome_exibicao);
 
       if (res.status === 200) {
         enqueueSnackbar("Dados atualizados com sucesso!", {
@@ -303,43 +227,45 @@ const Perfil = () => {
       console.log(err);
     }
     setIsLoading(false);
-  };
+  }
 
-  const handleTextFieldChange = async (field, value) => {
-    if (value) {
-      if (field === "interesses") {
-        const newInterest = user.interesses.find(
-          (interesse) => interesse.nome_exibicao === value.nome_exibicao
-        );
+  async function handleTextFieldChange(field, value)
+  {
+    if (value) 
+    {
+      if (field === "interesses") 
+      {
+        const newInterest = user.interesses.find((interesse) => interesse.nome_exibicao === value.nome_exibicao);
 
-        if (!newInterest) {
-          const endpoint = `/profiles/user/me/link-interest/${value.id}`;
-          const URL = `${baseUrl}${endpoint}`;
-          try {
-            const res = await axios.post(URL, "", {
-              headers: {
-                Authorization: "Bearer " + getToken,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-            });
-            if (res.status === 201) {
+        if (!newInterest) 
+        {
+          try 
+          {
+            const res = await doAdicionaInteresse(value.id);
+            
+            if (res.status === 201) 
+            {
               console.log("ADICIONADO COM SUCESSO");
               console.log(value);
               setUser({ ...user, interesses: [...user.interesses, value] });
             }
-          } catch (err) {
+
+          } 
+          catch (err) 
+          {
             console.log(err);
           }
         }
-      } else {
+      } 
+      else 
+      {
         setUser({ ...user, [field]: value });
       }
     }
-  };
+  }
 
   useEffect(() => {
-    getDataUsers();
+    getDataUser();
     getInteresses();
     getAllCourses();
   }, []);
@@ -349,6 +275,7 @@ const Perfil = () => {
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
   return (
     <>
       <Box sx={{ mb: 4 }}>
@@ -374,7 +301,10 @@ const Perfil = () => {
                 <Tab label="Meus Projetos" value="projetos" />
                 <Tab label="Tenho Interesse" value="interesses" />
               </TabList>
+
             </Box>
+
+            {/* ABA DE PERFIL */}
             <TabPanel value="perfil">
               <Grid container spacing={2} sx={{ width: "100%" }}>
                 <Grid item xs={12} sm={4}>
@@ -406,6 +336,8 @@ const Perfil = () => {
                     />
                     <CardContent>
                       <Grid container style={{ width: "100%" }} spacing={2}>
+                        
+                        {/* email,nome,sobrenome */}
                         <Grid item xs={12} md={6}>
                           <TextField
                             className={classes.textField}
@@ -430,12 +362,7 @@ const Perfil = () => {
                             placeholder="Nome"
                             defaultValue="LeBron James"
                             value={user && user.name}
-                            onChange={(e) =>
-                              handleTextFieldChange(
-                                e.target.name,
-                                e.target.value
-                              )
-                            }
+                            onChange={(e) =>handleTextFieldChange(e.target.name,e.target.value)}
                             fullWidth
                           />
                         </Grid>
@@ -449,16 +376,18 @@ const Perfil = () => {
                             variant="outlined"
                             placeholder="Sobrenome"
                             value={user ? user.sobrenome : ""}
-                            onChange={(e) =>
-                              handleTextFieldChange(
-                                e.target.name,
-                                e.target.value
-                              )
-                            }
+                            onChange={(e) =>handleTextFieldChange(e.target.name,e.target.value)}
                             fullWidth
                           />
                         </Grid>
-
+                        
+                        {/* caixa de cursos */}
+                        <Grid item xs={12} sx={{ mb: 1 }}>
+                          <Typography variant="subtitle2">
+                            Cursos
+                          </Typography>
+                        </Grid>
+                        
                         <Grid item xs={12}>
                           <Autocomplete
                             options={allCourses && allCourses}
@@ -466,7 +395,7 @@ const Perfil = () => {
                             name="cursos"
                             id="cursos"
                             freeSolo
-                            onChange={(e, value) => handleChangeCourses(value)}
+                            onChange={(e, value) => adicionaCurso(value)}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -477,12 +406,8 @@ const Perfil = () => {
                             )}
                           />
                         </Grid>
-
-                        <Grid
-                          item
-                          xs={12}
-                          sx={{ display: "flex", flexWrap: "wrap" }}
-                        >
+                              
+                        <Grid item xs={12} sx={{ display: "flex", flexWrap: "wrap" }}>
                           {user &&
                             user.cursos.map((curso, index) => (
                               <Chip
@@ -494,7 +419,8 @@ const Perfil = () => {
                               />
                             ))}
                         </Grid>
-
+                        
+                        {/* caixa de interesses */}
                         <Grid item xs={12} sx={{ mb: 1 }}>
                           <Typography variant="subtitle2">
                             Áreas de Interesse
@@ -508,25 +434,20 @@ const Perfil = () => {
                             name="interesses"
                             id="interesses"
                             freeSolo
-                            onChange={(e, value) =>
-                              handleTextFieldChange("interesses", value)
-                            }
+                            onChange={(e, value) => handleTextFieldChange("interesses",value)}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
                                 label="Interesses"
                                 placeholder="Interesses"
+                                autoComplete="off"
                                 fullWidth
                               />
                             )}
                           />
                         </Grid>
 
-                        <Grid
-                          item
-                          xs={12}
-                          sx={{ display: "flex", flexWrap: "wrap" }}
-                        >
+                        <Grid item xs={12} sx={{ display: "flex", flexWrap: "wrap" }}>
                           {user &&
                             user.interesses.map((area, index) => (
                               <Chip
@@ -538,29 +459,22 @@ const Perfil = () => {
                               />
                             ))}
                         </Grid>
+
                       </Grid>
                     </CardContent>
-                    <CardActions
-                      style={{
-                        display: "flex",
-                        justifyContent: "end",
-                        marginRight: "24px",
-                        marginBottom: "16px",
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleSave()}
-                        disabled={isLoading}
-                      >
+
+                    <CardActions style={{display: "flex",justifyContent: "end",marginRight: "24px",marginBottom: "16px",}}>
+                      <Button variant="contained" color="primary" onClick={() => handleSave()} disabled={isLoading}>
                         Salvar
                       </Button>
                     </CardActions>
+
                   </Card>
                 </Grid>
               </Grid>
             </TabPanel>
+            
+            {/* ABA MEUS PROJETOS */}
             <TabPanel value="projetos">
               <Box
                 sx={{
@@ -571,7 +485,7 @@ const Perfil = () => {
                 <Grid container spacing={2}>
                   {meusProjetos &&
                     meusProjetos.map((projeto) => (
-                      <Grid item xs={12} sm={6} md={4} lg={3}>
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={projeto.id}>
                         <Card>
                           <CardMedia
                             className={classes.media}
@@ -618,6 +532,8 @@ const Perfil = () => {
                 </Grid>
               </Box>
             </TabPanel>
+
+            {/* ABA MEUS INTERESSES */}                 
             <TabPanel value="interesses">
               <Box
                 sx={{
@@ -628,7 +544,7 @@ const Perfil = () => {
                 <Grid container spacing={2}>
                   {tenhoInteresse &&
                     tenhoInteresse.map((projeto) => (
-                      <Grid item xs={12} sm={6} md={4} lg={3}>
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={projeto.id}>
                         <Card>
                           <CardMedia
                             className={classes.media}
@@ -666,6 +582,8 @@ const Perfil = () => {
                 </Grid>
               </Box>
             </TabPanel>
+
+
           </TabContext>
         </Card>
       </Box>

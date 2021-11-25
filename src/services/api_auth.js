@@ -18,7 +18,9 @@ auth.interceptors.response.use(
 
 export const Logar = async (dados) => {
     const config = {
-        headers: { 'content-type': 'application/x-www-form-urlencoded' }
+        headers: { 
+            'content-type': 'application/x-www-form-urlencoded',
+        }
     }
 
     var frm = new FormData();
@@ -42,11 +44,3 @@ export const Cadastrar = async (usuario) => {
 export const Email = async (user) => {
     return auth.post(`/users/send-email-verification-link/${user}`).then(res => res)
 }
-
-// chamadas de Perfil
-let urlPerfil = "https://perfis-match-projetos.herokuapp.com";
-const perf = axios.create({baseURL: urlPerfil});
-
-// chamadas de Projeto
-let urlProjeto = "https://projetos-match-projetos.herokuapp.com";
-const proj = axios.create({baseURL: urlProjeto});
