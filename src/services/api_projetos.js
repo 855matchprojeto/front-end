@@ -24,3 +24,8 @@ export const getProjetos = async (dados) => {
     else
         return proj.get(`/projetos`,{ params: {id:dados}}).then(res => res)
 }
+
+
+export const postProjetos = async (dados) => {
+        return proj.post(`/projetos`,dados).then(res => res)
+}

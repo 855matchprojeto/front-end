@@ -6,7 +6,6 @@ import {
   Typography,
   Button,
   TextField,
-  Autocomplete,
   Stack,
   Chip,
   Card,
@@ -212,7 +211,7 @@ const EditProject = () => {
               </Grid>
               <Grid item xs={12}>
                 <Stack spacing={3} sx={{ width: "100%" }}>
-                  <Autocomplete
+                  <TextField
                     multiple
                     options={allCourses && allCourses}
                     freeSolo
@@ -241,7 +240,7 @@ const EditProject = () => {
               </Grid>
               <Grid item xs={12}>
                 <Stack spacing={3} sx={{ width: "100%" }}>
-                  <Autocomplete
+                  <TextField
                     multiple
                     options={allInteresses && allInteresses}
                     getOptionLabel={(option) => option.nome_exibicao}

@@ -1,17 +1,8 @@
-import {Container, Box, Typography, CardHeader, CardContent, Card, Grid, CardMedia, CardActions, Button, Chip, createTheme} from "@mui/material";
+import {Container, Box, Typography, CardContent, Card, Grid, CardMedia, CardActions, Button, Chip} from "@mui/material";
 import React,{ useState, useEffect } from "react";
-import { makeStyles } from "@mui/styles";
 import { useLocation } from "react-router";
 import { getProjetos } from "../services/api_projetos";
 
-//--estilo--
-const theme = createTheme();
-
-const useStyles = makeStyles( ({
-  grid: {
-    marginTop: theme.spacing(1),
-  },
-}));
 
 const ProjetoInfo = () => {
   const [tenhoInteresse, setTenhoInteresse] = useState(false);
