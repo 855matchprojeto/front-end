@@ -26,7 +26,7 @@ export const doHandleDeleteCourses = async (dados) => {
     return perf.delete(`/profiles/user/me/link-course/${dados.id}`).then(res => res)
 }
 
-export const doGetDataUsers = async (dados) => {
+export const doGetDataUser = async () => {
     return perf.get(`/profiles/user/me`).then(res => res)
 };
 

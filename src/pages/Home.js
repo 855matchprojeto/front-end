@@ -81,14 +81,24 @@ const Home = () => {
   {
       async function loadProjetos() 
       {
-        let valores = await getProjetos("");
+        let valores = await getProjetos(pesquisa);
         let x = chunk(valores.data,n_cards);
         setCardsProjetos(x);
         setPageCount(x.length);
       }
       
       loadProjetos();
-  }, [n_cards])
+  }, [n_cards, pesquisa])
+
+  function fazerPesquisa(e)
+  {
+    if (e.key === 'Enter') 
+    {
+      setPesquisa(e.target.value);
+      console.log(`Pressed keyCode ${e.key} value ${e.target.value}`);
+      e.preventDefault();
+    }
+  }
 
   return (
       <Container className={classes.grid} maxWidth="lg">
@@ -96,7 +106,11 @@ const Home = () => {
         <SearchBox>
             <SearchField>
               <SearchIcon />
-              <StyledInput placeholder="Pesquisar" inputProps={{ 'aria-label': 'search' }}/>
+              <StyledInput 
+                placeholder="Pesquisar" 
+                inputProps={{ 'aria-label': 'search' }} 
+                onKeyPress={(e) => fazerPesquisa(e)}
+              />
             </SearchField>
         </SearchBox>
 
