@@ -32,11 +32,11 @@ const CardHome = ({ info }) => {
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card>
-        <CardMedia className={classes.media} image={info.image} />
+        <CardMedia className={classes.media} image={info.imagem} />
 
         <CardContent>
-          <Typography variant="subtitle1">{info.title}</Typography>
-          <p>{info.description}</p>
+          <Typography variant="subtitle1">{info.titulo}</Typography>
+          <p>{info.descricao}</p>
         </CardContent>
 
         <CardActions className={classes.actions}>
