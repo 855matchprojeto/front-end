@@ -21,10 +21,8 @@ import {
 } from "@mui/material";
 
 import { useSnackbar } from "notistack";
-import axios from "axios";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import { makeStyles } from "@mui/styles";
-import { getToken } from "../services/auth";
 import { useHistory } from "react-router-dom";
 
 import { doHandleDelete } from "../services/api_perfil";

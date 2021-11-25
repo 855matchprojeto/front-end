@@ -8,8 +8,6 @@ import * as Yup from "yup";
 import {Logar} from "../services/api_auth";
 import {login} from "../services/auth";
 
-
-
 const Login = () => {
 
   const [alert, setAlert] = useState(false);
