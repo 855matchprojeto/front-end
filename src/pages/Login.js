@@ -5,7 +5,7 @@ import Copyright from "../components/Copyright";
 import {Formik} from 'formik'
 import {Container, Button, TextField, Grid, Box, Typography,Snackbar,Alert,Link } from "@mui/material";
 import * as Yup from "yup";
-import {Logar} from "../services/api";
+import {Logar} from "../services/api_auth";
 import {login} from "../services/auth";
 
 

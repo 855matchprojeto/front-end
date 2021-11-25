@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Link as RouterLink } from "react-router-dom";
+//import { Link as RouterLink } from "react-router-dom";
 
 import {Formik} from 'formik'
 import * as Yup from "yup";
-import { Email } from "../services/api";
+import { Email } from "../services/api_auth";
 
 import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar, Link } from "@mui/material";
 import Copyright from "../components/Copyright";

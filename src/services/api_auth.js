@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getToken } from "./auth";
 
 // chamadas de Authenticator
 let urlAuth = "https://authenticator-match-projetos.herokuapp.com";
@@ -44,29 +43,4 @@ export const Cadastrar = async (usuario) => {
 
 export const Email = async (user) => {
     return auth.post(`/users/send-email-verification-link/${user}`).then(res => res)
-}
-
-// chamadas de Perfil
-let urlPerfil = "https://perfis-match-projetos.herokuapp.com";
-const perf = axios.create({baseURL: urlPerfil});
-
-// chamadas de Projeto
-let urlProjeto = "https://projetos-match-projetos.herokuapp.com";
-const proj = axios.create({baseURL: urlProjeto});
-
-proj.interceptors.request.use(async (options) => {
-    options.headers["Content-Type"] = "application/json"
-    options.headers["Authorization"] = `Bearer ${getToken}`
-    return options
-})
-
-proj.interceptors.response.use(
-    res => { return res },
-    error => {
-        throw error
-    }
-)
-
-export const Projetos = async (dados) => {
-    return proj.get(`/projetos`).then(res => res)
 }

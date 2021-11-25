@@ -8,7 +8,7 @@ import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 
 import { chunk } from '../services/util';
-import { Projetos } from "../services/api";
+import { getProjetos } from "../services/api_projetos";
 
 //--estilo--
 const theme = createTheme();
@@ -70,25 +70,24 @@ const Home = () => {
   const classes = useStyles();
   const [cardsProjetos, setCardsProjetos] = useState(false);
   
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [n_cards, setNcards] =  useState(10);
-  const [pageCount, setPageCount] = React.useState(1);
+  const [pageCount, setPageCount] = useState(1);
+
+  const [pesquisa,setPesquisa] = useState("");
   
   // mudando o número de cards por página, renderiza novamente 
   useEffect(() => 
   {
-      async function getProjetos() 
+      async function loadProjetos() 
       {
-        let valores = await Projetos("");
+        let valores = await getProjetos("");
         let x = chunk(valores.data,n_cards);
         setCardsProjetos(x);
         setPageCount(x.length);
-
-        console.log(valores.data);
       }
       
-      getProjetos();
-
+      loadProjetos();
   }, [n_cards])
 
   return (
