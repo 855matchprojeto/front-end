@@ -27,7 +27,7 @@ import { useHistory } from "react-router-dom";
 
 import { doHandleDelete } from "../services/api_perfil";
 import { doHandleDeleteCourses } from "../services/api_perfil";
-import { doGetDataUsers } from "../services/api_perfil";
+import { doGetDataUser } from "../services/api_perfil";
 import { doAdicionaCurso } from "../services/api_perfil";
 import { doAdicionaInteresse } from "../services/api_perfil";
 import { doGetAllCourses } from "../services/api_perfil";
@@ -141,10 +141,10 @@ const Perfil = () => {
     }
   }
 
-  async function getDataUsers(value)
+  async function getDataUser()
   {
     try {
-      const res = await doGetDataUsers(value);
+      const res = await doGetDataUser();
 
       if (res.status === 200) {
         setUser({
@@ -287,7 +287,7 @@ const Perfil = () => {
   }
 
   useEffect(() => {
-    getDataUsers();
+    getDataUser();
     getInteresses();
     getAllCourses();
   }, []);
@@ -409,7 +409,7 @@ const Perfil = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                          <Autocomplete
+                          <TextField
                             options={allCourses && allCourses}
                             getOptionLabel={(option) => option.nome_exibicao}
                             name="cursos"
@@ -451,7 +451,7 @@ const Perfil = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                          <Autocomplete
+                          <TextField
                             options={allInteresses && allInteresses}
                             getOptionLabel={(option) => option.nome_exibicao}
                             name="interesses"
@@ -465,6 +465,7 @@ const Perfil = () => {
                                 {...params}
                                 label="Interesses"
                                 placeholder="Interesses"
+                                autoComplete="off"
                                 fullWidth
                               />
                             )}
@@ -520,7 +521,7 @@ const Perfil = () => {
                 <Grid container spacing={2}>
                   {meusProjetos &&
                     meusProjetos.map((projeto) => (
-                      <Grid item xs={12} sm={6} md={4} lg={3}>
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={projeto.id}>
                         <Card>
                           <CardMedia
                             className={classes.media}
@@ -577,7 +578,7 @@ const Perfil = () => {
                 <Grid container spacing={2}>
                   {tenhoInteresse &&
                     tenhoInteresse.map((projeto) => (
-                      <Grid item xs={12} sm={6} md={4} lg={3}>
+                      <Grid item xs={12} sm={6} md={4} lg={3} key={projeto.id}>
                         <Card>
                           <CardMedia
                             className={classes.media}

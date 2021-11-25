@@ -19,5 +19,8 @@ proj.interceptors.response.use(
 )
 
 export const getProjetos = async (dados) => {
-    return proj.get(`/projetos`,dados).then(res => res)
+    if (dados === "")
+        return proj.get(`/projetos`).then(res => res)
+    else
+        return proj.get(`/projetos`,{ params: {id:dados}}).then(res => res)
 }
