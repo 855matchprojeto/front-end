@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 
-import axios from "axios";
 
 const Projetos = () => {
   const imageRef = useRef();

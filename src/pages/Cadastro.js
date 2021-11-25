@@ -4,7 +4,7 @@ import { Link as RouterLink } from "react-router-dom";
 
 import {Formik} from 'formik'
 import * as Yup from "yup";
-import { Cadastrar, Email } from "../services/api";
+import { Cadastrar, Email } from "../services/api_auth";
 
 import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar, Link } from "@mui/material";
 import Copyright from "../components/Copyright";

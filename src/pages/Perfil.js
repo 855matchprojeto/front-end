@@ -27,6 +27,18 @@ import { makeStyles } from "@mui/styles";
 import { getToken } from "../services/auth";
 import { useHistory } from "react-router-dom";
 
+import { doHandleDelete } from "../services/api_perfil";
+import { doHandleDeleteCourses } from "../services/api_perfil";
+import { doGetDataUsers } from "../services/api_perfil";
+import { doAdicionaCurso } from "../services/api_perfil";
+import { doAdicionaInteresse } from "../services/api_perfil";
+import { doGetAllCourses } from "../services/api_perfil";
+import { doHandleChangeCourses } from "../services/api_perfil";
+import { doGetInteresses } from "../services/api_perfil";
+import { doHandleSave } from "../services/api_perfil";
+import { doHandleTextFieldChange } from "../services/api_perfil";
+
+
 const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: "8px",
@@ -56,15 +68,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const baseUrl = "https://perfis-match-projetos.herokuapp.com";
-
 const Perfil = () => {
-  const perfilImageUrl =
-    "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
+  const perfilImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const [valueTab, setTabValue] = useState("perfil");
   const [isLoading, setIsLoading] = useState(false);
+
   const meusProjetos = [
     {
       id: 1,
@@ -103,16 +113,10 @@ const Perfil = () => {
   const [allInteresses, setAllInteresses] = useState(null);
   const [allCourses, setAllCourses] = useState(null);
 
-  const handleDelete = async (value) => {
-    const endpoint = `/profiles/user/me/link-interest/${value.id}`;
-    const URL = `${baseUrl}${endpoint}`;
-    const res = await axios.delete(URL, {
-      headers: {
-        Authorization: "Bearer " + getToken,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
+  async function handleDelete(value) 
+  {
+    const res = await doHandleDelete(value);
+
     if (res.status === 204) {
       setUser({
         ...user,
@@ -122,18 +126,12 @@ const Perfil = () => {
       });
       console.log("Interesse removido com sucesso!");
     }
-  };
+  }
 
-  const handleDeleteCourses = async (value) => {
-    const endpoint = `/profiles/user/me/link-course/${value.id}`;
-    const URL = `${baseUrl}${endpoint}`;
-    const res = await axios.delete(URL, {
-      headers: {
-        Authorization: "Bearer " + getToken,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
+  async function handleDeleteCourses(value)
+  {
+    const res = await doHandleDeleteCourses(value);
+
     if (res.status === 204) {
       setUser({
         ...user,
@@ -143,17 +141,13 @@ const Perfil = () => {
       });
       console.log("Curso removido com sucesso!");
     }
-  };
-  const getDataUsers = async () => {
-    const endpoint = "/profiles/user/me";
-    const URL = `${baseUrl}${endpoint}`;
+  }
+
+  async function getDataUsers(value)
+  {
     try {
-      const res = await axios.get(URL, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + getToken,
-        },
-      });
+      const res = await doGetDataUsers(value);
+
       if (res.status === 200) {
         setUser({
           name: res.data.nome_exibicao.split(" ")[0],
@@ -167,103 +161,73 @@ const Perfil = () => {
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const adicionaCurso = async (id) => {
-    const endpoint = `/profiles/user/me/link-course/${id}`;
-    const URL = `${baseUrl}${endpoint}`;
+  async function adicionaCurso(id)
+  {
     try {
-      const res = await axios.post(URL, "", {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + getToken,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = doAdicionaCurso(id);
       if (res.status === 201) {
         console.log("Curso adicionado com sucesso.");
       }
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const adicionaInteresse = async (id) => {
-    const endpoint = `/profiles/user/me/link-interest/${id}`;
-    const URL = `${baseUrl}${endpoint}`;
+  async function adicioneInteresse(id)
+  {
     try {
-      const res = await axios.post(URL, "", {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + getToken,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await doAdicionaInteresse(id);
+
       if (res.status === 201) {
         console.log("Interesse adicionado com sucesso");
       }
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const getAllCourses = async () => {
-    const endpoint = "/courses";
-    const URL = `${baseUrl}${endpoint}`;
-
+  async function getAllCourses()
+  {
     try {
-      const res = await axios.get(URL, {
-        headers: {
-          Authorization: "Bearer " + getToken,
-          Accept: "application/json",
-        },
-      });
+      const res = await doGetAllCourses();
+
       if (res.status === 200 && res.statusText === "OK") {
         setAllCourses(res.data);
       }
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const handleChangeCourses = async (value) => {
-    if (value) {
-      const newCourse = user.cursos.find(
-        (curso) => curso.nome_exibicao === value.nome_exibicao
-      );
+  async function handleChangeCourses(value)
+  {
+      if (value) {
+        const newCourse = user.cursos.find(
+          (curso) => curso.nome_exibicao === value.nome_exibicao
+        );
 
-      if (!newCourse) {
-        const endpoint = `/profiles/user/me/link-course/${value.id}`;
-        const URL = `${baseUrl}${endpoint}`;
-        try {
-          const res = await axios.post(URL, "", {
-            headers: {
-              Authorization: "Bearer " + getToken,
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-          });
-          if (res.status === 201) {
-            console.log("ADICIONADO COM SUCESSO");
-            console.log(value);
-            setUser({ ...user, cursos: [...user.cursos, value] });
+        if (!newCourse) {
+          try {
+            const res = await doHandleChangeCourses(value);
+
+            if (res.status === 201) {
+              console.log("ADICIONADO COM SUCESSO");
+              console.log(value);
+              setUser({ ...user, cursos: [...user.cursos, value] });
+            }
+          } catch (err) {
+            console.log(err);
           }
-        } catch (err) {
-          console.log(err);
         }
-      }
     }
-  };
+  }
 
-  const getInteresses = async () => {
-    const URL = `${baseUrl}/interests`;
-
+  async function getInteresses()
+  {
     try {
-      const res = await axios.get(URL, {
-        headers: {
-          Authorization: "Bearer " + getToken,
-        },
-      });
+      const res = await doGetInteresses();
 
       if (res.statusText === "OK") {
         setAllInteresses(res.data);
@@ -271,24 +235,15 @@ const Perfil = () => {
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
-  const handleSave = async () => {
+  async function handleSave()
+  {
     setIsLoading(true);
-    const endpoint = `/profiles/user/me`;
-    const URL = `${baseUrl}${endpoint}`;
     const nome_exibicao = `${user.name} ${user.sobrenome}`;
+
     try {
-      const res = await axios.patch(
-        URL,
-        { nome_exibicao },
-        {
-          headers: {
-            Authorization: "Bearer " + getToken,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await doHandleSave(nome_exibicao);
 
       if (res.status === 200) {
         enqueueSnackbar("Dados atualizados com sucesso!", {
@@ -303,9 +258,10 @@ const Perfil = () => {
       console.log(err);
     }
     setIsLoading(false);
-  };
+  }
 
-  const handleTextFieldChange = async (field, value) => {
+  async function handleTextFieldChange(field, value)
+  {
     if (value) {
       if (field === "interesses") {
         const newInterest = user.interesses.find(
@@ -313,16 +269,10 @@ const Perfil = () => {
         );
 
         if (!newInterest) {
-          const endpoint = `/profiles/user/me/link-interest/${value.id}`;
-          const URL = `${baseUrl}${endpoint}`;
+
           try {
-            const res = await axios.post(URL, "", {
-              headers: {
-                Authorization: "Bearer " + getToken,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-            });
+            const res = await doHandleTextFieldChange();
+            
             if (res.status === 201) {
               console.log("ADICIONADO COM SUCESSO");
               console.log(value);
@@ -336,7 +286,7 @@ const Perfil = () => {
         setUser({ ...user, [field]: value });
       }
     }
-  };
+  }
 
   useEffect(() => {
     getDataUsers();
@@ -349,6 +299,7 @@ const Perfil = () => {
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
   return (
     <>
       <Box sx={{ mb: 4 }}>
