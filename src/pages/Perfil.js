@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Container,
   Typography,
   TextField,
   Grid,
@@ -11,13 +10,9 @@ import {
   CardMedia,
   Box,
   Button,
-  Tabs,
   Tab,
-  Avatar,
-  Fab,
   Chip,
-  Autocomplete,
-  Stack,
+  Autocomplete
 } from "@mui/material";
 
 import { useSnackbar } from "notistack";
@@ -28,8 +23,10 @@ import { useHistory } from "react-router-dom";
 import { doHandleDelete } from "../services/api_perfil";
 import { doHandleDeleteCourses } from "../services/api_perfil";
 import { doGetDataUser } from "../services/api_perfil";
+
 import { doAdicionaCurso } from "../services/api_perfil";
 import { doAdicionaInteresse } from "../services/api_perfil";
+
 import { doGetAllCourses } from "../services/api_perfil";
 import { doHandleChangeCourses } from "../services/api_perfil";
 import { doGetInteresses } from "../services/api_perfil";
@@ -154,32 +151,6 @@ const Perfil = () => {
           cursos: res.data.cursos,
           email: res.data.emails[0],
         });
-        console.log(res.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function adicionaCurso(id)
-  {
-    try {
-      const res = doAdicionaCurso(id);
-      if (res.status === 201) {
-        console.log("Curso adicionado com sucesso.");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function adicioneInteresse(id)
-  {
-    try {
-      const res = await doAdicionaInteresse(id);
-
-      if (res.status === 201) {
-        console.log("Interesse adicionado com sucesso");
       }
     } catch (err) {
       console.log(err);
@@ -199,7 +170,7 @@ const Perfil = () => {
     }
   }
 
-  async function handleChangeCourses(value)
+  async function adicionaCurso(value)
   {
       if (value) {
         const newCourse = user.cursos.find(
@@ -260,27 +231,34 @@ const Perfil = () => {
 
   async function handleTextFieldChange(field, value)
   {
-    if (value) {
-      if (field === "interesses") {
-        const newInterest = user.interesses.find(
-          (interesse) => interesse.nome_exibicao === value.nome_exibicao
-        );
+    if (value) 
+    {
+      if (field === "interesses") 
+      {
+        const newInterest = user.interesses.find((interesse) => interesse.nome_exibicao === value.nome_exibicao);
 
-        if (!newInterest) {
-
-          try {
-            const res = await doHandleTextFieldChange();
+        if (!newInterest) 
+        {
+          try 
+          {
+            const res = await doAdicionaInteresse(value.id);
             
-            if (res.status === 201) {
+            if (res.status === 201) 
+            {
               console.log("ADICIONADO COM SUCESSO");
               console.log(value);
               setUser({ ...user, interesses: [...user.interesses, value] });
             }
-          } catch (err) {
+
+          } 
+          catch (err) 
+          {
             console.log(err);
           }
         }
-      } else {
+      } 
+      else 
+      {
         setUser({ ...user, [field]: value });
       }
     }
@@ -323,7 +301,10 @@ const Perfil = () => {
                 <Tab label="Meus Projetos" value="projetos" />
                 <Tab label="Tenho Interesse" value="interesses" />
               </TabList>
+
             </Box>
+
+            {/* ABA DE PERFIL */}
             <TabPanel value="perfil">
               <Grid container spacing={2} sx={{ width: "100%" }}>
                 <Grid item xs={12} sm={4}>
@@ -355,6 +336,8 @@ const Perfil = () => {
                     />
                     <CardContent>
                       <Grid container style={{ width: "100%" }} spacing={2}>
+                        
+                        {/* email,nome,sobrenome */}
                         <Grid item xs={12} md={6}>
                           <TextField
                             className={classes.textField}
@@ -379,12 +362,7 @@ const Perfil = () => {
                             placeholder="Nome"
                             defaultValue="LeBron James"
                             value={user && user.name}
-                            onChange={(e) =>
-                              handleTextFieldChange(
-                                e.target.name,
-                                e.target.value
-                              )
-                            }
+                            onChange={(e) =>handleTextFieldChange(e.target.name,e.target.value)}
                             fullWidth
                           />
                         </Grid>
@@ -398,24 +376,26 @@ const Perfil = () => {
                             variant="outlined"
                             placeholder="Sobrenome"
                             value={user ? user.sobrenome : ""}
-                            onChange={(e) =>
-                              handleTextFieldChange(
-                                e.target.name,
-                                e.target.value
-                              )
-                            }
+                            onChange={(e) =>handleTextFieldChange(e.target.name,e.target.value)}
                             fullWidth
                           />
                         </Grid>
-
+                        
+                        {/* caixa de cursos */}
+                        <Grid item xs={12} sx={{ mb: 1 }}>
+                          <Typography variant="subtitle2">
+                            Cursos
+                          </Typography>
+                        </Grid>
+                        
                         <Grid item xs={12}>
-                          <TextField
+                          <Autocomplete
                             options={allCourses && allCourses}
                             getOptionLabel={(option) => option.nome_exibicao}
                             name="cursos"
                             id="cursos"
                             freeSolo
-                            onChange={(e, value) => handleChangeCourses(value)}
+                            onChange={(e, value) => adicionaCurso(value)}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -426,12 +406,8 @@ const Perfil = () => {
                             )}
                           />
                         </Grid>
-
-                        <Grid
-                          item
-                          xs={12}
-                          sx={{ display: "flex", flexWrap: "wrap" }}
-                        >
+                              
+                        <Grid item xs={12} sx={{ display: "flex", flexWrap: "wrap" }}>
                           {user &&
                             user.cursos.map((curso, index) => (
                               <Chip
@@ -443,7 +419,8 @@ const Perfil = () => {
                               />
                             ))}
                         </Grid>
-
+                        
+                        {/* caixa de interesses */}
                         <Grid item xs={12} sx={{ mb: 1 }}>
                           <Typography variant="subtitle2">
                             Áreas de Interesse
@@ -451,15 +428,13 @@ const Perfil = () => {
                         </Grid>
 
                         <Grid item xs={12}>
-                          <TextField
+                          <Autocomplete
                             options={allInteresses && allInteresses}
                             getOptionLabel={(option) => option.nome_exibicao}
                             name="interesses"
                             id="interesses"
                             freeSolo
-                            onChange={(e, value) =>
-                              handleTextFieldChange("interesses", value)
-                            }
+                            onChange={(e, value) => handleTextFieldChange("interesses",value)}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
@@ -472,11 +447,7 @@ const Perfil = () => {
                           />
                         </Grid>
 
-                        <Grid
-                          item
-                          xs={12}
-                          sx={{ display: "flex", flexWrap: "wrap" }}
-                        >
+                        <Grid item xs={12} sx={{ display: "flex", flexWrap: "wrap" }}>
                           {user &&
                             user.interesses.map((area, index) => (
                               <Chip
@@ -488,29 +459,22 @@ const Perfil = () => {
                               />
                             ))}
                         </Grid>
+
                       </Grid>
                     </CardContent>
-                    <CardActions
-                      style={{
-                        display: "flex",
-                        justifyContent: "end",
-                        marginRight: "24px",
-                        marginBottom: "16px",
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleSave()}
-                        disabled={isLoading}
-                      >
+
+                    <CardActions style={{display: "flex",justifyContent: "end",marginRight: "24px",marginBottom: "16px",}}>
+                      <Button variant="contained" color="primary" onClick={() => handleSave()} disabled={isLoading}>
                         Salvar
                       </Button>
                     </CardActions>
+
                   </Card>
                 </Grid>
               </Grid>
             </TabPanel>
+            
+            {/* ABA MEUS PROJETOS */}
             <TabPanel value="projetos">
               <Box
                 sx={{
@@ -568,6 +532,8 @@ const Perfil = () => {
                 </Grid>
               </Box>
             </TabPanel>
+
+            {/* ABA MEUS INTERESSES */}                 
             <TabPanel value="interesses">
               <Box
                 sx={{
@@ -616,6 +582,8 @@ const Perfil = () => {
                 </Grid>
               </Box>
             </TabPanel>
+
+
           </TabContext>
         </Card>
       </Box>

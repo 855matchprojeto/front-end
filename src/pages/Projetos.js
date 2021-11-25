@@ -14,6 +14,7 @@ import {
 import UploadIcon from "@mui/icons-material/Upload";
 
 import { doGetAllCourses } from "../services/api_perfil";
+import { postProjetos } from "../services/api_projetos";
 
 
 const Projetos = () => {
@@ -41,9 +42,11 @@ const Projetos = () => {
   const defaultImageUrl =
     "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
 
+  /*
   const [responsaveis, setResponsaveis] = useState([
     { name: "Lebron James", perfil: "Professor" },
   ]);
+  */
 
   const [imageFile, setImageFile] = useState(null);
 
@@ -77,30 +80,8 @@ const Projetos = () => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
-    // const form = new FormData();
-    // const info = {
-    //   ...fields,
-    //   areas: areasSelecionadas,
-    //   cursos: cursosSelecionados,
-    //   imageFile: imageFile,
-    // };
-
-    // form.append("titulo", fields.titulo);
-    // form.append("descricao", fields.descricao);
-    // form.append("areas", areasSelecionadas);
-    // form.append("cursos", cursos);
-    // form.append("image", imageFile, imageFile.name);
-
-    // try {
-    //   const res = await axios.post("ENDPOINT", form, {
-    //     headers: { "Content-Type": "multipart/form-data" },
-    //   });
-    //   console.log(res);
-    // } catch (err) {
-    //   console.log(err);
-    // }
-
-    console.log("Sucesso?");
+    const dados = {titulo: fields.titulo, descricao: fields.descricao};
+    const creation = await postProjetos(dados);
 
     setIsLoading(false);
   };
@@ -121,7 +102,6 @@ const Projetos = () => {
     
   }, []);
 
-console.log(allCourses);
   return (
     <>
     { !pageLoading &&

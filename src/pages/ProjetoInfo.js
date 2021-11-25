@@ -1,17 +1,8 @@
-import {Container, Box, Typography, CardHeader, CardContent, Card, Grid, CardMedia, CardActions, Button, Chip, createTheme} from "@mui/material";
+import {Container, Box, Typography, CardContent, Card, Grid, CardMedia, CardActions, Button, Chip} from "@mui/material";
 import React,{ useState, useEffect } from "react";
-import { makeStyles } from "@mui/styles";
 import { useLocation } from "react-router";
 import { getProjetos } from "../services/api_projetos";
 
-//--estilo--
-const theme = createTheme();
-
-const useStyles = makeStyles( ({
-  grid: {
-    marginTop: theme.spacing(1),
-  },
-}));
 
 const ProjetoInfo = () => {
   const [tenhoInteresse, setTenhoInteresse] = useState(false);
@@ -28,8 +19,7 @@ const ProjetoInfo = () => {
        async function getInfos() 
        {
          // faz uma chamada de api com o pid (project id) e seta dados basicos
-         const dados = {params: {id: pid}};
-         const info = await getProjetos(dados);
+         const info = await getProjetos(pid);
          getProjectInfo(info.data[0]);
 
          // PUXAR CURSOS
