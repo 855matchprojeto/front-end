@@ -28,8 +28,7 @@ const ProjetoInfo = () => {
        async function getInfos() 
        {
          // faz uma chamada de api com o pid (project id) e seta dados basicos
-         const dados = {params: {id: pid}};
-         const info = await getProjetos(dados);
+         const info = await getProjetos(pid);
          getProjectInfo(info.data[0]);
 
          // PUXAR CURSOS
