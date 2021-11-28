@@ -26,6 +26,8 @@ import { TabList, TabPanel, TabContext } from "@mui/lab";
 import { makeStyles } from "@mui/styles";
 import { getToken } from "../services/auth";
 import { useHistory } from "react-router-dom";
+import Interesses from "../components/Interesses";
+import MeusProjetos from "../components/MeusProjetos";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -76,23 +78,6 @@ const Perfil = () => {
     {
       id: 2,
       title: "Título 2",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
-      image: "https://source.unsplash.com/random",
-    },
-  ];
-
-  const tenhoInteresse = [
-    {
-      id: 3,
-      title: "Título 3",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
-      image: "https://source.unsplash.com/random",
-    },
-    {
-      id: 4,
-      title: "Título 4",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
       image: "https://source.unsplash.com/random",
@@ -568,6 +553,7 @@ const Perfil = () => {
                   width: "100%",
                 }}
               >
+                {/* <MeusProjetos /> */}
                 <Grid container spacing={2}>
                   {meusProjetos &&
                     meusProjetos.map((projeto) => (
@@ -625,45 +611,7 @@ const Perfil = () => {
                   width: "100%",
                 }}
               >
-                <Grid container spacing={2}>
-                  {tenhoInteresse &&
-                    tenhoInteresse.map((projeto) => (
-                      <Grid item xs={12} sm={6} md={4} lg={3}>
-                        <Card>
-                          <CardMedia
-                            className={classes.media}
-                            image={projeto.image}
-                          />
-                          <CardContent>
-                            <Typography variant="subtitle1">
-                              {projeto.title}
-                            </Typography>
-                            <p>{projeto.description}</p>
-                          </CardContent>
-                          <CardActions>
-                            <Box
-                              sx={{
-                                width: "100%",
-                                display: "flex",
-                                justifyContent: "end",
-                                mr: 2,
-                              }}
-                            >
-                              <Button
-                                color="secondary"
-                                onClick={() => {
-                                  console.log("Teste");
-                                  history.push("/projeto");
-                                }}
-                              >
-                                Detalhes
-                              </Button>
-                            </Box>
-                          </CardActions>
-                        </Card>
-                      </Grid>
-                    ))}
-                </Grid>
+                <Interesses />
               </Box>
             </TabPanel>
           </TabContext>
