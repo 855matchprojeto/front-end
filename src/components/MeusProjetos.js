@@ -8,11 +8,11 @@ import {
   Box,
   Button,
   Typography,
-  makeStyles,
 } from "@mui/material";
 import axios from "axios";
 import { getToken } from "../services/auth";
 import { useHistory } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
   container: {
