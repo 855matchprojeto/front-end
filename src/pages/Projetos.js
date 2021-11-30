@@ -87,7 +87,6 @@ const Projetos = () => {
       descricao: fields.descricao,
       interesses: areasSelecionadas.map((area) => area.id),
       cursos: cursosSelecionados.map((curso) => curso.id),
-      autores: [],
     };
 
     try {
