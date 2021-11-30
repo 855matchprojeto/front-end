@@ -51,7 +51,8 @@ const MeusProjetos = () => {
   const getMeusProjetos = async () => {
     // Dar um get nos projetos criados pelo usuário.
 
-    const URL = ""; // COlocar aqui a url
+    const URL =
+      "https://projetos-match-projetos.herokuapp.com/users/me/projects"; // COlocar aqui a url
     try {
       const res = await axios.get(URL, {
         headers: {
@@ -72,47 +73,65 @@ const MeusProjetos = () => {
   }, []);
   return (
     <Grid container spacing={2}>
-      {meusProjetos &&
-        meusProjetos.map((projeto) => (
-          <Grid item xs={12} sm={6} md={4} lg={3}>
-            <Card>
-              <CardMedia className={classes.media} image={projeto.image} />
-              <CardContent>
-                <Typography variant="subtitle1">{projeto.title}</Typography>
-                <p>{projeto.description}</p>
-              </CardContent>
-              <CardActions>
-                <Box
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "end",
-                    mr: 2,
-                  }}
-                >
-                  <Button
-                    color="primary"
-                    onClick={() => {
-                      console.log("Teste");
-                      history.push("/editproject");
-                    }}
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    color="secondary"
-                    onClick={() => {
-                      console.log("Teste");
-                      history.push("/projeto");
-                    }}
-                  >
-                    Detalhes
-                  </Button>
-                </Box>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
+      {meusProjetos && (
+        <>
+          {meusProjetos.length > 0 ? (
+            meusProjetos.map((projeto) => (
+              <Grid item xs={12} sm={6} md={4} lg={3}>
+                <Card>
+                  <CardMedia className={classes.media} image={projeto.image} />
+                  <CardContent>
+                    <Typography variant="subtitle1">{projeto.title}</Typography>
+                    <p>{projeto.description}</p>
+                  </CardContent>
+                  <CardActions>
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "end",
+                        mr: 2,
+                      }}
+                    >
+                      <Button
+                        color="primary"
+                        onClick={() => {
+                          console.log("Teste");
+                          history.push("/editproject");
+                        }}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        color="secondary"
+                        onClick={() => {
+                          console.log("Teste");
+                          history.push("/projeto");
+                        }}
+                      >
+                        Detalhes
+                      </Button>
+                    </Box>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))
+          ) : (
+            <Box>
+              <Typography
+                variant="subtitle1"
+                color="textSecondary"
+                sx={{
+                  p: 4,
+                  fontSize: "1.5em",
+                }}
+              >
+                Você ainda criou nenhum projeto.
+              </Typography>
+            </Box>
+          )}
+        </>
+      )}
     </Grid>
   );
 };

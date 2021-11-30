@@ -553,8 +553,8 @@ const Perfil = () => {
                   width: "100%",
                 }}
               >
-                {/* <MeusProjetos /> */}
-                <Grid container spacing={2}>
+                <MeusProjetos />
+                {/* <Grid container spacing={2}>
                   {meusProjetos &&
                     meusProjetos.map((projeto) => (
                       <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -600,8 +600,8 @@ const Perfil = () => {
                           </CardActions>
                         </Card>
                       </Grid>
-                    ))}
-                </Grid>
+                    ))} */}
+                {/* </Grid> */}
               </Box>
             </TabPanel>
             <TabPanel value="interesses">
