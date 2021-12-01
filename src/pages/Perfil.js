@@ -53,6 +53,7 @@ const Perfil = () => {
   const [valueTab, setTabValue] = useState("perfil");
   const handleChange = (event, newValue) => { setTabValue(newValue);};
 
+  /*
   const meusProjetos = [
     {
       id: 1,
@@ -69,6 +70,7 @@ const Perfil = () => {
       image: "https://source.unsplash.com/random",
     },
   ];  
+  */
 
   async function handleDelete(value) {
     const res = await doHandleDelete(value);
@@ -173,8 +175,8 @@ const Perfil = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [user, setUser] = useState(null);
-  const [allInteresses, setAllInteresses] = useState(null);
-  const [allCourses, setAllCourses] = useState(null);
+  const [allInteresses, setAllInteresses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
 
 
   useEffect(() => {
@@ -244,7 +246,7 @@ const Perfil = () => {
     <>
       { !pageLoading &&
         <Box sx={{ mb: 4 }}>
-          <Card sx={{ minHeight: "100vh", mt: 4 }}>
+          <Card sx={{ minHeight: "calc(100vh - 184px)", mt: 4 }}>
             <TabContext
               value={valueTab}
               color="primary"
@@ -260,7 +262,7 @@ const Perfil = () => {
                 <TabList
                   indicatorColor="primary"
                   onChange={handleChange}
-                  style={{ marginTop: "24px", marginBottom: "16px" }}
+                  style={{ marginTop: "10px", marginBottom: "10px" }}
                 >
                   <Tab label="Meus Dados" value="perfil" />
                   <Tab label="Meus Projetos" value="projetos" />
@@ -270,7 +272,7 @@ const Perfil = () => {
 
               {/* ABA DE PERFIL */}
               <TabPanel value="perfil">
-                <Grid container spacing={2} sx={{ width: "100%" }}>
+                <Grid container spacing={2}>
                   <Grid item xs={12} sm={4}>
                     <Card>
                       <CardHeader
@@ -281,8 +283,8 @@ const Perfil = () => {
                         }
                       />
 
-                      <CardContent>
-                        <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <CardContent style={{display: "flex", justifyContent: "center"}}>
+                        <Box>
                           <img
                             alt="Not Found"
                             src={perfilImageUrl}
@@ -308,8 +310,7 @@ const Perfil = () => {
                               label="Email"
                               variant="outlined"
                               placeholder="Email"
-                              defaultValue="email@email.com"
-                              value={user && user.email.email}
+                              value={user ? user.email.email : ""}
                               fullWidth
                               disabled
                             />
@@ -323,8 +324,7 @@ const Perfil = () => {
                               name="name"
                               variant="outlined"
                               placeholder="Nome"
-                              defaultValue="LeBron James"
-                              value={user && user.name}
+                              value={user ? user.name : ""}
                               onChange={(e) =>
                                 handleTextFieldChange(
                                   e.target.name,
@@ -360,22 +360,23 @@ const Perfil = () => {
                           </Grid>
 
                           <Grid item xs={12}>
-                            <Autocomplete
-                              options={allCourses && allCourses}
-                              getOptionLabel={(option) => option.nome_exibicao}
-                              name="cursos"
-                              id="cursos"
-                              freeSolo
-                              onChange={(e, value) => adicionaCurso(value)}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="Cursos"
-                                  placeholder="Cursos"
-                                  fullWidth
-                                />
-                              )}
-                            />
+                              <Autocomplete
+                                options={allCourses}
+                                getOptionLabel={(option) => option.nome_exibicao}
+                                name="cursos"
+                                id="cursos"
+                                freeSolo
+                                onChange={(e, value) => adicionaCurso(value)}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Cursos"
+                                    placeholder="Cursos"
+                                    value=""
+                                    fullWidth
+                                  />
+                                )}
+                              />
                           </Grid>
 
                           <Grid
@@ -404,7 +405,7 @@ const Perfil = () => {
 
                           <Grid item xs={12}>
                             <Autocomplete
-                              options={allInteresses && allInteresses}
+                              options={allInteresses}
                               getOptionLabel={(option) => option.nome_exibicao}
                               name="interesses"
                               id="interesses"

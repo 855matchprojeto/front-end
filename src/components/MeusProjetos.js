@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Grid, Card, CardMedia, CardContent } from "@mui/material";
 import { CardActions, Box, Button, Typography } from "@mui/material";
-import { getToken } from "../services/auth";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { getMeusProjetos } from "../services/api_projetos";
@@ -106,7 +105,7 @@ const MeusProjetos = () => {
               </Grid>
             ))
           ) : (
-            <Box>
+            <Box sx={{width: "100%", display: "flex", justifyContent: "center"}}>
               <Typography
                 variant="subtitle1"
                 color="textSecondary"
