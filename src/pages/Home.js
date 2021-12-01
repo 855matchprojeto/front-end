@@ -6,6 +6,7 @@ import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { chunk } from '../services/util';
 import { getProjetos } from "../services/api_projetos";
+import { getProfiles } from "../services/api_perfil";
 import LoadingBox from "../components/LoadingBox";
 
 //--estilo--
@@ -82,11 +83,15 @@ const Home = () => {
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = React.useState(true);
 
+  const [cardsProfiles, setCardsProfiles] = React.useState(false);
   const [cardsProjetos, setCardsProjetos] = React.useState(false);
+
   const [page, setPage] = React.useState(1);
   const [n_cards, setNcards] =  React.useState(10);
   const [pageCount, setPageCount] = React.useState(1);
   const [pesquisa,setPesquisa] = React.useState("");
+
+  const [typeSearch, setTypeSearch] = React.useState(0);
 
   function fazerPesquisa(e)
   {
@@ -113,7 +118,22 @@ const Home = () => {
         
         setPageLoading(false);
       }
+
+      async function loadProfiles()
+      {
+        setPageLoading(true);
+
+        let aux = await getProfiles([{"display_name_ilike": pesquisa}]);
+        let x = chunk(aux, n_cards);
+        setCardsProfiles(x);
+        setPageCount(x.length);
+
+        setPageLoading(false);
+      }
+
       loadProjetos();
+      loadProfiles();
+
   }, [n_cards, pesquisa])
 
   return (
@@ -121,23 +141,22 @@ const Home = () => {
       { !pageLoading &&
         <Container className={classes.grid} maxWidth="lg">
 
-          <Typography variant="h6"> Projetos </Typography>
+          <Typography variant="h6"> {!typeSearch ? "Projetos" : "Usuários"} </Typography>
         
-
           <SearchBox>
               <SearchField>
                 <Box className={classes.boxIcon}> 
                   <SearchIcon />
                 </Box>
                 <StyledInput 
-                  placeholder="Buscar projetos..." 
+                  placeholder={!typeSearch ? "Buscar projetos..."  : "Buscar usuários..."} 
                   inputProps={{ 'aria-label': 'search' }} 
                   onKeyPress={(e) => fazerPesquisa(e)}
                 />
               </SearchField>
           </SearchBox>
 
-          <FormControl size="small" variant="standard" style={{marginTop: theme.spacing(2)}}>
+          <FormControl size="small" variant="standard" style={{minWidth: "50px", marginTop: theme.spacing(2)}}>
             <InputLabel id="lbl-n-cards">Cards</InputLabel>
 
             <Select 
@@ -153,7 +172,22 @@ const Home = () => {
             </Select>
           </FormControl>
 
-          <Cards valores={cardsProjetos[page-1]}/>
+          <FormControl size="small" variant="standard" style={{marginLeft: "10px", minWidth: "100px", marginTop: theme.spacing(2)}}>
+            <InputLabel id="lbl-type-search"> Tipo de pesquisa </InputLabel>
+
+            <Select 
+              labelId="lbl-type-search" 
+              id="select-type-search" 
+              value={typeSearch} 
+              label="Tipo de pesquisa" 
+              onChange={(event) => setTypeSearch(event.target.value)}
+            >
+              <MenuItem value={0}>Projetos</MenuItem>
+              <MenuItem value={1}>Usuários</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Cards valores={!typeSearch ? cardsProjetos[page-1] : cardsProfiles[page-1]} cardsType={!typeSearch ? "projeto" : "usuarios"}/>
 
           <Container className={classes.pagination}>
             <Pagination 

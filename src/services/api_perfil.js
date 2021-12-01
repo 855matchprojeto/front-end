@@ -62,3 +62,7 @@ export const doHandleTextFieldChange = async (field, value) => {
     return perf.post(`/profiles/user/me/link-interest/${value.id}`).then(res => res)
     
 }
+
+export const getProfiles =  async (query) => {
+    return perf.get(`profiles`,query).then(res => res.data.items)
+}
