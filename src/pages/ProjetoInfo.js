@@ -146,10 +146,7 @@ const ProjetoInfo = () => {
                 </CardContent>
 
                 <CardActions sx={{ display: "flex", justifyContent: "end" }}>
-                  <Button 
-                    color="primary"
-                    onClick={() => updateInteresse()}
-                  >
+                  <Button color={btnInteresse ? "error" : "success"} onClick={() => updateInteresse()}>
                     {btnInteresse ? "Remover interesse" : "Marcar interesse"}
                   </Button>
                 </CardActions>

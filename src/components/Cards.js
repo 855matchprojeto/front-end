@@ -1,7 +1,9 @@
 import React,{ useState, useEffect } from "react";
-import CardHome from "./CardHome";
 import { Grid,createTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+
+import MyCard from "./MyCard";
+import ProfCard from "./ProfCard";
 
 //--estilo--
 const theme = createTheme();
@@ -15,6 +17,7 @@ const useStyles = makeStyles( ({
 const Cards = (props) => {
   const classes = useStyles();
   const [cards,setCards] = useState(false);
+  const cardsType = props.cardsType;
 
   useEffect(() => 
   {
@@ -23,8 +26,11 @@ const Cards = (props) => {
 
   return (
       <Grid className={classes.grid} container spacing={2}>
-        { 
-          cards && cards.map((card, index) => <CardHome key={card.id} info={card} />)
+        { cards &&
+          (cardsType === "projetos") && cards.map((card, index) => <MyCard key={card.id} info={card} /> )
+        }
+        { cards &&
+          (cardsType === "usuarios") && cards.map((card, index) => <ProfCard key={card.id} info={card}/> )
         }
       </Grid>
   );

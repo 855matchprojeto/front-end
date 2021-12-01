@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { getProjetosInteresses } from "../services/api_projetos";
 import { postInteresseProjeto } from "../services/api_projetos";
 import { deleteInteresseProjeto } from "../services/api_projetos";
+import { limitString } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles({
@@ -20,8 +21,10 @@ const useStyles = makeStyles({
 });
 //---------
 
-const CardHome = ({ info }) => {
+const MyCard = ({ info }) => {
   const [btnInteresse, setBtnInteresse] = React.useState(false);
+  const [componentLoading, setComponentLoading] = React.useState(true);
+
   const pid = info.id;
 
   const classes = useStyles();
@@ -41,6 +44,7 @@ const CardHome = ({ info }) => {
   {
       async function getStatusInteresse() 
       {
+          setComponentLoading(true);
           let aux = await getProjetosInteresses();
           aux = aux.data;
           
@@ -52,9 +56,14 @@ const CardHome = ({ info }) => {
           {
             aux.forEach(function (item, index) {
               if (item.id === pid)
+              {
                 setBtnInteresse(true);
+                return;
+              }
             });
           }
+
+          setComponentLoading(false);
       }
       
       getStatusInteresse();
@@ -63,39 +72,38 @@ const CardHome = ({ info }) => {
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
-      <Card>
+      { !componentLoading &&
+        <Card style={{display: "flex", flexDirection: "column", justifyContent: "space-between", height : "350px"}}>
 
-        <Box>
-          <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
-            className={classes.media} 
-            component="img"
-            image={info.image}
-          />
-        </Box>
-        
-        <CardContent>
-          <Typography variant="subtitle1">{info.titulo}</Typography>
-          <p>{info.descricao}</p>
-        </CardContent>
+          <Box>
+            <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
+              className={classes.media} 
+              component="img"
+              image={info.image}
+            />
+          </Box>
+          
+          <CardContent>
+            <Typography variant="subtitle1">{info.titulo}</Typography>
+            <Typography variant="body1"> {limitString(info.descricao, 150)} </Typography>
+          </CardContent>
 
-        <CardActions className={classes.actions}>
-          <Button 
-            color="primary"
-            onClick={() => updateInteresse()}
-          >
-            {btnInteresse ? "Remover interesse" : "Marcar interesse"}
-          </Button>
+          <CardActions className={classes.actions}>
+            <Button color={btnInteresse ? "error" : "success"} onClick={() => updateInteresse()}>
+              {btnInteresse ? "Remover interesse" : "Marcar interesse"}
+            </Button>
 
-          <Button
-            color="secondary"
-            onClick={() => history.push("/projeto", { data: [info.id, info.guid] })}
-          >
-            Detalhes
-          </Button>
-        </CardActions>
-      </Card>
+            <Button
+              color="secondary"
+              onClick={() => history.push("/projeto", { data: [info.id, info.guid] })}
+            >
+              Detalhes
+            </Button>
+          </CardActions>
+        </Card>
+      }
     </Grid>
   );
 };
 
-export default CardHome;
+export default MyCard;
