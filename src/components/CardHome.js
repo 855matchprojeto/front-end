@@ -1,13 +1,6 @@
 import React from "react";
-import {
-  Card,
-  Grid,
-  CardMedia,
-  Typography,
-  CardContent,
-  CardActions,
-  Button,
-} from "@mui/material";
+import { Card, Grid, CardMedia, Typography } from "@mui/material";
+import { CardContent, CardActions, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router-dom";
 
@@ -32,8 +25,9 @@ const CardHome = ({ info }) => {
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card>
-        <CardMedia className={classes.media} image={info.imagem} />
-
+        { /* <CardMedia className={classes.media} image={info.imagem} /> */ }
+        <CardMedia className={classes.media} image="https://source.unsplash.com/random" />
+        
         <CardContent>
           <Typography variant="subtitle1">{info.titulo}</Typography>
           <p>{info.descricao}</p>

@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
-
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Drawer,
-  Link,
-  createTheme,
-} from "@mui/material";
+import { AppBar, Toolbar, Typography} from "@mui/material";
+import { IconButton, Drawer, Link, createTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
-
 import { logout } from "../services/auth";
 
 //--estilo--
@@ -225,6 +216,7 @@ const Header = () => {
     const handleDrawerClose = () => {
       setView((previous) => ({ ...previous, drawerOpen: false }));
     };
+    
     return (
       <Toolbar>
         <IconButton

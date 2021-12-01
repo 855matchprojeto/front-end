@@ -50,7 +50,7 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
 
 const useStyles = makeStyles({
   grid: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(2)
   },
 
   pagination: {
@@ -58,23 +58,31 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
   },
 });
 //---------
 
 const Home = () => {
   const classes = useStyles();
-  const [cardsProjetos, setCardsProjetos] = useState(false);
-  
-  const [page, setPage] = useState(1);
-  const [n_cards, setNcards] =  useState(10);
-  const [pageCount, setPageCount] = useState(1);
-
-  const [pesquisa,setPesquisa] = useState("");
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
+
+  const [cardsProjetos, setCardsProjetos] = useState(false);
+  const [page, setPage] = useState(1);
+  const [n_cards, setNcards] =  useState(10);
+  const [pageCount, setPageCount] = useState(1);
+  const [pesquisa,setPesquisa] = useState("");
+
+  function fazerPesquisa(e)
+  {
+    if (e.key === 'Enter') 
+    {
+      setPesquisa(e.target.value);
+      console.log(pesquisa);
+    }
+  }
   
   // mudando o número de cards por página, renderiza novamente 
   useEffect(() => 
@@ -82,7 +90,7 @@ const Home = () => {
       setPageLoading(true);
     
       async function loadProjetos() 
-      {
+      { 
         let valores = await getProjetos(pesquisa);
         let x = chunk(valores.data,n_cards);
         setCardsProjetos(x);
@@ -93,16 +101,6 @@ const Home = () => {
       setPageLoading(false);
 
   }, [n_cards, pesquisa])
-
-  function fazerPesquisa(e)
-  {
-    if (e.key === 'Enter') 
-    {
-      setPesquisa(e.target.value);
-      console.log(`Pressed keyCode ${e.key} value ${e.target.value}`);
-      e.preventDefault();
-    }
-  }
 
   return (
     <>

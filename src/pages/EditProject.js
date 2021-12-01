@@ -15,7 +15,7 @@ const EditProject = () => {
     descricao: "Esse é um projeto Teste",
   });
 
-  const [responsaveis, setResponsaveis] = useState([ { name: "Lebron James", perfil: "Professor" }]);
+  //const [responsaveis, setResponsaveis] = useState([ { name: "Lebron James", perfil: "Professor" }]);
   const [imageFile, setImageFile] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);

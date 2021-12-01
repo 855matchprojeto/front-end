@@ -103,7 +103,7 @@ const Interesses = () => {
               </Grid>
             ))
           ) : (
-            <Box>
+            <Box sx={{width: "100%", display: "flex", justifyContent: "center"}}>
               <Typography
                 variant="subtitle1"
                 color="textSecondary"

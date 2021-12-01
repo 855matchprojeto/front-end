@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Typography, TextField, Grid, Card} from "@mui/material"; 
 import { Container, CircularProgress, Box, Button, Chip, Autocomplete, Stack} from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
-import { doGetAllCourses } from "../services/api_perfil";
-import { doGetInteresses } from "../services/api_perfil";
+import { doGetAllCourses, doGetInteresses } from "../services/api_perfil";
 import { postProjetos } from "../services/api_projetos";
 
 const Projetos = () => {
@@ -11,38 +10,9 @@ const Projetos = () => {
   const [fields, setFields] = useState({titulo: "", descricao: ""});
 
   const defaultImageUrl = "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
-  const [responsaveis, setResponsaveis] = useState([ { name: "Lebron James", perfil: "Professor" } ]);
+  //const [responsaveis, setResponsaveis] = useState([ { name: "Lebron James", perfil: "Professor" } ]);
   const [imageFile, setImageFile] = useState(null);
 
-  // API => puxa interesses e cursos
-  const [allInteresses, setAllInteresses] = useState(null);
-  const [allCourses, setAllCourses] = useState(null);
-
-  async function getInteresses() {
-    try {
-      const res = await doGetInteresses();
-
-      if (res.statusText === "OK") {
-        setAllInteresses(res.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function getAllCourses() {
-    try {
-      const res = await doGetAllCourses();
-
-      if (res.status === 200 && res.statusText === "OK") {
-        setAllCourses(res.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  const [isLoading, setIsLoading] = useState(false);
   const [areasSelecionadas, setAreasSelecionadas] = useState([]);
   const [cursosSelecionados, setCursosSelecionados] = useState([]);
   const [image, setImage] = useState(null);
@@ -80,9 +50,43 @@ const Projetos = () => {
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+    
+  const [allInteresses, setAllInteresses] = useState(null);
+  const [allCourses, setAllCourses] = useState(null);
 
   useEffect(() => {
     setPageLoading(true);
+
+    async function getInteresses() 
+    {
+      try 
+      {
+        const res = await doGetInteresses();
+        if (res.statusText === "OK") 
+          setAllInteresses(res.data);
+        
+      } 
+      catch (err) 
+      {
+        console.log(err);
+      }
+    }
+  
+    async function getAllCourses() 
+    {
+      try
+      {
+        const res = await doGetAllCourses();
+        if (res.status === 200 && res.statusText === "OK") 
+          setAllCourses(res.data);
+      } 
+      catch (err)
+      {
+        console.log(err);
+      }
+    }
+
     getInteresses();
     getAllCourses();
     setPageLoading(false);
