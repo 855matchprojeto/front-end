@@ -133,7 +133,7 @@ const MeusProjetos = () => {
                   ))
                 ) 
                 :
-                (
+                (              
                   <Grid container spacing={2}>
                     <Box sx={{width: "100%", display: "flex", justifyContent: "center"}}>
                       <Typography
