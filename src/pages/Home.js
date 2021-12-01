@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Cards from "../components/Cards";
-import { Container, createTheme, Typography, Pagination, FormControl,InputLabel,MenuItem,Select } from "@mui/material";
+import { Container, createTheme, Typography, Pagination, FormControl,InputLabel } from "@mui/material";
+import { MenuItem, Select, CircularProgress, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-
 import SearchIcon from "@mui/icons-material/Search";
-import { styled, alpha } from "@mui/material/styles";
-import InputBase from "@mui/material/InputBase";
-
 import { chunk } from '../services/util';
 import { getProjetos } from "../services/api_projetos";
 
@@ -53,7 +50,7 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
 
 const useStyles = makeStyles({
   grid: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(2)
   },
 
   pagination: {
@@ -61,26 +58,39 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: theme.spacing(1),
+    padding: theme.spacing(1)
   },
 });
 //---------
 
 const Home = () => {
   const classes = useStyles();
+
+  // pagina carregando, esconde conteudo
+  const [pageLoading, setPageLoading] = useState(true);
+
   const [cardsProjetos, setCardsProjetos] = useState(false);
-  
   const [page, setPage] = useState(1);
   const [n_cards, setNcards] =  useState(10);
   const [pageCount, setPageCount] = useState(1);
-
   const [pesquisa,setPesquisa] = useState("");
+
+  function fazerPesquisa(e)
+  {
+    if (e.key === 'Enter') 
+    {
+      setPesquisa(e.target.value);
+      console.log(pesquisa);
+    }
+  }
   
   // mudando o número de cards por página, renderiza novamente 
   useEffect(() => 
   {
+      setPageLoading(true);
+    
       async function loadProjetos() 
-      {
+      { 
         let valores = await getProjetos(pesquisa);
         let x = chunk(valores.data,n_cards);
         setCardsProjetos(x);
@@ -88,68 +98,71 @@ const Home = () => {
       }
       
       loadProjetos();
+      setPageLoading(false);
+
   }, [n_cards, pesquisa])
 
-  function fazerPesquisa(e)
-  {
-    if (e.key === 'Enter') 
-    {
-      setPesquisa(e.target.value);
-      console.log(`Pressed keyCode ${e.key} value ${e.target.value}`);
-      e.preventDefault();
-    }
-  }
-
   return (
-      <Container className={classes.grid} maxWidth="lg">
-        
-        <SearchBox>
-            <SearchField>
-              <SearchIcon />
-              <StyledInput 
-                placeholder="Pesquisar" 
-                inputProps={{ 'aria-label': 'search' }} 
-                onKeyPress={(e) => fazerPesquisa(e)}
-              />
-            </SearchField>
-        </SearchBox>
+    <>
+      { !pageLoading &&
+        <Container className={classes.grid} maxWidth="lg">
+          
+          <SearchBox>
+              <SearchField>
+                <SearchIcon />
+                <StyledInput 
+                  placeholder="Pesquisar" 
+                  inputProps={{ 'aria-label': 'search' }} 
+                  onKeyPress={(e) => fazerPesquisa(e)}
+                />
+              </SearchField>
+          </SearchBox>
 
-        <Typography variant="h6"> Projetos </Typography>
+          <Typography variant="h6"> Projetos </Typography>
 
-        <FormControl size="small" variant="standard" style={{marginTop: theme.spacing(2)}}>
-          <InputLabel id="lbl-n-cards">Cards</InputLabel>
+          <FormControl size="small" variant="standard" style={{marginTop: theme.spacing(2)}}>
+            <InputLabel id="lbl-n-cards">Cards</InputLabel>
 
-          <Select 
-            labelId="lbl-n-cards" 
-            id="select-n-cards" 
-            value={n_cards} 
-            label="Cards" 
-            onChange={(event) => setNcards(event.target.value)}
-          >
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={20}>20</MenuItem>
-            <MenuItem value={50}>50</MenuItem>
-          </Select>
-        </FormControl>
+            <Select 
+              labelId="lbl-n-cards" 
+              id="select-n-cards" 
+              value={n_cards} 
+              label="Cards" 
+              onChange={(event) => setNcards(event.target.value)}
+            >
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+            </Select>
+          </FormControl>
 
-        <Cards valores={cardsProjetos[page-1]}/>
+          <Cards valores={cardsProjetos[page-1]}/>
 
-        <Container className={classes.pagination}>
-          <Pagination 
-            count={pageCount} 
-            defaultPage={1}
-            page={page} 
-            onChange={(event, value) => {setPage(value)}}
-            shape="rounded" 
-            variant="outlined" 
-            color="primary" 
-            size="small" 
-            showFirstButton 
-            showLastButton
-          />
+          <Container className={classes.pagination}>
+            <Pagination 
+              count={pageCount} 
+              defaultPage={1}
+              page={page} 
+              onChange={(event, value) => {setPage(value)}}
+              shape="rounded" 
+              variant="outlined" 
+              color="primary" 
+              size="small" 
+              showFirstButton 
+              showLastButton
+            />
+          </Container>
+
         </Container>
+      }
 
-      </Container>
+      { pageLoading &&
+
+        <Container style={{display: "flex", height: "calc(100vh - 84px)",alignItems: "center", justifyContent: "center"}} maxWidth="lg">
+          <CircularProgress size={150} color="secondary" />
+        </Container>
+      }
+    </>
   );
 };
 
