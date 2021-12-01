@@ -30,23 +30,21 @@ const Projetos = () => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
-    /*
-    const formTeste = new FormData();
-
-    formTeste.append("titulo", fields.titulo);
-    formTeste.append("descricao", fields.descricao);
-    formTeste.append("areas", areasSelecionadas);
-    formTeste.append("cursos", cursosSelecionados);
-    formTeste.append("image", imageFile, imageFile.name);
-
+    
+    const formTeste = {
+      titulo: fields.titulo,
+      descricao: fields.descricao,
+      areas: areasSelecionadas,
+      cursos: cursosSelecionados,
+      image: imageFile
+    }
+    
     console.log(formTeste);
-    */
+    
 
     const form = {
       titulo: fields.titulo,
-      descricao: fields.descricao,
-      entidades: [],
-      tags: []
+      descricao: fields.descricao
       //interesses: areasSelecionadas.map((area) => area.id),
       //cursos: cursosSelecionados.map((curso) => curso.id),
     };
@@ -109,7 +107,7 @@ const Projetos = () => {
   return (
     <> 
       { !pageLoading &&
-        <Container maxWidth="xl" sx={{ mb: 5 }}>
+        <Container maxWidth="lg" sx={{ mb: 5 }}>
           <Card sx={{ width: "100%", p: 4, mt: 2 }}>
             <Typography variant="h5" color="textSecondary" sx={{ mb: 2 }}>
               Criar novo projeto

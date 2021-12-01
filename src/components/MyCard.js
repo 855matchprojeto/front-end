@@ -22,6 +22,8 @@ const useStyles = makeStyles({
 
 const MyCard = ({ info }) => {
   const [btnInteresse, setBtnInteresse] = React.useState(false);
+  const [componentLoading, setComponentLoading] = React.useState(true);
+
   const pid = info.id;
 
   const classes = useStyles();
@@ -41,6 +43,7 @@ const MyCard = ({ info }) => {
   {
       async function getStatusInteresse() 
       {
+          setComponentLoading(true);
           let aux = await getProjetosInteresses();
           aux = aux.data;
           
@@ -52,9 +55,14 @@ const MyCard = ({ info }) => {
           {
             aux.forEach(function (item, index) {
               if (item.id === pid)
+              {
                 setBtnInteresse(true);
+                return;
+              }
             });
           }
+
+          setComponentLoading(false);
       }
       
       getStatusInteresse();
@@ -63,37 +71,36 @@ const MyCard = ({ info }) => {
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
-      <Card>
+      { !componentLoading &&
+        <Card>
 
-        <Box>
-          <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
-            className={classes.media} 
-            component="img"
-            image={info.image}
-          />
-        </Box>
-        
-        <CardContent>
-          <Typography variant="subtitle1">{info.titulo}</Typography>
-          <p>{info.descricao}</p>
-        </CardContent>
+          <Box>
+            <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
+              className={classes.media} 
+              component="img"
+              image={info.image}
+            />
+          </Box>
+          
+          <CardContent>
+            <Typography variant="subtitle1">{info.titulo}</Typography>
+            <p>{info.descricao}</p>
+          </CardContent>
 
-        <CardActions className={classes.actions}>
-          <Button 
-            color="primary"
-            onClick={() => updateInteresse()}
-          >
-            {btnInteresse ? "Remover interesse" : "Marcar interesse"}
-          </Button>
+          <CardActions className={classes.actions}>
+            <Button color={btnInteresse ? "error" : "success"} onClick={() => updateInteresse()}>
+              {btnInteresse ? "Remover interesse" : "Marcar interesse"}
+            </Button>
 
-          <Button
-            color="secondary"
-            onClick={() => history.push("/projeto", { data: [info.id, info.guid] })}
-          >
-            Detalhes
-          </Button>
-        </CardActions>
-      </Card>
+            <Button
+              color="secondary"
+              onClick={() => history.push("/projeto", { data: [info.id, info.guid] })}
+            >
+              Detalhes
+            </Button>
+          </CardActions>
+        </Card>
+      }
     </Grid>
   );
 };

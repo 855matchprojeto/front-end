@@ -1,7 +1,7 @@
 import React from "react";
 import Cards from "../components/Cards";
 import { Container, createTheme, Typography, Pagination, FormControl,InputLabel } from "@mui/material";
-import { MenuItem, Select, styled, alpha, InputBase } from "@mui/material";
+import { Box, MenuItem, Select, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { chunk } from '../services/util';
@@ -29,6 +29,7 @@ const SearchField = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   backgroundColor: "#CFCFCF",
+  borderRadius: "5px",
   "&:hover": {
     backgroundColor: alpha("#CFCFCF", 0.5),
   },
@@ -40,6 +41,7 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
 
     transition: theme.transitions.create("width"),
     width: "100%",
+    marginLeft: "5px",
     [theme.breakpoints.up("sm")]: {
       width: "20ch",
       "&:focus": {
@@ -61,6 +63,16 @@ const useStyles = makeStyles({
     justifyContent: "center",
     padding: theme.spacing(1)
   },
+
+  boxIcon: {
+    alignItems: "center",
+    justifyContent: "center",
+    display:"flex", 
+    width: '2rem', 
+    height: '2rem',
+    //border: "1px solid black",
+    //borderRadius: "100%"
+  }
 });
 //---------
 
@@ -110,10 +122,13 @@ const Home = () => {
         <Container className={classes.grid} maxWidth="lg">
 
           <Typography variant="h6"> Projetos </Typography>
-          
+        
+
           <SearchBox>
               <SearchField>
-                <SearchIcon />
+                <Box className={classes.boxIcon}> 
+                  <SearchIcon />
+                </Box>
                 <StyledInput 
                   placeholder="Buscar projetos..." 
                   inputProps={{ 'aria-label': 'search' }} 

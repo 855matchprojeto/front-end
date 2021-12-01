@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Box, Tab } from "@mui/material";
+import { Container, Card, Box, Tab } from "@mui/material";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import Interesses from "../components/tabs perfil/Interesses";
 import MeusProjetos from "../components/tabs perfil/MeusProjetos";
@@ -18,7 +18,7 @@ const Perfil = () => {
   }
 
   return (
-        <Box sx={{ mb: 4 }}>
+      <Container maxWidth="lg">
           <Card sx={{minHeight: "calc(100vh - 148px)", mt: 4 }}>
             <TabContext
               value={valueTab}
@@ -69,7 +69,7 @@ const Perfil = () => {
               </TabPanel>
             </TabContext>
           </Card>
-        </Box>
+        </Container>
   );
 };
 
