@@ -109,18 +109,20 @@ const Interesses = () => {
                 ) 
                 :
                 (
-                  <Box sx={{width: "100%", display: "flex", justifyContent: "center"}}>
-                    <Typography
-                      variant="subtitle1"
-                      color="textSecondary"
-                      sx={{
-                        p: 4,
-                        fontSize: "1.5em",
-                      }}
-                    >
-                      Você ainda não tem nenhum projeto com interesse.
-                    </Typography>
-                  </Box>
+                  <Grid container spacing={2}>
+                    <Box sx={{width: "100%", display: "flex", justifyContent: "center"}}>
+                      <Typography
+                        variant="subtitle1"
+                        color="textSecondary"
+                        sx={{
+                          p: 4,
+                          fontSize: "1.5em",
+                        }}
+                      >
+                        Você ainda não tem nenhum projeto com interesse.
+                      </Typography>
+                    </Box>
+                  </Grid>
                 )
               }
             </>
