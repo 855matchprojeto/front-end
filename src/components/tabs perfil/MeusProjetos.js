@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Grid, Card, CardMedia, CardContent, Container, CircularProgress } from "@mui/material";
+import { Grid, Card, CardMedia, CardContent } from "@mui/material";
 import { CardActions, Box, Button, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { getMeusProjetos } from "../../services/api_projetos";
+import LoadingBox from "../LoadingBox";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -83,9 +84,9 @@ const MeusProjetos = () => {
   }, []);
 
   return (
-      <Grid container spacing={2}>
-        { !componentLoading && (
-            <>
+      <>
+        { !componentLoading && 
+            <Grid container spacing={2}>
               {
                 meusProjetos.length > 0 ? 
                 (
@@ -150,16 +151,11 @@ const MeusProjetos = () => {
                   </Grid>
                 )
               }
-            </>
-          )
+            </Grid>    
         }
 
-        { componentLoading &&
-          <Container style={{display: "flex", height: "100%", alignItems: "center", justifyContent: "center",alignSelf: "center"}} maxWidth="lg">
-            <CircularProgress size={150} color="secondary" />
-          </Container>
-        }
-      </Grid>
+        { componentLoading && <LoadingBox/>}
+      </>
   );
 };
 

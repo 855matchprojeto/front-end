@@ -1,13 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { Container, Grid, Box, Typography, Button } from "@mui/material";
-import {TextField, Stack, Chip, Card, CircularProgress } from "@mui/material";
+import {TextField, Stack, Chip, Card } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { doGetAllCourses,doGetInteresses } from "../services/api_perfil";
+import LoadingBox from "../components/LoadingBox";
 
 const EditProject = () => {
   const imageUrl = "https://source.unsplash.com/random";
-  const imageRef = useRef();
-  const [fields, setFields] = useState({
+  const imageRef = React.useRef();
+
+  const [fields, setFields] = React.useState({
     image: imageUrl,
     titulo: "Projeto Teste",
     cursos: [],
@@ -16,11 +18,20 @@ const EditProject = () => {
   });
 
   //const [responsaveis, setResponsaveis] = useState([ { name: "Lebron James", perfil: "Professor" }]);
-  const [imageFile, setImageFile] = useState(null);
+  const [image, setImage] = React.useState(null);
+  const [imageFile, setImageFile] = React.useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const handleImageFile = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(URL.createObjectURL(e.target.files[0]));
+      setImageFile(e.target.files[0]);
+    }
+  };
 
-  const [areasSelecionadas, setAreasSelecionadas] = useState([
+  // enquanto estiver criando um projeto, nao deixa clicar no botao
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const [areasSelecionadas, setAreasSelecionadas] = React.useState([
     {
       id: 3,
       nome_referencia: "dev_sustentavel",
@@ -35,7 +46,7 @@ const EditProject = () => {
     },
   ]);
 
-  const [cursosSelecionados, setCursosSelecionados] = useState([
+  const [cursosSelecionados, setCursosSelecionados] = React.useState([
     {
       id: 4,
       nome_exibicao: "Engenharia da Computação",
@@ -50,8 +61,6 @@ const EditProject = () => {
     },
   ]);
 
-  const [image, setImage] = useState(null);
-
   const handleChangeFields = (e) => { setFields({ ...fields, [e.target.name]: e.target.value }); };
   const handleChangeAreas = (e, value) => { setAreasSelecionadas(value); };
   const handleChangeCursos = (e, value) => { setCursosSelecionados(value); };
@@ -60,48 +69,37 @@ const EditProject = () => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
-    // const form = new FormData();
-    // const info = {
-    //   ...fields,
-    //   areas: areasSelecionadas,
-    //   cursos: cursosSelecionados,
-    //   imageFile: imageFile,
-    // };
+    const formTeste = new FormData();
 
-    // form.append("titulo", fields.titulo);
-    // form.append("descricao", fields.descricao);
-    // form.append("areas", areasSelecionadas);
-    // form.append("cursos", cursos);
-    // form.append("image", imageFile, imageFile.name);
+    formTeste.append("titulo", fields.titulo);
+    formTeste.append("descricao", fields.descricao);
+    formTeste.append("areas", areasSelecionadas);
+    formTeste.append("cursos", cursosSelecionados);
+    formTeste.append("image", imageFile, imageFile.name);
 
-    // try {
-    //   const res = await axios.post("ENDPOINT", form, {
-    //     headers: { "Content-Type": "multipart/form-data" },
-    //   });
-    //   console.log(res);
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    console.log(formTeste);
+
+    const form = {
+      titulo: fields.titulo,
+      descricao: fields.descricao,
+      interesses: areasSelecionadas.map((area) => area.id),
+      cursos: cursosSelecionados.map((curso) => curso.id),
+    };
+
+    console.log(form);
 
     console.log("Sucesso?");
 
     setIsLoading(false);
   };
 
-  const handleImageFile = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(URL.createObjectURL(e.target.files[0]));
-      setImageFile(e.target.files[0]);
-    }
-  };
-
   // pagina carregando, esconde conteudo
-  const [pageLoading, setPageLoading] = useState(true);
+  const [pageLoading, setPageLoading] = React.useState(true);
 
-  const [allInteresses, setAllInteresses] = useState(null);
-  const [allCourses, setAllCourses] = useState(null);
+  const [allInteresses, setAllInteresses] = React.useState([]);
+  const [allCourses, setAllCourses] = React.useState([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function getInteresses() 
     {
       setPageLoading(true);
@@ -164,6 +162,7 @@ const EditProject = () => {
                         style={{ width: "100%", height: "100%" }}
                       />
                     </Box>
+
                     <Box>
                       <input
                         type="file"
@@ -171,14 +170,15 @@ const EditProject = () => {
                         ref={imageRef}
                         onChange={(e) => handleImageFile(e)}
                       />
+
                       <Button
                         variant="outlined"
                         onClick={() => imageRef.current.click()}
                         size="small"
                         sx={{ mb: 4 }}
                       >
-                        Upload
-                        <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
+                          Upload
+                          <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
                       </Button>
                     </Box>
                   </Box>
@@ -187,6 +187,7 @@ const EditProject = () => {
 
               <Grid item xs={12} sm={6}>
                 <Grid container spacing={3}>
+
                   <Grid item xs={12}>
                     <TextField
                       type="input"
@@ -197,6 +198,7 @@ const EditProject = () => {
                       onChange={(e) => handleChangeFields(e, null)}
                     />
                   </Grid>
+
                   <Grid item xs={12}>
                     <Stack spacing={3} sx={{ width: "100%" }}>
                       <TextField
@@ -226,6 +228,7 @@ const EditProject = () => {
                       />
                     </Stack>
                   </Grid>
+
                   <Grid item xs={12}>
                     <Stack spacing={3} sx={{ width: "100%" }}>
                       <TextField
@@ -270,6 +273,7 @@ const EditProject = () => {
                       onChange={(e) => handleChangeFields(e, null)}
                     />
                   </Grid>
+
                   <Grid item xs={12} sx={{ mt: 1 }}>
                     <Button
                       variant="contained"
@@ -279,18 +283,16 @@ const EditProject = () => {
                       Salvar
                     </Button>
                   </Grid>
+
                 </Grid>
               </Grid>
+
             </Grid>
           </Card>
         </Container>
       }
 
-      { pageLoading &&
-        <Container style={{display: "flex", height: "calc(100vh - 84px)",alignItems: "center", justifyContent: "center"}} maxWidth="lg">
-          <CircularProgress size={150} color="secondary" />
-        </Container>
-      }
+      { pageLoading && <LoadingBox/> }
     </>
   );
 };

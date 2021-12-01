@@ -1,7 +1,8 @@
 import React from "react";
 import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions } from "@mui/material"; 
-import { Box, Button, Chip, Autocomplete, Container, CircularProgress } from "@mui/material";
+import { Box, Button, Chip, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import LoadingBox from "../../components/LoadingBox";
 
 import { doHandleDelete,doHandleDeleteCourses } from "../../services/api_perfil";
 import { doAdicionaInteresse } from "../../services/api_perfil";
@@ -413,11 +414,7 @@ const MeusDados = () => {
         </Grid>
       }
 
-      { componentLoading &&
-        <Container style={{display: "flex", height: "100%", alignItems: "center", justifyContent: "center",alignSelf: "center"}} maxWidth="lg">
-          <CircularProgress size={150} color="secondary" />
-        </Container>
-      }
+      { componentLoading && <LoadingBox/>}
     </>
     
   );

@@ -1,8 +1,9 @@
 import React,{ useState, useEffect } from "react";
 import {Container, Box, Typography, CardContent, Card } from "@mui/material";
-import {Grid, CardMedia, CardActions, Button, Chip, CircularProgress } from "@mui/material";
+import {Grid, CardMedia, CardActions, Button, Chip } from "@mui/material";
 import { useLocation } from "react-router";
 import { getProjetos } from "../services/api_projetos";
+import LoadingBox from "../components/LoadingBox";
 
 const ProjetoInfo = () => {
   const [tenhoInteresse, setTenhoInteresse] = useState(false);
@@ -28,10 +29,13 @@ const ProjetoInfo = () => {
          // PUXAR CURSOS
          //const cr = await getProjetos(dados);
          //getProjectCursos(cr.data[0]);
+         getProjectCursos([]);
 
          // PUXAR AREAS
          //const ar = await getProjetos(dados);
          //getProjectAreas(ar.data[0]);
+         getProjectAreas([]);
+
          setPageLoading(false);
        }
        
@@ -52,7 +56,7 @@ const ProjetoInfo = () => {
             <Box sx={{color: "text.secondary"}}>
               <Card sx={{ mt: 2 }}>
 
-                <Box sx={{width: "100%",bgcolor: "#dedede"}}>
+                <Box sx={{width: "100%", bgcolor: "#dedede"}}>
                   <CardMedia component="img" image={projectInfo.image} height="300" sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}/>
                 </Box>
 
@@ -130,11 +134,7 @@ const ProjetoInfo = () => {
         </Container>
       }
 
-      { pageLoading &&
-        <Container style={{display: "flex", height: "calc(100vh - 84px)",alignItems: "center", justifyContent: "center"}} maxWidth="lg">
-          <CircularProgress size={150} color="secondary" />
-        </Container>
-      }
+      { pageLoading && <LoadingBox/>}
     </>
   );
 };

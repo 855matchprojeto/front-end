@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Card, CardMedia, CardContent, Container, CircularProgress } from "@mui/material";
+import { Grid, Card, CardMedia, CardContent } from "@mui/material";
 import { CardActions, Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router-dom";
 import { getProjetosInteresses } from "../../services/api_projetos";
+import LoadingBox from "../LoadingBox";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -64,77 +65,72 @@ const Interesses = () => {
   }, []);
 
   return (
-      <Grid container spacing={2}>
-        { !componentLoading && (
-            <>
-              {
-                interesses.length > 0 ? (
-                  interesses.map((interesse) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3}>
-                      <Card>
-                        <CardMedia
-                          className={classes.media}
-                          image={interesse.image}
-                        />
-                        <CardContent>
-                          <Typography variant="subtitle1">
-                            {interesse.title}
-                          </Typography>
-                          <p>{interesse.description}</p>
-                        </CardContent>
-                        <CardActions>
-                          <Box
-                            sx={{
-                              width: "100%",
-                              display: "flex",
-                              justifyContent: "end",
-                              mr: 2,
+      <>
+        { !componentLoading && 
+          <Grid container spacing={2}>
+            {
+              interesses.length > 0 ? (
+                interesses.map((interesse) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3}>
+                    <Card>
+                      <CardMedia
+                        className={classes.media}
+                        image={interesse.image}
+                      />
+                      <CardContent>
+                        <Typography variant="subtitle1">
+                          {interesse.title}
+                        </Typography>
+                        <p>{interesse.description}</p>
+                      </CardContent>
+                      <CardActions>
+                        <Box
+                          sx={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "end",
+                            mr: 2,
+                          }}
+                        >
+                          <Button
+                            color="secondary"
+                            onClick={() => {
+                              console.log("Teste");
+                              history.push("/projeto");
                             }}
                           >
-                            <Button
-                              color="secondary"
-                              onClick={() => {
-                                console.log("Teste");
-                                history.push("/projeto");
-                              }}
-                            >
-                              Detalhes
-                            </Button>
-                          </Box>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-                  )
-                  )
-                ) 
-                :
-                (
-                  <Grid container spacing={2}>
-                    <Box sx={{width: "100%", display: "flex", justifyContent: "center"}}>
-                      <Typography
-                        variant="subtitle1"
-                        color="textSecondary"
-                        sx={{
-                          p: 4,
-                          fontSize: "1.5em",
-                        }}
-                      >
-                        Você ainda não tem nenhum projeto com interesse.
-                      </Typography>
-                    </Box>
+                            Detalhes
+                          </Button>
+                        </Box>
+                      </CardActions>
+                    </Card>
                   </Grid>
                 )
-              }
-            </>
-          )
+                )
+              ) 
+              :
+              (
+                <Grid container spacing={2}>
+                  <Box sx={{width: "100%", display: "flex", justifyContent: "center"}}>
+                    <Typography
+                      variant="subtitle1"
+                      color="textSecondary"
+                      sx={{
+                        p: 4,
+                        fontSize: "1.5em",
+                      }}
+                    >
+                      Você ainda não tem nenhum projeto com interesse.
+                    </Typography>
+                  </Box>
+                </Grid>
+              )
+            }
+          </Grid>       
         }
 
-        { componentLoading &&
-          <Container style={{display: "flex", height: "100%", alignItems: "center", justifyContent: "center",alignSelf: "center"}} maxWidth="lg">
-            <CircularProgress size={150} color="secondary" />
-          </Container>
-        }
-      </Grid>
+        { componentLoading && <LoadingBox/> }
+      </>      
   );
 };
 
