@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Typography,
-  Box,
-  Button,
-} from "@mui/material";
+import { Grid, Card, CardMedia, CardContent } from "@mui/material";
+import { CardActions, Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
-import { getToken } from "../services/auth";
+import { getProjetosInteresses } from "../services/api_projetos";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -44,35 +35,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Interesses = () => {
-  const [interesses, setInteresses] = useState(null);
   const classes = useStyles();
   const history = useHistory();
 
-  const getProjetosInteresses = async () => {
-    const URL =
-      "https://projetos-match-projetos.herokuapp.com/users/me/projects/interested-in";
-    try {
-      const res = await axios.get(URL, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + getToken,
-        },
-      });
-
-      if (res.status === 200) {
-        setInteresses(res.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // puxa interesses
+  const [interesses, setInteresses] = useState(null);
 
   useEffect(() => {
-    getProjetosInteresses();
+    async function doGetProjInteresses()
+    {
+      try 
+      {
+        const res = await getProjetosInteresses();
+        if (res.status === 200) 
+          setInteresses(res.data);
+        
+      } 
+      catch (err) 
+      {
+        console.log(err);
+      }
+    }
+
+    doGetProjInteresses()
   }, []);
+
   return (
     <Grid container spacing={2}>
-      {interesses && (
+      {
+        interesses && (
         <>
           {interesses.length > 0 ? (
             interesses.map((interesse) => (
@@ -126,7 +117,8 @@ const Interesses = () => {
             </Box>
           )}
         </>
-      )}
+      )
+      }
     </Grid>
   );
 };

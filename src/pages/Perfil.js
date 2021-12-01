@@ -1,39 +1,20 @@
 import React, { useState, useEffect } from "react";
-import {
-  Typography,
-  TextField,
-  Grid,
-  CardHeader,
-  CardContent,
-  Card,
-  CardActions,
-  CardMedia,
-  Box,
-  Button,
-  Tab,
-  Chip,
-  Autocomplete,
-} from "@mui/material";
+import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions} from "@mui/material"; 
+import { Container, CircularProgress, Box, Button, Tab, Chip, Autocomplete} from "@mui/material";
 
 import { useSnackbar } from "notistack";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import { makeStyles } from "@mui/styles";
-import { useHistory } from "react-router-dom";
+
 import Interesses from "../components/Interesses";
 import MeusProjetos from "../components/MeusProjetos";
 
-import { doHandleDelete } from "../services/api_perfil";
-import { doHandleDeleteCourses } from "../services/api_perfil";
+import { doHandleDelete,doHandleDeleteCourses } from "../services/api_perfil";
 import { doGetDataUser } from "../services/api_perfil";
-
-import { doAdicionaCurso } from "../services/api_perfil";
+//import { doAdicionaCurso,doHandleTextFieldChange } from "../services/api_perfil";
 import { doAdicionaInteresse } from "../services/api_perfil";
-
-import { doGetAllCourses } from "../services/api_perfil";
-import { doHandleChangeCourses } from "../services/api_perfil";
-import { doGetInteresses } from "../services/api_perfil";
-import { doHandleSave } from "../services/api_perfil";
-import { doHandleTextFieldChange } from "../services/api_perfil";
+import { doGetAllCourses, doGetInteresses } from "../services/api_perfil";
+import { doHandleChangeCourses,doHandleSave  } from "../services/api_perfil";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -65,12 +46,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Perfil = () => {
-  const perfilImageUrl =
-    "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
-  const history = useHistory();
+  const perfilImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
   const { enqueueSnackbar } = useSnackbar();
+  const classes = useStyles();
+  
   const [valueTab, setTabValue] = useState("perfil");
-  const [isLoading, setIsLoading] = useState(false);
+  const handleChange = (event, newValue) => { setTabValue(newValue);};
 
   const meusProjetos = [
     {
@@ -87,11 +68,7 @@ const Perfil = () => {
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
       image: "https://source.unsplash.com/random",
     },
-  ];
-
-  const [user, setUser] = useState(null);
-  const [allInteresses, setAllInteresses] = useState(null);
-  const [allCourses, setAllCourses] = useState(null);
+  ];  
 
   async function handleDelete(value) {
     const res = await doHandleDelete(value);
@@ -121,36 +98,6 @@ const Perfil = () => {
     }
   }
 
-  async function getDataUser() {
-    try {
-      const res = await doGetDataUser();
-
-      if (res.status === 200) {
-        setUser({
-          name: res.data.nome_exibicao.split(" ")[0],
-          sobrenome: res.data.nome_exibicao.split(" ")[1],
-          interesses: res.data.interesses,
-          cursos: res.data.cursos,
-          email: res.data.emails[0],
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function getAllCourses() {
-    try {
-      const res = await doGetAllCourses();
-
-      if (res.status === 200 && res.statusText === "OK") {
-        setAllCourses(res.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   async function adicionaCurso(value) {
     if (value) {
       const newCourse = user.cursos.find(
@@ -170,18 +117,6 @@ const Perfil = () => {
           console.log(err);
         }
       }
-    }
-  }
-
-  async function getInteresses() {
-    try {
-      const res = await doGetInteresses();
-
-      if (res.statusText === "OK") {
-        setAllInteresses(res.data);
-      }
-    } catch (err) {
-      console.log(err);
     }
   }
 
@@ -233,268 +168,336 @@ const Perfil = () => {
     }
   }
 
+  // pagina carregando, esconde conteudo
+  const [pageLoading, setPageLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [user, setUser] = useState(null);
+  const [allInteresses, setAllInteresses] = useState(null);
+  const [allCourses, setAllCourses] = useState(null);
+
+
   useEffect(() => {
+    setPageLoading(true);
+
+    async function getDataUser() 
+    {
+      try 
+      {
+        const res = await doGetDataUser();
+  
+        if (res.status === 200) 
+        {
+          setUser({
+            name: res.data.nome_exibicao.split(" ")[0],
+            sobrenome: res.data.nome_exibicao.split(" ")[1],
+            interesses: res.data.interesses,
+            cursos: res.data.cursos,
+            email: res.data.emails[0],
+          });
+        }
+      } 
+      catch (err) 
+      {
+        console.log(err);
+      }
+    }
+
+    async function getInteresses() 
+    {
+      try 
+      {
+        const res = await doGetInteresses();
+        if (res.statusText === "OK") 
+          setAllInteresses(res.data);
+      
+      } 
+      catch (err) 
+      {
+        console.log(err);
+      }
+    }  
+
+    async function getAllCourses() 
+    {
+      try 
+      {
+        const res = await doGetAllCourses();
+        if (res.status === 200 && res.statusText === "OK") 
+          setAllCourses(res.data);
+        
+      }
+      catch (err) 
+      {
+        console.log(err);
+      }
+    }
+
     getDataUser();
     getInteresses();
     getAllCourses();
+
+    setPageLoading(false);
   }, []);
-
-  const classes = useStyles();
-
-  const handleChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
 
   return (
     <>
-      <Box sx={{ mb: 4 }}>
-        <Card sx={{ minHeight: "100vh", mt: 4 }}>
-          <TabContext
-            value={valueTab}
-            color="primary"
-            style={{ marginTop: "24px" }}
-          >
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-              }}
+      { !pageLoading &&
+        <Box sx={{ mb: 4 }}>
+          <Card sx={{ minHeight: "100vh", mt: 4 }}>
+            <TabContext
+              value={valueTab}
+              color="primary"
+              style={{ marginTop: "24px" }}
             >
-              <TabList
-                indicatorColor="primary"
-                onChange={handleChange}
-                style={{ marginTop: "24px", marginBottom: "16px" }}
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
               >
-                <Tab label="Meus Dados" value="perfil" />
-                <Tab label="Meus Projetos" value="projetos" />
-                <Tab label="Tenho Interesse" value="interesses" />
-              </TabList>
-            </Box>
+                <TabList
+                  indicatorColor="primary"
+                  onChange={handleChange}
+                  style={{ marginTop: "24px", marginBottom: "16px" }}
+                >
+                  <Tab label="Meus Dados" value="perfil" />
+                  <Tab label="Meus Projetos" value="projetos" />
+                  <Tab label="Tenho Interesse" value="interesses" />
+                </TabList>
+              </Box>
 
-            {/* ABA DE PERFIL */}
-            <TabPanel value="perfil">
-              <Grid container spacing={2} sx={{ width: "100%" }}>
-                <Grid item xs={12} sm={4}>
-                  <Card>
-                    <CardHeader
-                      title={
-                        <Typography variant="h6" align="center">
-                          {user && `${user.name}`}
-                        </Typography>
-                      }
-                    />
-
-                    <CardContent>
-                      <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <img
-                          alt="Not Found"
-                          src={perfilImageUrl}
-                          style={{ width: "100px", height: "100px" }}
-                        />
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
-
-                <Grid item xs={12} sm={8}>
-                  <Card>
-                    <CardHeader
-                      title={<Typography variant="h6">Perfil</Typography>}
-                    />
-                    <CardContent>
-                      <Grid container style={{ width: "100%" }} spacing={2}>
-                        {/* email,nome,sobrenome */}
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            className={classes.textField}
-                            type="email"
-                            label="Email"
-                            variant="outlined"
-                            placeholder="Email"
-                            defaultValue="email@email.com"
-                            value={user && user.email.email}
-                            fullWidth
-                            disabled
-                          />
-                        </Grid>
-
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            className={classes.textField}
-                            type="input"
-                            label="Nome"
-                            name="name"
-                            variant="outlined"
-                            placeholder="Nome"
-                            defaultValue="LeBron James"
-                            value={user && user.name}
-                            onChange={(e) =>
-                              handleTextFieldChange(
-                                e.target.name,
-                                e.target.value
-                              )
-                            }
-                            fullWidth
-                          />
-                        </Grid>
-
-                        <Grid item xs={12} md={6}>
-                          <TextField
-                            className={classes.textField}
-                            type="input"
-                            label="Sobrenome"
-                            name="sobrenome"
-                            variant="outlined"
-                            placeholder="Sobrenome"
-                            value={user ? user.sobrenome : ""}
-                            onChange={(e) =>
-                              handleTextFieldChange(
-                                e.target.name,
-                                e.target.value
-                              )
-                            }
-                            fullWidth
-                          />
-                        </Grid>
-
-                        {/* caixa de cursos */}
-                        <Grid item xs={12} sx={{ mb: 1 }}>
-                          <Typography variant="subtitle2">Cursos</Typography>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                          <Autocomplete
-                            options={allCourses && allCourses}
-                            getOptionLabel={(option) => option.nome_exibicao}
-                            name="cursos"
-                            id="cursos"
-                            freeSolo
-                            onChange={(e, value) => adicionaCurso(value)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Cursos"
-                                placeholder="Cursos"
-                                fullWidth
-                              />
-                            )}
-                          />
-                        </Grid>
-
-                        <Grid
-                          item
-                          xs={12}
-                          sx={{ display: "flex", flexWrap: "wrap" }}
-                        >
-                          {user &&
-                            user.cursos.map((curso, index) => (
-                              <Chip
-                                variant="outlined"
-                                label={curso.nome_exibicao}
-                                sx={{ mr: 1, mb: 1 }}
-                                key={index}
-                                onDelete={() => handleDeleteCourses(curso)}
-                              />
-                            ))}
-                        </Grid>
-
-                        {/* caixa de interesses */}
-                        <Grid item xs={12} sx={{ mb: 1 }}>
-                          <Typography variant="subtitle2">
-                            Áreas de Interesse
+              {/* ABA DE PERFIL */}
+              <TabPanel value="perfil">
+                <Grid container spacing={2} sx={{ width: "100%" }}>
+                  <Grid item xs={12} sm={4}>
+                    <Card>
+                      <CardHeader
+                        title={
+                          <Typography variant="h6" align="center">
+                            {user && `${user.name}`}
                           </Typography>
-                        </Grid>
+                        }
+                      />
 
-                        <Grid item xs={12}>
-                          <Autocomplete
-                            options={allInteresses && allInteresses}
-                            getOptionLabel={(option) => option.nome_exibicao}
-                            name="interesses"
-                            id="interesses"
-                            freeSolo
-                            onChange={(e, value) =>
-                              handleTextFieldChange("interesses", value)
-                            }
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Interesses"
-                                placeholder="Interesses"
-                                autoComplete="off"
-                                fullWidth
-                              />
-                            )}
+                      <CardContent>
+                        <Box sx={{ display: "flex", justifyContent: "center" }}>
+                          <img
+                            alt="Not Found"
+                            src={perfilImageUrl}
+                            style={{ width: "100px", height: "100px" }}
                           />
-                        </Grid>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
 
-                        <Grid
-                          item
-                          xs={12}
-                          sx={{ display: "flex", flexWrap: "wrap" }}
-                        >
-                          {user &&
-                            user.interesses.map((area, index) => (
-                              <Chip
-                                variant="outlined"
-                                label={area.nome_exibicao}
-                                sx={{ mr: 1, mb: 1 }}
-                                key={index}
-                                onDelete={() => handleDelete(area)}
-                              />
-                            ))}
-                        </Grid>
-                      </Grid>
-                    </CardContent>
+                  <Grid item xs={12} sm={8}>
+                    <Card>
+                      <CardHeader
+                        title={<Typography variant="h6">Perfil</Typography>}
+                      />
+                      <CardContent>
+                        <Grid container style={{ width: "100%" }} spacing={2}>
+                          {/* email,nome,sobrenome */}
+                          <Grid item xs={12} md={6}>
+                            <TextField
+                              className={classes.textField}
+                              type="email"
+                              label="Email"
+                              variant="outlined"
+                              placeholder="Email"
+                              defaultValue="email@email.com"
+                              value={user && user.email.email}
+                              fullWidth
+                              disabled
+                            />
+                          </Grid>
 
-                    <CardActions
-                      style={{
-                        display: "flex",
-                        justifyContent: "end",
-                        marginRight: "24px",
-                        marginBottom: "16px",
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleSave()}
-                        disabled={isLoading}
+                          <Grid item xs={12} md={6}>
+                            <TextField
+                              className={classes.textField}
+                              type="input"
+                              label="Nome"
+                              name="name"
+                              variant="outlined"
+                              placeholder="Nome"
+                              defaultValue="LeBron James"
+                              value={user && user.name}
+                              onChange={(e) =>
+                                handleTextFieldChange(
+                                  e.target.name,
+                                  e.target.value
+                                )
+                              }
+                              fullWidth
+                            />
+                          </Grid>
+
+                          <Grid item xs={12} md={6}>
+                            <TextField
+                              className={classes.textField}
+                              type="input"
+                              label="Sobrenome"
+                              name="sobrenome"
+                              variant="outlined"
+                              placeholder="Sobrenome"
+                              value={user ? user.sobrenome : ""}
+                              onChange={(e) =>
+                                handleTextFieldChange(
+                                  e.target.name,
+                                  e.target.value
+                                )
+                              }
+                              fullWidth
+                            />
+                          </Grid>
+
+                          {/* caixa de cursos */}
+                          <Grid item xs={12} sx={{ mb: 1 }}>
+                            <Typography variant="subtitle2">Cursos</Typography>
+                          </Grid>
+
+                          <Grid item xs={12}>
+                            <Autocomplete
+                              options={allCourses && allCourses}
+                              getOptionLabel={(option) => option.nome_exibicao}
+                              name="cursos"
+                              id="cursos"
+                              freeSolo
+                              onChange={(e, value) => adicionaCurso(value)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Cursos"
+                                  placeholder="Cursos"
+                                  fullWidth
+                                />
+                              )}
+                            />
+                          </Grid>
+
+                          <Grid
+                            item
+                            xs={12}
+                            sx={{ display: "flex", flexWrap: "wrap" }}
+                          >
+                            {user &&
+                              user.cursos.map((curso, index) => (
+                                <Chip
+                                  variant="outlined"
+                                  label={curso.nome_exibicao}
+                                  sx={{ mr: 1, mb: 1 }}
+                                  key={index}
+                                  onDelete={() => handleDeleteCourses(curso)}
+                                />
+                              ))}
+                          </Grid>
+
+                          {/* caixa de interesses */}
+                          <Grid item xs={12} sx={{ mb: 1 }}>
+                            <Typography variant="subtitle2">
+                              Áreas de Interesse
+                            </Typography>
+                          </Grid>
+
+                          <Grid item xs={12}>
+                            <Autocomplete
+                              options={allInteresses && allInteresses}
+                              getOptionLabel={(option) => option.nome_exibicao}
+                              name="interesses"
+                              id="interesses"
+                              freeSolo
+                              onChange={(e, value) =>
+                                handleTextFieldChange("interesses", value)
+                              }
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Interesses"
+                                  placeholder="Interesses"
+                                  autoComplete="off"
+                                  fullWidth
+                                />
+                              )}
+                            />
+                          </Grid>
+
+                          <Grid
+                            item
+                            xs={12}
+                            sx={{ display: "flex", flexWrap: "wrap" }}
+                          >
+                            {user &&
+                              user.interesses.map((area, index) => (
+                                <Chip
+                                  variant="outlined"
+                                  label={area.nome_exibicao}
+                                  sx={{ mr: 1, mb: 1 }}
+                                  key={index}
+                                  onDelete={() => handleDelete(area)}
+                                />
+                              ))}
+                          </Grid>
+                        </Grid>
+                      </CardContent>
+
+                      <CardActions
+                        style={{
+                          display: "flex",
+                          justifyContent: "end",
+                          marginRight: "24px",
+                          marginBottom: "16px",
+                        }}
                       >
-                        Salvar
-                      </Button>
-                    </CardActions>
-                  </Card>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleSave()}
+                          disabled={isLoading}
+                        >
+                          Salvar
+                        </Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </TabPanel>
+              </TabPanel>
 
-            {/* ABA MEUS PROJETOS */}
-            <TabPanel value="projetos">
-              <Box
-                sx={{
-                  position: "relative",
-                  width: "100%",
-                }}
-              >
-                <MeusProjetos />
-              </Box>
-            </TabPanel>
+              {/* ABA MEUS PROJETOS */}
+              <TabPanel value="projetos">
+                <Box
+                  sx={{
+                    position: "relative",
+                    width: "100%",
+                  }}
+                >
+                  <MeusProjetos />
+                </Box>
+              </TabPanel>
 
-            {/* ABA MEUS INTERESSES */}
-            <TabPanel value="interesses">
-              <Box
-                sx={{
-                  position: "relative",
-                  width: "100%",
-                }}
-              >
-                <Interesses />
-              </Box>
-            </TabPanel>
-          </TabContext>
-        </Card>
-      </Box>
+              {/* ABA MEUS INTERESSES */}
+              <TabPanel value="interesses">
+                <Box
+                  sx={{
+                    position: "relative",
+                    width: "100%",
+                  }}
+                >
+                  <Interesses />
+                </Box>
+              </TabPanel>
+            </TabContext>
+          </Card>
+        </Box>
+      }
+
+      { pageLoading &&
+        <Container style={{display: "flex", height: "calc(100vh - 84px)",alignItems: "center", justifyContent: "center"}} maxWidth="lg">
+          <CircularProgress size={150} color="secondary" />
+        </Container>
+      }
     </>
   );
 };
