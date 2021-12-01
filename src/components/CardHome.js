@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Grid, CardMedia, Typography } from "@mui/material";
+import { Card, Grid, CardMedia, Typography,Box } from "@mui/material";
 import { CardContent, CardActions, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router-dom";
@@ -25,8 +25,14 @@ const CardHome = ({ info }) => {
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card>
-        { /* <CardMedia className={classes.media} image={info.imagem} /> */ }
-        <CardMedia className={classes.media} image="https://source.unsplash.com/random" />
+
+        <Box>
+          <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
+            className={classes.media} 
+            component="img"
+            image={info.image}
+          />
+        </Box>
         
         <CardContent>
           <Typography variant="subtitle1">{info.titulo}</Typography>

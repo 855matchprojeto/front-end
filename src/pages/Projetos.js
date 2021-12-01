@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Typography, TextField, Grid, Card} from "@mui/material"; 
-import { Container, CircularProgress, Box, Button, Chip, Autocomplete, Stack} from "@mui/material";
+import { Typography, TextField, Grid, Card } from "@mui/material"; 
+import { Container, Box, Button, Chip, Autocomplete, Stack} from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { doGetAllCourses, doGetInteresses } from "../services/api_perfil";
 import { postProjetos } from "../services/api_projetos";
+import LoadingBox from "../components/LoadingBox";
 
 const Projetos = () => {
   const imageRef = useRef();
@@ -29,11 +30,21 @@ const Projetos = () => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
+    const formTeste = new FormData();
+
+    formTeste.append("titulo", fields.titulo);
+    formTeste.append("descricao", fields.descricao);
+    formTeste.append("areas", areasSelecionadas);
+    formTeste.append("cursos", cursosSelecionados);
+    formTeste.append("image", imageFile, imageFile.name);
+
+    console.log(formTeste);
+
     const form = {
       titulo: fields.titulo,
       descricao: fields.descricao,
-      interesses: areasSelecionadas.map((area) => area.id),
-      cursos: cursosSelecionados.map((curso) => curso.id),
+      //interesses: areasSelecionadas.map((area) => area.id),
+      //cursos: cursosSelecionados.map((curso) => curso.id),
     };
 
     postProjetos(form);
@@ -101,6 +112,7 @@ const Projetos = () => {
             </Typography>
 
             <Grid container spacing={1} sx={{ mb: 3 }}>
+
               <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
                 <Box>
                   <Box>
@@ -140,47 +152,47 @@ const Projetos = () => {
               </Grid>
 
               <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <TextField
-                      type="input"
-                      name="titulo"
-                      value={fields.titulo}
-                      fullWidth
-                      label="Título do projeto"
-                      onChange={(e) => handleChangeFields(e, null)}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Stack spacing={3} sx={{ width: "100%" }}>
-                      <Autocomplete
-                        multiple
-                        options={allCourses && allCourses}
-                        getOptionLabel={(option) => option.nome_exibicao}
-                        freeSolo
-                        renderTags={(value, getTagProps) =>
-                          value.map((option, index) => (
-                            <Chip
-                              variant="outlined"
-                              label={option.nome_exibicao}
-                              {...getTagProps({ index })}
-                            />
-                          ))
-                        }
-                        onChange={(e, value) => handleChangeCursos(e, value)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Cursos Envolvidos"
-                            placeholder="Cursos"
-                            fullWidth
+
+                <Box component="form">
+                  <TextField
+                    type="text"
+                    name="titulo"
+                    value={fields.titulo}
+                    margin="normal"
+                    fullWidth
+                    label="Título do projeto"
+                    onChange={(e) => handleChangeFields(e, null)}
+                  />
+
+                  <Stack spacing={3} sx={{ width: "100%" }}>
+                    <Autocomplete
+                      multiple
+                      options={allCourses && allCourses}
+                      getOptionLabel={(option) => option.nome_exibicao}
+                      freeSolo
+                      renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                          <Chip
+                            variant="outlined"
+                            label={option.nome_exibicao}
+                            {...getTagProps({ index })}
                           />
-                        )}
-                      />
-                    </Stack>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Stack spacing={3} sx={{ width: "100%" }}>
+                        ))
+                      }
+                      onChange={(e, value) => handleChangeCursos(e, value)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Cursos Envolvidos"
+                          placeholder="Cursos"
+                          margin="normal"
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </Stack>
+
+                  <Stack spacing={3} sx={{ width: "100%" }}>
                       <Autocomplete
                         multiple
                         options={allInteresses && allInteresses}
@@ -206,17 +218,17 @@ const Projetos = () => {
                             {...params}
                             label="Áreas Envolvidas"
                             placeholder="Áreas"
+                            margin="normal"
                             fullWidth
                           />
                         )}
                       />
                     </Stack>
-                  </Grid>
 
-                  <Grid item xs={12}>
                     <TextField
-                      type="input"
+                      type="text"
                       name="descricao"
+                      margin="normal"
                       multiline
                       rows={3}
                       value={fields.descricao}
@@ -224,29 +236,29 @@ const Projetos = () => {
                       label="Descrição do projeto"
                       onChange={(e) => handleChangeFields(e, null)}
                     />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      variant="contained"
+                </Box>
+
+                <Grid item xs={12}>
+                    <Button 
+                      type="submit" 
+                      variant="contained" 
+                      color="primary" 
+                      size="small" 
+                      disabled={isLoading} 
                       onClick={handleCreateProject}
-                      disabled={isLoading}
-                      size="small"
-                    >
+                    > 
                       Criar projeto
                     </Button>
-                  </Grid>
                 </Grid>
+
               </Grid>
+
             </Grid>
           </Card>
         </Container>
       }
 
-      { pageLoading &&
-        <Container style={{display: "flex", height: "calc(100vh - 84px)",alignItems: "center", justifyContent: "center"}} maxWidth="lg">
-          <CircularProgress size={150} color="secondary" />
-        </Container>
-      }
+      { pageLoading && <LoadingBox/> }
     </>
   );
 };

@@ -9,6 +9,14 @@ const Perfil = () => {
   const [valueTab, setTabValue] = React.useState("perfil");
   const handleChange = (event, newValue) => { setTabValue(newValue); };
 
+  const TabBox = (props) => {
+    return(
+      <Box style={{width: "100%", minHeight: "calc(100vh - 264px)", display:"flex", justifyContent: "center"}}>
+        {props.children}
+      </Box>
+    );
+  }
+
   return (
         <Box sx={{ mb: 4 }}>
           <Card sx={{minHeight: "calc(100vh - 148px)", mt: 4 }}>
@@ -17,6 +25,8 @@ const Perfil = () => {
               color="primary"
               style={{ marginTop: "24px" }}
             >
+
+              {/* CONTROLE DE ABAS */}
               <Box
                 sx={{
                   width: "100%",
@@ -24,6 +34,7 @@ const Perfil = () => {
                   justifyContent: "center",
                 }}
               >
+
                 <TabList
                   indicatorColor="primary"
                   onChange={handleChange}
@@ -33,42 +44,28 @@ const Perfil = () => {
                   <Tab label="Meus Projetos" value="projetos" />
                   <Tab label="Tenho Interesse" value="interesses" />
                 </TabList>
+
               </Box>
 
               {/* ABA DE PERFIL */}
               <TabPanel value="perfil">
-                  <Box
-                    sx={{
-                      width: "100%",
-                    }}
-                    style={{minHeight: "calc(100vh - 264px)", display:"flex", justifyContent: "center"}}
-                  >
-                      <MeusDados />
-                  </Box>
+                <TabBox>
+                  <MeusDados />
+                </TabBox>
               </TabPanel>
 
               {/* ABA MEUS PROJETOS */}
               <TabPanel value="projetos">
-                <Box
-                  sx={{
-                    width: "100%",
-                  }}
-                  style={{minHeight: "calc(100vh - 264px)", display:"flex", justifyContent: "center"}}
-                >
+                <TabBox>
                   <MeusProjetos />
-                </Box>
+                </TabBox>
               </TabPanel>
 
               {/* ABA MEUS INTERESSES */}
               <TabPanel value="interesses">
-                <Box
-                  sx={{
-                    width: "100%",
-                  }}
-                  style={{minHeight: "calc(100vh - 264px)", display:"flex", justifyContent: "center"}}
-                >
+                <TabBox>
                   <Interesses />
-                </Box>
+                </TabBox>
               </TabPanel>
             </TabContext>
           </Card>

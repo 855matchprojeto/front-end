@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Cards from "../components/Cards";
 import { Container, createTheme, Typography, Pagination, FormControl,InputLabel } from "@mui/material";
-import { MenuItem, Select, CircularProgress, styled, alpha, InputBase } from "@mui/material";
+import { MenuItem, Select, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { chunk } from '../services/util';
 import { getProjetos } from "../services/api_projetos";
+import LoadingBox from "../components/LoadingBox";
 
 //--estilo--
 const theme = createTheme();
@@ -40,9 +41,9 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("sm")]: {
-      width: "12ch",
+      width: "20ch",
       "&:focus": {
-        width: "20ch",
+        width: "25ch",
       },
     },
   },
@@ -67,13 +68,13 @@ const Home = () => {
   const classes = useStyles();
 
   // pagina carregando, esconde conteudo
-  const [pageLoading, setPageLoading] = useState(true);
+  const [pageLoading, setPageLoading] = React.useState(true);
 
-  const [cardsProjetos, setCardsProjetos] = useState(false);
-  const [page, setPage] = useState(1);
-  const [n_cards, setNcards] =  useState(10);
-  const [pageCount, setPageCount] = useState(1);
-  const [pesquisa,setPesquisa] = useState("");
+  const [cardsProjetos, setCardsProjetos] = React.useState(false);
+  const [page, setPage] = React.useState(1);
+  const [n_cards, setNcards] =  React.useState(10);
+  const [pageCount, setPageCount] = React.useState(1);
+  const [pesquisa,setPesquisa] = React.useState("");
 
   function fazerPesquisa(e)
   {
@@ -85,11 +86,13 @@ const Home = () => {
   }
   
   // mudando o número de cards por página, renderiza novamente 
-  useEffect(() => 
+  React.useEffect(() => 
   {
       async function loadProjetos() 
       { 
         setPageLoading(true);
+
+        console.log(pesquisa);
 
         let valores = await getProjetos(pesquisa);
         let x = chunk(valores.data,n_cards);
@@ -105,19 +108,19 @@ const Home = () => {
     <>
       { !pageLoading &&
         <Container className={classes.grid} maxWidth="lg">
+
+          <Typography variant="h6"> Projetos </Typography>
           
           <SearchBox>
               <SearchField>
                 <SearchIcon />
                 <StyledInput 
-                  placeholder="Pesquisar" 
+                  placeholder="Buscar projetos..." 
                   inputProps={{ 'aria-label': 'search' }} 
                   onKeyPress={(e) => fazerPesquisa(e)}
                 />
               </SearchField>
           </SearchBox>
-
-          <Typography variant="h6"> Projetos </Typography>
 
           <FormControl size="small" variant="standard" style={{marginTop: theme.spacing(2)}}>
             <InputLabel id="lbl-n-cards">Cards</InputLabel>
@@ -155,12 +158,7 @@ const Home = () => {
         </Container>
       }
 
-      { pageLoading &&
-
-        <Container style={{display: "flex", height: "calc(100vh - 84px)",alignItems: "center", justifyContent: "center"}} maxWidth="lg">
-          <CircularProgress size={150} color="secondary" />
-        </Container>
-      }
+      { pageLoading && <LoadingBox/>}
     </>
   );
 };
