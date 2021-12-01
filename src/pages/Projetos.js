@@ -52,8 +52,8 @@ const Projetos = () => {
   const [pageLoading, setPageLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
     
-  const [allInteresses, setAllInteresses] = useState(null);
-  const [allCourses, setAllCourses] = useState(null);
+  const [allInteresses, setAllInteresses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
 
   useEffect(() => {
     setPageLoading(true);

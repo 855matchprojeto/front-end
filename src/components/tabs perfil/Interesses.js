@@ -3,7 +3,7 @@ import { Grid, Card, CardMedia, CardContent } from "@mui/material";
 import { CardActions, Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router-dom";
-import { getProjetosInteresses } from "../services/api_projetos";
+import { getProjetosInteresses } from "../../services/api_projetos";
 
 const useStyles = makeStyles((theme) => ({
   container: {
