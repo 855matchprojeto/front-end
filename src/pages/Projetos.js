@@ -56,10 +56,9 @@ const Projetos = () => {
   const [allCourses, setAllCourses] = useState([]);
 
   useEffect(() => {
-    setPageLoading(true);
-
     async function getInteresses() 
     {
+      setPageLoading(true);
       try 
       {
         const res = await doGetInteresses();
@@ -85,11 +84,11 @@ const Projetos = () => {
       {
         console.log(err);
       }
+      setPageLoading(false);
     }
 
     getInteresses();
     getAllCourses();
-    setPageLoading(false);
   }, []);
 
   return (

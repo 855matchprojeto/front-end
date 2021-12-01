@@ -102,10 +102,9 @@ const EditProject = () => {
   const [allCourses, setAllCourses] = useState(null);
 
   useEffect(() => {
-    setPageLoading(true);
-
     async function getInteresses() 
     {
+      setPageLoading(true);
       try 
       {
         const res = await doGetInteresses();
@@ -131,11 +130,11 @@ const EditProject = () => {
       {
         console.log(err);
       }
+      setPageLoading(false);
     }
 
     getInteresses();
     getAllCourses();
-    setPageLoading(false);
   }, []);
 
   return (

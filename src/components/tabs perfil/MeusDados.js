@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions} from "@mui/material"; 
-import { Box, Button, Chip, Autocomplete} from "@mui/material";
+import React from "react";
+import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions } from "@mui/material"; 
+import { Box, Button, Chip, Autocomplete, Container, CircularProgress } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import { doHandleDelete,doHandleDeleteCourses } from "../../services/api_perfil";
@@ -40,50 +40,97 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MeusDados = (props) => {
+const MeusDados = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
 
   const perfilImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const [user, setUser] = useState(null);
-  const [allInteresses, setAllInteresses] = useState([]);
-  const [allCourses, setAllCourses] = useState([]);
+  const [user, setUser] = React.useState(null);
+  const [allInteresses, setAllInteresses] = React.useState([]);
+  const [allCourses, setAllCourses] = React.useState([]);
 
-  const dadosUsuario = {user: '', password: ''}
 
-  async function handleDeleteCourses(value) {
-    const res = await doHandleDeleteCourses(value);
+  async function updateCourses(value,type)
+  {
+    if(type === "delete")
+    {
+      const res = await doHandleDeleteCourses(value);
 
-    if (res.status === 204) {
-      setUser({
-        ...user,
-        cursos: user.cursos.filter(
-          (curso) => curso.nome_exibicao !== value.nome_exibicao
-        ),
-      });
-      console.log("Curso removido com sucesso!");
+      if (res.status === 204) 
+      {
+        setUser({
+          ...user,
+          cursos: user.cursos.filter( (curso) => curso.nome_exibicao !== value.nome_exibicao)} );
+        console.log("Curso removido com sucesso!");
+      }
+    }
+    else if(type === "insert")
+    {
+      if (value) 
+      {
+        const newCourse = user.cursos.find( (curso) => curso.nome_exibicao === value.nome_exibicao);
+  
+        if (!newCourse) 
+        {
+          try 
+          {
+            const res = await doHandleChangeCourses(value);
+  
+            if (res.status === 201) 
+            {
+              console.log("ADICIONADO COM SUCESSO");
+              console.log(value);
+              setUser({ ...user, cursos: [...user.cursos, value] });
+            }
+          } 
+          catch (err) 
+          {
+            console.log(err);
+          }
+        }
+      }
     }
   }
 
-  async function adicionaCurso(value) {
-    if (value) {
-      const newCourse = user.cursos.find(
-        (curso) => curso.nome_exibicao === value.nome_exibicao
-      );
+  async function updateAreas(e,value,type)
+  {
+    if(type === "delete")
+    {
+      const res = await doHandleDelete(value);
 
-      if (!newCourse) {
-        try {
-          const res = await doHandleChangeCourses(value);
+      if (res.status === 204) 
+      {
+        setUser({
+          ...user,
+          interesses: user.interesses.filter((interesse) => interesse.nome_exibicao !== value.nome_exibicao)
+        });
+        console.log("Interesse removido com sucesso!");
+      }
+    }
+    else if(type === "insert")
+    {
+      const newInterest = user.interesses.find( (interesse) => interesse.nome_exibicao === value.nome_exibicao);
 
-          if (res.status === 201) {
+      console.log(value.id);
+
+      if(!newInterest)
+      {
+        try 
+        {        
+          const res = await doAdicionaInteresse(value.id);
+  
+          if (res.status === 201) 
+          {
             console.log("ADICIONADO COM SUCESSO");
             console.log(value);
-            setUser({ ...user, cursos: [...user.cursos, value] });
+            setUser({ ...user, interesses: [...user.interesses, value] });
           }
-        } catch (err) {
+        } 
+        catch (err) 
+        {
           console.log(err);
         }
       }
@@ -111,57 +158,17 @@ const MeusDados = (props) => {
     }
     setIsLoading(false);
   }
-
-  async function handleTextFieldChange(field, value) {
-    if (value) {
-      if (field === "interesses") {
-        const newInterest = user.interesses.find(
-          (interesse) => interesse.nome_exibicao === value.nome_exibicao
-        );
-
-        if (!newInterest) {
-          try {
-            const res = await doAdicionaInteresse(value.id);
-
-            if (res.status === 201) {
-              console.log("ADICIONADO COM SUCESSO");
-              console.log(value);
-              setUser({ ...user, interesses: [...user.interesses, value] });
-            }
-          } catch (err) {
-            console.log(err);
-          }
-        }
-      } else {
-        setUser({ ...user, [field]: value });
-      }
-    }
-  }
-
-  async function handleDelete(value) {
-    const res = await doHandleDelete(value);
-
-    if (res.status === 204) {
-      setUser({
-        ...user,
-        interesses: user.interesses.filter(
-          (interesse) => interesse.nome_exibicao !== value.nome_exibicao
-        ),
-      });
-      console.log("Interesse removido com sucesso!");
-    }
-  }
   
-  
-  const [pageLoading, setPageLoading] = useState(false);
+  const [componentLoading, setComponentLoading] = React.useState(true);
 
-  useEffect(() => {
-    setPageLoading(true);
+  React.useEffect(() => {
 
     async function getDataUser() 
     {
+      setComponentLoading(true);
       try 
       {
+        
         const res = await doGetDataUser();
   
         if (res.status === 200) 
@@ -171,8 +178,10 @@ const MeusDados = (props) => {
             sobrenome: res.data.nome_exibicao.split(" ")[1],
             interesses: res.data.interesses,
             cursos: res.data.cursos,
-            email: res.data.emails[0],
+            email: res.data.emails[0].email,
           });
+
+          
         }
       } 
       catch (err) 
@@ -209,211 +218,208 @@ const MeusDados = (props) => {
       {
         console.log(err);
       }
+      setComponentLoading(false);
     }
 
     getDataUser();
     getInteresses();
     getAllCourses();
-
-    setPageLoading(false);
   }, []);
 
-  console.log(user);
-
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} sm={4}>
-        <Card>
-          <CardHeader
-            title={
-              <Typography variant="h6" align="center">
-                {user && `${user.name}`}
-              </Typography>
-            }
-          />
-
-          <CardContent style={{display: "flex", justifyContent: "center"}}>
-            <Box>
-              <img
-                alt="Not Found"
-                src={perfilImageUrl}
-                style={{ width: "100px", height: "100px" }}
-              />
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
-
-      <Grid item xs={12} sm={8}>
-        <Card>
-          <CardHeader
-            title={<Typography variant="h6">Perfil</Typography>}
-          />
-          <CardContent>
-            <Grid container style={{ width: "100%" }} spacing={2}>
-              {/* email,nome,sobrenome */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  className={classes.textField}
-                  type="email"
-                  label="Email"
-                  variant="outlined"
-                  placeholder="Email"
-                  value={user ? user.email.email : ""}
-                  fullWidth
-                  disabled
-                />
-              </Grid>
-
-              <Grid item xs={12} md={6}>
-                <TextField
-                  className={classes.textField}
-                  type="input"
-                  label="Nome"
-                  name="name"
-                  variant="outlined"
-                  placeholder="Nome"
-                  value={user ? user.name : ""}
-                  onChange={(e) =>
-                    handleTextFieldChange(
-                      e.target.name,
-                      e.target.value
-                    )
+    <>
+      { !componentLoading &&
+        <Grid container spacing={2}>
+            <Grid item xs={12} sm={4}>
+              <Card>
+                <CardHeader
+                  title={
+                    <Typography variant="h6" align="center">
+                      {user && `${user.name}`}
+                    </Typography>
                   }
-                  fullWidth
                 />
-              </Grid>
 
-              <Grid item xs={12} md={6}>
-                <TextField
-                  className={classes.textField}
-                  type="input"
-                  label="Sobrenome"
-                  name="sobrenome"
-                  variant="outlined"
-                  placeholder="Sobrenome"
-                  value={user ? user.sobrenome : ""}
-                  onChange={(e) =>
-                    handleTextFieldChange(
-                      e.target.name,
-                      e.target.value
-                    )
-                  }
-                  fullWidth
+                <CardContent style={{display: "flex", justifyContent: "center"}}>
+                  <Box>
+                    <img
+                      alt="Not Found"
+                      src={perfilImageUrl}
+                      style={{ width: "100px", height: "100px" }}
+                    />
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12} sm={8}>
+              <Card>
+                <CardHeader
+                  title={<Typography variant="h6">Perfil</Typography>}
                 />
-              </Grid>
 
-              {/* caixa de cursos */}
-              <Grid item xs={12} sx={{ mb: 1 }}>
-                <Typography variant="subtitle2">Cursos</Typography>
-              </Grid>
-
-              <Grid item xs={12}>
-                  <Autocomplete
-                    options={allCourses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    name="cursos"
-                    id="cursos"
-                    freeSolo
-                    onChange={(e, value) => adicionaCurso(value)}
-                    renderInput={(params) => (
+                <CardContent>
+                  <Grid container style={{ width: "100%" }} spacing={2}>
+                    {/* email,nome,sobrenome */}
+                    <Grid item xs={12} md={6}>
                       <TextField
-                        {...params}
-                        label="Cursos"
-                        placeholder="Cursos"
-                        value=""
+                        className={classes.textField}
+                        type="email"
+                        label="Email"
+                        variant="outlined"
+                        placeholder="Email"
+                        value={user ? user.email : ""}
+                        fullWidth
+                        disabled
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        className={classes.textField}
+                        type="text"
+                        label="Nome"
+                        name="name"
+                        variant="outlined"
+                        placeholder="Nome"
+                        value={user ? user.name : ""}
+                        onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
                         fullWidth
                       />
-                    )}
-                  />
-              </Grid>
+                    </Grid>
 
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", flexWrap: "wrap" }}
-              >
-                {user &&
-                  user.cursos.map((curso, index) => (
-                    <Chip
-                      variant="outlined"
-                      label={curso.nome_exibicao}
-                      sx={{ mr: 1, mb: 1 }}
-                      key={index}
-                      onDelete={() => handleDeleteCourses(curso)}
-                    />
-                  ))}
-              </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        className={classes.textField}
+                        type="input"
+                        label="Sobrenome"
+                        name="sobrenome"
+                        variant="outlined"
+                        placeholder="Sobrenome"
+                        value={user ? user.sobrenome : ""}
+                        onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
+                        fullWidth
+                      />
+                    </Grid>
 
-              {/* caixa de interesses */}
-              <Grid item xs={12} sx={{ mb: 1 }}>
-                <Typography variant="subtitle2">
-                  Áreas de Interesse
-                </Typography>
-              </Grid>
+                    {/* caixa de cursos */}
+                    <Grid item xs={12} sx={{ mb: 1 }}>
+                      <Typography variant="subtitle2">Cursos</Typography>
+                    </Grid>
 
-              <Grid item xs={12}>
-                <Autocomplete
-                  options={allInteresses}
-                  getOptionLabel={(option) => option.nome_exibicao}
-                  name="interesses"
-                  id="interesses"
-                  freeSolo
-                  onChange={(e, value) =>
-                    handleTextFieldChange("interesses", value)
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Interesses"
-                      placeholder="Interesses"
-                      autoComplete="off"
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
+                    <Grid item xs={12}>
+                        <Autocomplete
+                          options={allCourses}
+                          getOptionLabel={(option) => option.nome_exibicao}
+                          name="cursos"
+                          id="cursos"
+                          freeSolo
+                          onChange={(e, value) => updateCourses(value,"insert")}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Cursos"
+                              placeholder="Cursos"
+                              value=""
+                              fullWidth
+                            />
+                          )}
+                        />
+                    </Grid>
 
-              <Grid
-                item
-                xs={12}
-                sx={{ display: "flex", flexWrap: "wrap" }}
-              >
-                {user &&
-                  user.interesses.map((area, index) => (
-                    <Chip
-                      variant="outlined"
-                      label={area.nome_exibicao}
-                      sx={{ mr: 1, mb: 1 }}
-                      key={index}
-                      onDelete={() => handleDelete(area)}
-                    />
-                  ))}
-              </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sx={{ display: "flex", flexWrap: "wrap" }}
+                    >
+                      {user &&
+                        user.cursos.map((curso, index) => (
+                          <Chip
+                            variant="outlined"
+                            label={curso.nome_exibicao}
+                            sx={{ mr: 1, mb: 1 }}
+                            key={index}
+                            onDelete={() => updateCourses(curso,"delete")}
+                          />
+                        ))}
+                    </Grid>
+
+                    {/* caixa de interesses */}
+                    <Grid item xs={12} sx={{ mb: 1 }}>
+                      <Typography variant="subtitle2">
+                        Áreas de Interesse
+                      </Typography>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <Autocomplete
+                        options={allInteresses}
+                        getOptionLabel={(option) => option.nome_exibicao}
+                        name="interesses"
+                        id="interesses"
+                        freeSolo
+                        onChange={(e, value) => updateAreas(e, value,"insert")}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Interesses"
+                            placeholder="Interesses"
+                            autoComplete="off"
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </Grid>
+
+                    <Grid
+                      item
+                      xs={12}
+                      sx={{ display: "flex", flexWrap: "wrap" }}
+                    >
+                      {user &&
+                        user.interesses.map((area, index) => (
+                          <Chip
+                            variant="outlined"
+                            label={area.nome_exibicao}
+                            sx={{ mr: 1, mb: 1 }}
+                            key={index}
+                            onDelete={(e) => updateAreas(e,area,"delete")}
+                          />
+                        ))}
+                    </Grid>
+                  </Grid>
+                </CardContent>
+
+                <CardActions
+                  style={{
+                    display: "flex",
+                    justifyContent: "end",
+                    marginRight: "24px",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleSave()}
+                    disabled={isLoading}
+                  >
+                    Salvar
+                  </Button>
+                </CardActions>
+
+              </Card>
             </Grid>
-          </CardContent>
+        </Grid>
+      }
 
-          <CardActions
-            style={{
-              display: "flex",
-              justifyContent: "end",
-              marginRight: "24px",
-              marginBottom: "16px",
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleSave()}
-              disabled={isLoading}
-            >
-              Salvar
-            </Button>
-          </CardActions>
-
-        </Card>
-      </Grid>
-    </Grid>
+      { componentLoading &&
+        <Container style={{display: "flex", height: "100%", alignItems: "center", justifyContent: "center",alignSelf: "center"}} maxWidth="lg">
+          <CircularProgress size={150} color="secondary" />
+        </Container>
+      }
+    </>
+    
   );
 };
 

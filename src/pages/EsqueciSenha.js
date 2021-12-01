@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 //import { Link as RouterLink } from "react-router-dom";
 
@@ -55,9 +55,9 @@ const EsqueciSenha = () => {
   const classes = useStyles();
   let history = useHistory();
 
-  const [alert, setAlert] = useState(false);
-  const [severity, setSeverity] = useState('success');
-  const [alertContent, setAlertContent] = useState('');
+  const [alert, setAlert] = React.useState(false);
+  const [severity, setSeverity] = React.useState('success');
+  const [alertContent, setAlertContent] = React.useState('');
 
   function closeAlert(){
     setAlert(false)

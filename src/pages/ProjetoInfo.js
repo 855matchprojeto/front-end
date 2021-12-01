@@ -18,10 +18,9 @@ const ProjetoInfo = () => {
 
    useEffect(() => 
    {
-      setPageLoading(true);
-
        async function getInfos() 
        {
+        setPageLoading(true);
          // faz uma chamada de api com o pid (project id) e seta dados basicos
          const info = await getProjetos(pid);
          getProjectInfo(info.data[0]);
@@ -33,11 +32,11 @@ const ProjetoInfo = () => {
          // PUXAR AREAS
          //const ar = await getProjetos(dados);
          //getProjectAreas(ar.data[0]);
+         setPageLoading(false);
        }
        
        getInfos();
 
-       setPageLoading(false);
    },[pid])
 
   const handleInteresse = () => {

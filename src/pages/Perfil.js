@@ -1,41 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { Container, Card, CircularProgress, Box, Tab } from "@mui/material";
+import React from "react";
+import { Card, Box, Tab } from "@mui/material";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import Interesses from "../components/tabs perfil/Interesses";
 import MeusProjetos from "../components/tabs perfil/MeusProjetos";
 import MeusDados from "../components/tabs perfil/MeusDados";
 
 const Perfil = () => {
-  const [valueTab, setTabValue] = useState("perfil");
-  const handleChange = (event, newValue) => { setTabValue(newValue);};
-
-  /*
-  const meusProjetos = [
-    {
-      id: 1,
-      title: "Título 1",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
-      image: "https://source.unsplash.com/random",
-    },
-    {
-      id: 2,
-      title: "Título 2",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
-      image: "https://source.unsplash.com/random",
-    },
-  ];  
-  */
-
-  // pagina carregando, esconde conteudo
-  const [pageLoading, setPageLoading] = useState(false);
+  const [valueTab, setTabValue] = React.useState("perfil");
+  const handleChange = (event, newValue) => { setTabValue(newValue); };
 
   return (
-    <>
-      { !pageLoading &&
         <Box sx={{ mb: 4 }}>
-          <Card sx={{ minHeight: "calc(100vh - 184px)", mt: 4 }}>
+          <Card sx={{minHeight: "calc(100vh - 148px)", mt: 4 }}>
             <TabContext
               value={valueTab}
               color="primary"
@@ -63,9 +39,9 @@ const Perfil = () => {
               <TabPanel value="perfil">
                   <Box
                     sx={{
-                      position: "relative",
                       width: "100%",
                     }}
+                    style={{minHeight: "calc(100vh - 264px)", display:"flex", justifyContent: "center"}}
                   >
                       <MeusDados />
                   </Box>
@@ -75,9 +51,9 @@ const Perfil = () => {
               <TabPanel value="projetos">
                 <Box
                   sx={{
-                    position: "relative",
                     width: "100%",
                   }}
+                  style={{minHeight: "calc(100vh - 264px)", display:"flex", justifyContent: "center"}}
                 >
                   <MeusProjetos />
                 </Box>
@@ -87,9 +63,9 @@ const Perfil = () => {
               <TabPanel value="interesses">
                 <Box
                   sx={{
-                    position: "relative",
                     width: "100%",
                   }}
+                  style={{minHeight: "calc(100vh - 264px)", display:"flex", justifyContent: "center"}}
                 >
                   <Interesses />
                 </Box>
@@ -97,14 +73,6 @@ const Perfil = () => {
             </TabContext>
           </Card>
         </Box>
-      }
-
-      { pageLoading &&
-        <Container style={{display: "flex", height: "calc(100vh - 84px)",alignItems: "center", justifyContent: "center"}} maxWidth="lg">
-          <CircularProgress size={150} color="secondary" />
-        </Container>
-      }
-    </>
   );
 };
 
