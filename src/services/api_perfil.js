@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getToken } from "./auth";
+import { logout } from "./auth";
 
 // chamadas de Perfil
 let urlPerfil = "https://perfis-match-projetos.herokuapp.com";
@@ -14,6 +15,9 @@ perf.interceptors.request.use(async (options) => {
 perf.interceptors.response.use(
     res => { return res },
     error => {
+        if (error.response.status === 403 || error.response.status === 401){
+            logout()
+        }
         throw error
     }
 )

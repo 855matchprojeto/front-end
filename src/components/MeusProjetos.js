@@ -1,18 +1,10 @@
 import { useState, useEffect } from "react";
-import {
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Box,
-  Button,
-  Typography,
-} from "@mui/material";
-import axios from "axios";
+import { Grid, Card, CardMedia, CardContent } from "@mui/material";
+import { CardActions, Box, Button, Typography } from "@mui/material";
 import { getToken } from "../services/auth";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
+import { getMeusProjetos } from "../services/api_projetos";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -46,31 +38,28 @@ const useStyles = makeStyles((theme) => ({
 const MeusProjetos = () => {
   const classes = useStyles();
   const history = useHistory();
+
+  // puxa projetos
   const [meusProjetos, setMeusProjetos] = useState(null);
 
-  const getMeusProjetos = async () => {
-    // Dar um get nos projetos criados pelo usuário.
-
-    const URL =
-      "https://projetos-match-projetos.herokuapp.com/users/me/projects"; // COlocar aqui a url
-    try {
-      const res = await axios.get(URL, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + getToken,
-        },
-      });
-      if (res.status === 200) {
-        setMeusProjetos(res.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
-    getMeusProjetos();
+    async function doGetMeusProjetos()
+    {
+      try 
+      {
+        const res = await getMeusProjetos();
+        if (res.status === 200) 
+          setMeusProjetos(res.data);
+      } 
+      catch (err) 
+      {
+        console.log(err);
+      }
+    };
+
+    doGetMeusProjetos();
   }, []);
+
   return (
     <Grid container spacing={2}>
       {meusProjetos && (
