@@ -50,6 +50,7 @@ const Interesses = () => {
       try 
       {
         const res = await getProjetosInteresses();
+
         if (res.status === 200) 
           setInteresses(res.data);
         
@@ -61,28 +62,30 @@ const Interesses = () => {
       setComponentLoading(false);
     }
 
-    doGetProjInteresses()
+    doGetProjInteresses();
   }, []);
 
   return (
       <>
         { !componentLoading && 
           <Grid container spacing={2}>
-            {
-              interesses.length > 0 ? (
+            { interesses.length > 0 ? (
                 interesses.map((interesse) => (
-                  <Grid item xs={12} sm={6} md={4} lg={3}>
+                  <Grid key={interesse.id} item xs={12} sm={6} md={4} lg={3}>
                     <Card>
-                      <CardMedia
-                        className={classes.media}
-                        image={interesse.image}
-                      />
+                      <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
+                          className={classes.media} 
+                          component="img"
+                          image={interesse.image}
+                        />
+
                       <CardContent>
                         <Typography variant="subtitle1">
-                          {interesse.title}
+                          {interesse.titulo}
                         </Typography>
-                        <p>{interesse.description}</p>
+                        <p>{interesse.descricao}</p>
                       </CardContent>
+
                       <CardActions>
                         <Box
                           sx={{
@@ -94,10 +97,7 @@ const Interesses = () => {
                         >
                           <Button
                             color="secondary"
-                            onClick={() => {
-                              console.log("Teste");
-                              history.push("/projeto");
-                            }}
+                            onClick={() => history.push("/projeto", { data: [interesse.id, interesse.guid] })}
                           >
                             Detalhes
                           </Button>

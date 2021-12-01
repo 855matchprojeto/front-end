@@ -40,3 +40,11 @@ export const getProjetosInteresses = async () => {
 export const getMeusProjetos = async () => {
     return proj.get(`/users/me/projects`).then(res => res)
 }
+
+export const postInteresseProjeto = async (guid) => {
+    return proj.post(`/users/me/project/${guid}/user-project-interest`)
+}
+
+export const deleteInteresseProjeto = async (guid) => {
+    return proj.delete(`/users/me/project/${guid}/user-project-interest`)
+}

@@ -3,10 +3,12 @@ import {Container, Box, Typography, CardContent, Card } from "@mui/material";
 import {Grid, CardMedia, CardActions, Button, Chip } from "@mui/material";
 import { useLocation } from "react-router";
 import { getProjetos } from "../services/api_projetos";
+import { postInteresseProjeto } from "../services/api_projetos";
+import { deleteInteresseProjeto } from "../services/api_projetos";
+import { getProjetosInteresses } from "../services/api_projetos";
 import LoadingBox from "../components/LoadingBox";
 
 const ProjetoInfo = () => {
-  const [tenhoInteresse, setTenhoInteresse] = useState(false);
   const [projectInfo, getProjectInfo] = useState(false);
   const [projectCursos, getProjectCursos] = useState(false);
   const [projectAreas, getProjectAreas] = useState(false);
@@ -15,10 +17,40 @@ const ProjetoInfo = () => {
   const [pageLoading, setPageLoading] = useState(true);
 
   const location =  useLocation();
-  const pid = location.state?.data;
+  const pid = location.state?.data[0];
+  const guid = location.state?.data[1];
+  const [btnInteresse, setBtnInteresse] = React.useState(false);
+
+  async function updateInteresse()
+  {
+    if(btnInteresse)
+      await deleteInteresseProjeto(guid);
+    else
+      await postInteresseProjeto(guid);
+
+    setBtnInteresse(!btnInteresse);
+  }
 
    useEffect(() => 
    {
+      async function getStatusInteresse() 
+      {
+          let aux = await getProjetosInteresses();
+          aux = aux.data;
+          
+          if (aux.length === 0) // usuario nao tem interesse em nenhum projeto
+          {
+            setBtnInteresse(false);
+          }
+          else  // usuario tem interesse em algum projeto, verificar se o atual é um deles
+          {
+            aux.forEach(function (item, index) {
+              if (item.id === pid)
+                setBtnInteresse(true);
+            });
+          }
+      }
+
        async function getInfos() 
        {
         setPageLoading(true);
@@ -39,14 +71,10 @@ const ProjetoInfo = () => {
          setPageLoading(false);
        }
        
+       getStatusInteresse();
        getInfos();
 
    },[pid])
-
-  const handleInteresse = () => {
-    // Faz a requisição para adicionar para os projetos do perfil
-    setTenhoInteresse(!tenhoInteresse);
-  };
 
   return (
     <>
@@ -118,14 +146,11 @@ const ProjetoInfo = () => {
                 </CardContent>
 
                 <CardActions sx={{ display: "flex", justifyContent: "end" }}>
-                  <Button
-                    variant="contained"
-                    color={!tenhoInteresse ? "primary" : "error"}
-                    onClick={() => handleInteresse()}
-                    sx={{ mr: 3, mb: 2 }}
-                    size="small"
+                  <Button 
+                    color="primary"
+                    onClick={() => updateInteresse()}
                   >
-                    {tenhoInteresse ? "REMOVER INTERESSE" : "TENHO INTERESSE"}
+                    {btnInteresse ? "Remover interesse" : "Marcar interesse"}
                   </Button>
                 </CardActions>
               </Card>
