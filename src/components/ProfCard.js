@@ -23,8 +23,7 @@ const ProfCard = ({ info }) => {
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
-        <Card>
-
+        <Card style={{height : "350px"}}>
           <Box>
             <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
               className={classes.media} 
