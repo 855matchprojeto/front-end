@@ -88,7 +88,7 @@ const CardHome = ({ info }) => {
 
           <Button
             color="secondary"
-            onClick={() => history.push("/projeto", { data: info.id })}
+            onClick={() => history.push("/projeto", { data: [info.id, info.guid] })}
           >
             Detalhes
           </Button>
