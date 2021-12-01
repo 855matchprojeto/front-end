@@ -30,6 +30,7 @@ const Projetos = () => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
+    /*
     const formTeste = new FormData();
 
     formTeste.append("titulo", fields.titulo);
@@ -39,10 +40,13 @@ const Projetos = () => {
     formTeste.append("image", imageFile, imageFile.name);
 
     console.log(formTeste);
+    */
 
     const form = {
       titulo: fields.titulo,
       descricao: fields.descricao,
+      entidades: [],
+      tags: []
       //interesses: areasSelecionadas.map((area) => area.id),
       //cursos: cursosSelecionados.map((curso) => curso.id),
     };

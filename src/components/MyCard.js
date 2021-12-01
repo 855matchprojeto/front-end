@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 });
 //---------
 
-const CardHome = ({ info }) => {
+const MyCard = ({ info }) => {
   const [btnInteresse, setBtnInteresse] = React.useState(false);
   const pid = info.id;
 
@@ -98,4 +98,4 @@ const CardHome = ({ info }) => {
   );
 };
 
-export default CardHome;
+export default MyCard;

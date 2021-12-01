@@ -1,5 +1,5 @@
 import React,{ useState, useEffect } from "react";
-import CardHome from "./CardHome";
+import MyCard from "./MyCard";
 import { Grid,createTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -24,7 +24,7 @@ const Cards = (props) => {
   return (
       <Grid className={classes.grid} container spacing={2}>
         { 
-          cards && cards.map((card, index) => <CardHome key={card.id} info={card} />)
+          cards && cards.map((card, index) => <MyCard key={card.id} info={card} />)
         }
       </Grid>
   );
