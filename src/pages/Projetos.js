@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Typography, TextField, Grid, Card} from "@mui/material"; 
-import { Container, CircularProgress, Box, Button, Chip, Autocomplete, Stack} from "@mui/material";
+import { Container, Box, Button, Chip, Autocomplete, Stack} from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { doGetAllCourses, doGetInteresses } from "../services/api_perfil";
 import { postProjetos } from "../services/api_projetos";
+import LoadingBox from "../components/LoadingBox";
 
 const Projetos = () => {
   const imageRef = useRef();
@@ -28,6 +29,16 @@ const Projetos = () => {
   {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
+
+    const formTeste = new FormData();
+
+    formTeste.append("titulo", fields.titulo);
+    formTeste.append("descricao", fields.descricao);
+    formTeste.append("areas", areasSelecionadas);
+    formTeste.append("cursos", cursosSelecionados);
+    formTeste.append("image", imageFile, imageFile.name);
+
+    console.log(formTeste);
 
     const form = {
       titulo: fields.titulo,
@@ -242,11 +253,7 @@ const Projetos = () => {
         </Container>
       }
 
-      { pageLoading &&
-        <Container style={{display: "flex", height: "calc(100vh - 84px)",alignItems: "center", justifyContent: "center"}} maxWidth="lg">
-          <CircularProgress size={150} color="secondary" />
-        </Container>
-      }
+      { pageLoading && <LoadingBox/> }
     </>
   );
 };
