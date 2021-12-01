@@ -63,6 +63,10 @@ export const doHandleTextFieldChange = async (field, value) => {
     
 }
 
-export const getProfiles =  async (query) => {
-    return perf.get(`profiles`,query).then(res => res.data.items)
+export const getProfiles =  async (data) => {
+    return perf.get(`profiles`,data).then(res => res.data.items)
+}
+
+export const getProfilesGUID = async (guid) => {
+    return perf.get(`profiles/${guid}`).then(res => res.data)
 }

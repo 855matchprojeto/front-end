@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { getProjetosInteresses } from "../services/api_projetos";
 import { postInteresseProjeto } from "../services/api_projetos";
 import { deleteInteresseProjeto } from "../services/api_projetos";
+import { limitString } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles({
@@ -72,7 +73,7 @@ const MyCard = ({ info }) => {
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       { !componentLoading &&
-        <Card style={{height : "350px"}}>
+        <Card style={{display: "flex", flexDirection: "column", justifyContent: "space-between", height : "350px"}}>
 
           <Box>
             <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
@@ -84,7 +85,7 @@ const MyCard = ({ info }) => {
           
           <CardContent>
             <Typography variant="subtitle1">{info.titulo}</Typography>
-            <p>{info.descricao}</p>
+            <Typography variant="body1"> {limitString(info.descricao, 150)} </Typography>
           </CardContent>
 
           <CardActions className={classes.actions}>
