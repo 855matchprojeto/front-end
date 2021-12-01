@@ -52,14 +52,13 @@ const Projetos = () => {
   const [pageLoading, setPageLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
     
-  const [allInteresses, setAllInteresses] = useState(null);
-  const [allCourses, setAllCourses] = useState(null);
+  const [allInteresses, setAllInteresses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
 
   useEffect(() => {
-    setPageLoading(true);
-
     async function getInteresses() 
     {
+      setPageLoading(true);
       try 
       {
         const res = await doGetInteresses();
@@ -85,11 +84,11 @@ const Projetos = () => {
       {
         console.log(err);
       }
+      setPageLoading(false);
     }
 
     getInteresses();
     getAllCourses();
-    setPageLoading(false);
   }, []);
 
   return (

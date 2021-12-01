@@ -87,19 +87,18 @@ const Home = () => {
   // mudando o número de cards por página, renderiza novamente 
   useEffect(() => 
   {
-      setPageLoading(true);
-    
       async function loadProjetos() 
       { 
+        setPageLoading(true);
+
         let valores = await getProjetos(pesquisa);
         let x = chunk(valores.data,n_cards);
         setCardsProjetos(x);
         setPageCount(x.length);
+        
+        setPageLoading(false);
       }
-      
       loadProjetos();
-      setPageLoading(false);
-
   }, [n_cards, pesquisa])
 
   return (
