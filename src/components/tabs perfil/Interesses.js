@@ -35,7 +35,7 @@ const Interesses = () => {
       <>
         { !componentLoading && 
           <Grid container spacing={2}>
-            { interesses.length > 0 ? <Cards valores={interesses}/>
+            { interesses.length > 0 ? <Cards valores={interesses} cardsType="projetos"/>
               :
               (
                 <Grid container spacing={2}>

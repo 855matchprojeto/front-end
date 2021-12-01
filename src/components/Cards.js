@@ -17,7 +17,7 @@ const useStyles = makeStyles( ({
 const Cards = (props) => {
   const classes = useStyles();
   const [cards,setCards] = useState(false);
-  const cardsType = props.cardType;
+  const cardsType = props.cardsType;
 
   useEffect(() => 
   {
@@ -26,13 +26,11 @@ const Cards = (props) => {
 
   return (
       <Grid className={classes.grid} container spacing={2}>
-        { 
-          cards && cards.map((card, index) => 
-            <>
-              { (cardsType === "projetos") && <MyCard key={card.id} info={card} /> }
-              { (cardsType === "usuarios") && <ProfCard key={card.id} info={card}/> }
-            </>
-          )
+        { cards &&
+          (cardsType === "projetos") && cards.map((card, index) => <MyCard key={card.id} info={card} /> )
+        }
+        { cards &&
+          (cardsType === "usuarios") && cards.map((card, index) => <ProfCard key={card.id} info={card}/> )
         }
       </Grid>
   );

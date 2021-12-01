@@ -91,7 +91,7 @@ const Home = () => {
   const [pageCount, setPageCount] = React.useState(1);
   const [pesquisa,setPesquisa] = React.useState("");
 
-  const [typeSearch, setTypeSearch] = React.useState(0);
+  const [typeSearch, setTypeSearch] = React.useState(false);
 
   function fazerPesquisa(e)
   {
@@ -105,36 +105,31 @@ const Home = () => {
   // mudando o número de cards por página, renderiza novamente 
   React.useEffect(() => 
   {
-      async function loadProjetos() 
+      async function loadCards() 
       { 
         setPageLoading(true);
 
-        console.log(pesquisa);
-
-        let valores = await getProjetos(pesquisa);
-        let x = chunk(valores.data,n_cards);
-        setCardsProjetos(x);
-        setPageCount(x.length);
-        
-        setPageLoading(false);
-      }
-
-      async function loadProfiles()
-      {
-        setPageLoading(true);
-
-        let aux = await getProfiles([{"display_name_ilike": pesquisa}]);
-        let x = chunk(aux, n_cards);
-        setCardsProfiles(x);
-        setPageCount(x.length);
+        if(typeSearch === false)
+        {
+          let valores = await getProjetos(pesquisa);
+          let x = chunk(valores.data,n_cards);
+          setCardsProjetos(x);
+          setPageCount(x.length);
+        }
+        else
+        {        
+          let aux = await getProfiles([{"display_name_ilike": pesquisa}]);
+          let x = chunk(aux, n_cards);
+          setCardsProfiles(x);
+          setPageCount(x.length);
+        }
 
         setPageLoading(false);
       }
 
-      loadProjetos();
-      loadProfiles();
+      loadCards();
 
-  }, [n_cards, pesquisa])
+  }, [n_cards, typeSearch, pesquisa])
 
   return (
     <>
@@ -182,12 +177,19 @@ const Home = () => {
               label="Tipo de pesquisa" 
               onChange={(event) => setTypeSearch(event.target.value)}
             >
-              <MenuItem value={0}>Projetos</MenuItem>
-              <MenuItem value={1}>Usuários</MenuItem>
+              <MenuItem value={false}>Projetos</MenuItem>
+              <MenuItem value={true}>Usuários</MenuItem>
             </Select>
           </FormControl>
 
-          <Cards valores={!typeSearch ? cardsProjetos[page-1] : cardsProfiles[page-1]} cardsType={!typeSearch ? "projeto" : "usuarios"}/>
+
+          { !typeSearch &&
+            <Cards valores={cardsProjetos[page-1]} cardsType="projetos"/>
+          }
+
+          { typeSearch &&
+            <Cards valores={cardsProfiles[page-1]} cardsType="usuarios"/>
+          }
 
           <Container className={classes.pagination}>
             <Pagination 
