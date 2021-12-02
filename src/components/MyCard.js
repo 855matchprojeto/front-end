@@ -85,7 +85,7 @@ const MyCard = ({ info }) => {
           
           <CardContent>
             <Typography variant="subtitle1">{info.titulo}</Typography>
-            <Typography variant="body1"> {limitString(info.descricao, 150)} </Typography>
+            <Typography variant="body1" noWrap > {limitString(info.descricao, 5)} </Typography>
           </CardContent>
 
           <CardActions className={classes.actions}>
