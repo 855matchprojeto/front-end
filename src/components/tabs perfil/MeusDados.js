@@ -179,7 +179,7 @@ const MeusDados = () => {
             sobrenome: res.data.nome_exibicao.split(" ")[1],
             interesses: res.data.interesses,
             cursos: res.data.cursos,
-            email: res.data.emails[0],
+            email: res.data.emails && res.data.emails.length > 0 ? res.data.emails[0].email : '',
           });
 
           console.log(res);
