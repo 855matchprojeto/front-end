@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Grid, Box, Typography, Button } from "@mui/material";
-import {TextField, Stack, Chip, Card } from "@mui/material";
+import { useLocation } from "react-router";
+import {TextField, Stack, Chip, Card, Autocomplete } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
+import { getProjetos } from "../services/api_projetos";
 import { doGetAllCourses,doGetInteresses } from "../services/api_perfil";
 import LoadingBox from "../components/LoadingBox";
 
 const EditProject = () => {
+  const location =  useLocation();
+  const pid = location.state?.data[0];
+  const guid = location.state?.data[1];
   const imageUrl = "https://source.unsplash.com/random";
   const imageRef = React.useRef();
 
@@ -17,7 +22,6 @@ const EditProject = () => {
     descricao: "Esse é um projeto Teste",
   });
 
-  //const [responsaveis, setResponsaveis] = useState([ { name: "Lebron James", perfil: "Professor" }]);
   const [image, setImage] = React.useState(null);
   const [imageFile, setImageFile] = React.useState(null);
 
@@ -31,35 +35,9 @@ const EditProject = () => {
   // enquanto estiver criando um projeto, nao deixa clicar no botao
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const [areasSelecionadas, setAreasSelecionadas] = React.useState([
-    {
-      id: 3,
-      nome_referencia: "dev_sustentavel",
-      nome_exibicao: "Desenvolvimento Sustentável",
-      descricao: "",
-    },
-    {
-      id: 2,
-      nome_referencia: "algoritmos",
-      nome_exibicao: "Algoritmos",
-      descricao: "",
-    },
-  ]);
+  const [areasSelecionadas, setAreasSelecionadas] = React.useState(null);
 
-  const [cursosSelecionados, setCursosSelecionados] = React.useState([
-    {
-      id: 4,
-      nome_exibicao: "Engenharia da Computação",
-      nome_referencia: "engenharia_comp",
-      descricao: "",
-    },
-    {
-      id: 3,
-      nome_exibicao: "Ciência da Computação",
-      nome_referencia: "ciencia_comp",
-      descricao: "",
-    },
-  ]);
+  const [cursosSelecionados, setCursosSelecionados] = React.useState(null);
 
   const handleChangeFields = (e) => { setFields({ ...fields, [e.target.name]: e.target.value }); };
   const handleChangeAreas = (e, value) => { setAreasSelecionadas(value); };
@@ -107,6 +85,8 @@ const EditProject = () => {
       {
         const res = await doGetInteresses();
         if (res.statusText === "OK") 
+          console.log('teste interesses');
+          console.log(res.data);
           setAllInteresses(res.data);
       } 
       catch (err) 
@@ -121,6 +101,8 @@ const EditProject = () => {
       {
         const res = await doGetAllCourses();
         if (res.status === 200 && res.statusText === "OK") 
+          console.log('teste courses');
+          console.log(res.data);
           setAllCourses(res.data);
         
       } 
@@ -134,6 +116,46 @@ const EditProject = () => {
     getInteresses();
     getAllCourses();
   }, []);
+
+  useEffect(() => 
+  {
+     
+      async function getInfos() 
+      {
+        // faz uma chamada de api com o pid (project id) e seta dados basicos
+        try {
+          const info = await getProjetos(pid,true);
+          if (info.status === 200) {
+            const infoData = info.data[0];
+            setFields({...infoData, 
+              image: fields.image,
+              cursos: fields.cursos,
+              areas: fields.areas
+            });
+          } 
+
+        } catch(err) {
+          console.log(err);
+        }
+
+        // // PUXAR CURSOS
+        // //const cr = await getProjetos(dados);
+        // //getProjectCursos(cr.data[0]);
+        // getProjectCursos([]);
+
+        // // PUXAR AREAS
+        // //const ar = await getProjetos(dados);
+        // //getProjectAreas(ar.data[0]);
+        // getProjectAreas([]);
+
+        // setPageLoading(false);
+      }
+      
+      // getStatusInteresse();
+      getInfos();
+
+  },[pid])
+
 
   return (
     <>
@@ -201,12 +223,11 @@ const EditProject = () => {
 
                   <Grid item xs={12}>
                     <Stack spacing={3} sx={{ width: "100%" }}>
-                      <TextField
+                      <Autocomplete
                         multiple
                         options={allCourses && allCourses}
                         freeSolo
                         getOptionLabel={(option) => option.nome_exibicao}
-                        defaultValue={cursosSelecionados}
                         renderTags={(value, getTagProps) =>
                           value.map((option, index) => (
                             <Chip
@@ -231,14 +252,13 @@ const EditProject = () => {
 
                   <Grid item xs={12}>
                     <Stack spacing={3} sx={{ width: "100%" }}>
-                      <TextField
+                      <Autocomplete
                         multiple
                         options={allInteresses && allInteresses}
                         getOptionLabel={(option) => option.nome_exibicao}
                         name="areas"
                         id="areas"
                         freeSolo
-                        defaultValue={areasSelecionadas}
                         renderTags={(value, getTagProps) =>
                           value.map((option, index) => (
                             <Chip
