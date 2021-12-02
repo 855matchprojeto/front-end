@@ -136,7 +136,7 @@ const Home = () => {
     if (e.key === 'Enter') 
     {
       setPesquisa(e.target.value);
-      console.log(pesquisa);
+      //console.log(pesquisa);
     }
   }
   

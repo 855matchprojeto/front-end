@@ -26,7 +26,7 @@ export const getProjetos = async (dados) => {
     if (dados === "")
         return proj.get(`/projetos`).then(res => res)
     else
-        return proj.get(`/projetos`,{ params: {id:dados}}).then(res => res)
+        return proj.get(`/projetos`,{ params: {titulo_ilike:dados}}).then(res => res)
 }
 
 export const postProjetos = async (dados) => {
