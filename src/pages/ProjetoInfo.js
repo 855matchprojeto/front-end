@@ -12,6 +12,7 @@ const ProjetoInfo = () => {
   const [projectInfo, getProjectInfo] = useState(false);
   const [projectCursos, getProjectCursos] = useState(false);
   const [projectAreas, getProjectAreas] = useState(false);
+  const defaultImageUrl = "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
@@ -58,15 +59,15 @@ const ProjetoInfo = () => {
          const info = await getProjetos(pid,true);
          getProjectInfo(info.data[0]);
 
-         // PUXAR CURSOS
-         //const cr = await getProjetos(dados);
-         //getProjectCursos(cr.data[0]);
-         getProjectCursos([]);
+        //  // PUXAR CURSOS
+        //  //const cr = await getProjetos(dados);
+        //  //getProjectCursos(cr.data[0]);
+        //  getProjectCursos([]);
 
-         // PUXAR AREAS
-         //const ar = await getProjetos(dados);
-         //getProjectAreas(ar.data[0]);
-         getProjectAreas([]);
+        //  // PUXAR AREAS
+        //  //const ar = await getProjetos(dados);
+        //  //getProjectAreas(ar.data[0]);
+        //  getProjectAreas([]);
 
          setPageLoading(false);
        }
@@ -85,7 +86,7 @@ const ProjetoInfo = () => {
               <Card sx={{ mt: 2 }}>
 
                 <Box sx={{width: "100%", bgcolor: "#dedede"}}>
-                  <CardMedia component="img" image={projectInfo.image} height="300" sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}/>
+                  <CardMedia component="img" src={defaultImageUrl} height="300" sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}/>
                 </Box>
 
                 <CardContent>
@@ -117,10 +118,10 @@ const ProjetoInfo = () => {
 
                     <Grid item xs={12}>
                       <Box sx={{ display: "flex" }}>
-                        { projectCursos &&
-                          projectCursos.map((curso) => (
+                        { projectInfo &&
+                          projectInfo.cursos.map((curso) => (
                           <>
-                            <Chip variant="outlined" label={curso} sx={{ mr: 1 }} />
+                            <Chip variant="outlined" label={curso.nome_exibicao} sx={{ mr: 1 }} />
                           </>
                         ))}
                       </Box>
@@ -134,10 +135,10 @@ const ProjetoInfo = () => {
                     
                     <Grid item xs={12}>
                       <Box sx={{ display: "flex" }}>
-                        { projectAreas &&
-                          projectAreas.map((area) => (
+                        { projectInfo &&
+                          projectInfo.interesses.map((area) => (
                           <>
-                            <Chip variant="outlined" label={area} sx={{ mr: 1 }} />
+                            <Chip variant="outlined" label={area.nome_exibicao} sx={{ mr: 1 }} />
                           </>
                         ))}
                       </Box>

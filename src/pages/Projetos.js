@@ -4,10 +4,16 @@ import { Container, Box, Button, Chip, Autocomplete, Stack} from "@mui/material"
 import UploadIcon from "@mui/icons-material/Upload";
 import { doGetAllCourses, doGetInteresses } from "../services/api_perfil";
 import { postProjetos } from "../services/api_projetos";
+import { useSnackbar } from "notistack";
 import LoadingBox from "../components/LoadingBox";
+import {getToken } from '../services/auth';
+import axios from 'axios';
+import { useHistory } from "react-router";
 
 const Projetos = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const imageRef = useRef();
+  const history = useHistory();
   const [fields, setFields] = useState({titulo: "", descricao: ""});
 
   const defaultImageUrl = "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
@@ -30,26 +36,55 @@ const Projetos = () => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
-    
-    const formTeste = {
-      titulo: fields.titulo,
-      descricao: fields.descricao,
-      areas: areasSelecionadas,
-      cursos: cursosSelecionados,
-      image: imageFile
-    }
-    
-    console.log(formTeste);
-    
-
     const form = {
       titulo: fields.titulo,
-      descricao: fields.descricao
-      //interesses: areasSelecionadas.map((area) => area.id),
-      //cursos: cursosSelecionados.map((curso) => curso.id),
-    };
+      descricao: fields.descricao,
+      entidades: [],
+      tags: [],
+      url_imagem: "https://teste.com.br",
+      interesses: areasSelecionadas.map((area) => area.id),
+      cursos: cursosSelecionados.map((curso) => curso.id),
 
-    postProjetos(form);
+    };
+    try {
+  
+    const res = await axios.post('https://projetos-match-projetos.herokuapp.com/projetos', form, {
+      headers: {
+        'Authorization': `Bearer ${getToken}`
+      }
+    });
+    
+    if (res.status == 200) {
+      enqueueSnackbar('Projeto criado com sucesso!', {
+        anchorOrigin: {
+          horizontal: 'right',
+          vertical: 'top'
+        },
+        variant: 'success'
+      });
+      history.push("/projeto", { data: [res.data.id, res.data.guid] })
+    } else {
+      enqueueSnackbar('Erro ao criar o projeto!', {
+        anchorOrigin: {
+          horizontal: 'right',
+          vertical: 'top'
+        },
+        variant: 'error'
+      });
+      
+    }
+
+  }catch(err) {
+    console.log(err);
+    enqueueSnackbar('Erro ao criar o projeto!', {
+      anchorOrigin: {
+        horizontal: 'right',
+        vertical: 'top'
+      },
+      variant: 'error'
+    });
+    
+  }
 
     setIsLoading(false);
   };
@@ -74,7 +109,11 @@ const Projetos = () => {
       setPageLoading(true);
       try 
       {
-        const res = await doGetInteresses();
+        const res = await axios.get('https://projetos-match-projetos.herokuapp.com/interesse', {
+          headers: {
+            Authorization: `Bearer ${getToken}`
+          }
+        });
         if (res.statusText === "OK") 
           setAllInteresses(res.data);
         
@@ -89,7 +128,11 @@ const Projetos = () => {
     {
       try
       {
-        const res = await doGetAllCourses();
+        const res = await axios.get('https://projetos-match-projetos.herokuapp.com/curso', {
+          headers: {
+            Authorization: `Bearer ${getToken}`
+          }
+        });
         if (res.status === 200 && res.statusText === "OK") 
           setAllCourses(res.data);
       } 
