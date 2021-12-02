@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { Typography, TextField, Grid, Card } from "@mui/material"; 
 import { Container, Box, Button, Chip, Autocomplete, Stack} from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
-import { doGetAllCourses, doGetInteresses } from "../services/api_perfil";
-import { postProjetos } from "../services/api_projetos";
 import { useSnackbar } from "notistack";
 import LoadingBox from "../components/LoadingBox";
 import {getToken } from '../services/auth';
@@ -41,7 +39,7 @@ const Projetos = () => {
       descricao: fields.descricao,
       entidades: [],
       tags: [],
-      url_imagem: "https://teste.com.br",
+      url_imagem: "https://picsum.photos/200/500?random=50",
       interesses: areasSelecionadas.map((area) => area.id),
       cursos: cursosSelecionados.map((curso) => curso.id),
 
@@ -54,7 +52,7 @@ const Projetos = () => {
       }
     });
     
-    if (res.status == 200) {
+    if (res.status === 200) {
       enqueueSnackbar('Projeto criado com sucesso!', {
         anchorOrigin: {
           horizontal: 'right',

@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Grid, CardMedia, Typography,Box } from "@mui/material";
+import { Card, Grid, CardMedia, Typography } from "@mui/material";
 import { CardContent, CardActions, Button, Tooltip  } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { limitString } from "../services/util";
@@ -33,16 +33,23 @@ const ProfCard = ({ info }) => {
   const classes = useStyles();
   let history = useHistory();
 
+  const defaultImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={4}>
         <Card sx={{ display: "flex", flexDirection: "column", maxWidth: 400, height: 450 }}>
-          <Box>
-            <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
-              className={classes.media} 
+              <CardMedia
+              sx={{
+                width: "100%",
+                bgcolor: "#dedede",
+                backgroundSize: "cover",
+                border: "1px solid #c0c0c0",
+              }}
+              // className={classes.media}
+              height="200"
               component="img"
-              image={info.image}
+              src={("url_imagem" in info && info.url_imagem !== null) ? info.url_imagem : defaultImageUrl} 
             />
-          </Box>
           
           <CardContent sx={{width: "100%"}}>
             <Typography variant="subtitle1">{info.nome_exibicao}</Typography>

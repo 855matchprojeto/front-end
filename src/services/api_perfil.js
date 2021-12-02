@@ -63,7 +63,7 @@ export const doHandleTextFieldChange = async (field, value) => {
     
 }
 
-export const getProfiles =  async (data) => {
+export const getProfiles =  async (data,page_size) => {
 
     // lista de ids de interesses, filtro
     let interests_in = [];
@@ -90,7 +90,7 @@ export const getProfiles =  async (data) => {
     }
     else
     {
-        query += "display_name_ilike="+pesquisa;
+        query += `display_name_ilike=${pesquisa}&page_size=${page_size}`;
     }
 
     return perf.get(`profiles?${query}`).then(res => res.data.items)

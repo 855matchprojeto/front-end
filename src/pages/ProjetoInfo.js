@@ -10,8 +10,8 @@ import LoadingBox from "../components/LoadingBox";
 
 const ProjetoInfo = () => {
   const [projectInfo, getProjectInfo] = useState(false);
-  const [projectCursos, getProjectCursos] = useState(false);
-  const [projectAreas, getProjectAreas] = useState(false);
+  //const [projectCursos, getProjectCursos] = useState(false);
+  //const [projectAreas, getProjectAreas] = useState(false);
   const defaultImageUrl = "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
 
   // pagina carregando, esconde conteudo
@@ -86,7 +86,7 @@ const ProjetoInfo = () => {
               <Card sx={{ mt: 2 }}>
 
                 <Box sx={{width: "100%", bgcolor: "#dedede"}}>
-                  <CardMedia component="img" src={defaultImageUrl} height="300" sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}/>
+                  <CardMedia component="img" src={projectInfo.url_imagem ? projectInfo.url_imagem : defaultImageUrl} height="300" sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}/>
                 </Box>
 
                 <CardContent>

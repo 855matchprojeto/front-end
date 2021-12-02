@@ -158,7 +158,7 @@ const Home = () => {
         else
         {        
           let dados = [selectedInteresses,selectedCourses,pesquisa];
-          let aux = await getProfiles(dados);
+          let aux = await getProfiles(dados,1000);
           let x = chunk(aux, n_cards);
           setCardsProfiles(x);
           setPageCount(x.length);
@@ -305,9 +305,11 @@ const Home = () => {
               label="Cards" 
               onChange={(event) => setNcards(event.target.value)}
             >
+              <MenuItem value={5}>5</MenuItem>
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={20}>20</MenuItem>
               <MenuItem value={50}>50</MenuItem>
+              <MenuItem value={100}>100</MenuItem>
             </Select>
           </FormControl>
 
