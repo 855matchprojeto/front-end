@@ -174,13 +174,17 @@ const MeusDados = () => {
   
         if (res.status === 200) 
         {
-          setUser({
+          await setUser({
             name: res.data.nome_exibicao.split(" ")[0],
             sobrenome: res.data.nome_exibicao.split(" ")[1],
             interesses: res.data.interesses,
             cursos: res.data.cursos,
-            email: res.data.emails[0].email,
+            email: res.data.emails[0],
           });
+
+          console.log(res);
+
+
 
           
         }
