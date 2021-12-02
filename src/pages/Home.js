@@ -150,7 +150,7 @@ const Home = () => {
 
         if(typeSearch === false)
         {
-          let valores = await getProjetos(pesquisa);
+          let valores = await getProjetos(pesquisa,false);
           let x = chunk(valores.data,n_cards);
           setCardsProjetos(x);
           setPageCount(x.length);

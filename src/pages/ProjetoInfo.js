@@ -35,6 +35,7 @@ const ProjetoInfo = () => {
    {
       async function getStatusInteresse() 
       {
+          setPageLoading(true);
           let aux = await getProjetosInteresses();
           aux = aux.data;
           
@@ -53,9 +54,8 @@ const ProjetoInfo = () => {
 
        async function getInfos() 
        {
-        setPageLoading(true);
          // faz uma chamada de api com o pid (project id) e seta dados basicos
-         const info = await getProjetos(pid);
+         const info = await getProjetos(pid,true);
          getProjectInfo(info.data[0]);
 
          // PUXAR CURSOS
