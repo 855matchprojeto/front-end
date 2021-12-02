@@ -1,12 +1,12 @@
 import React,{ useState, useEffect } from "react";
 import {Container, Box, Typography, CardContent, Card } from "@mui/material";
-import {Grid, CardMedia } from "@mui/material";
+import {Grid, Chip, CardMedia } from "@mui/material";
 import { useLocation } from "react-router";
 import LoadingBox from "../components/LoadingBox";
 import { getProfilesGUID } from "../services/api_perfil";
 
 const ProfileInfo = () => {
-  const [profInfo, getProfileInfo] = useState(false);
+  const [profInfo, getProfileInfo] = useState([]);
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
@@ -23,6 +23,7 @@ const ProfileInfo = () => {
 
         const info = await getProfilesGUID(guid);
         getProfileInfo(info);
+        console.log(info);
 
         setPageLoading(false);
        }
@@ -63,6 +64,40 @@ const ProfileInfo = () => {
                                 <Typography variant="body" align="justify" sx={{ color: "text.secondary" }}>
                                   {profInfo.bio}
                                 </Typography>
+                              </Grid>
+
+                              <Grid item xs={12}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: "text.secondary", mt: 2 }}>
+                                  Cursos:
+                                </Typography>
+                              </Grid>
+
+                              <Grid item xs={12}>
+                                <Box sx={{ display: "flex" }}>
+                                  { 
+                                    profInfo.cursos.map((crs) => (
+                                    <>
+                                      <Chip variant="outlined" label={crs.nome_exibicao} sx={{ mr: 1 }} />
+                                    </>
+                                  ))}
+                                  </Box>
+                              </Grid>
+
+                              <Grid item xs={12}>
+                                <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: "text.secondary", mt: 2 }}>
+                                  Interesses:
+                                </Typography>
+                              </Grid>
+
+                              <Grid item xs={12}>
+                                <Box sx={{ display: "flex" }}>
+                                  { 
+                                    profInfo.interesses.map((its) => (
+                                    <>
+                                      <Chip variant="outlined" label={its.nome_exibicao} sx={{ mr: 1 }} />
+                                    </>
+                                  ))}
+                                  </Box>
                               </Grid>
           
                             </Grid>
