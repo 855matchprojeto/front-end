@@ -94,10 +94,9 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
                 border: "1px solid #c0c0c0",
               }}
               // className={classes.media}
-              height="194"
+              height="200"
               component="img"
-              // image={info.image ? info.image : defaultImageUrl }
-              src={info.image ? info.image : defaultImageUrl}
+              src={("url_imagem" in info && info.url_imagem !== null) ? info.url_imagem : defaultImageUrl} 
             />
 
           <CardContent sx={{width: "100%"}}>
