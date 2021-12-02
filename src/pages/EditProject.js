@@ -323,7 +323,7 @@ const EditProject = () => {
   return (
     <>
       { !pageLoading &&
-        <Container maxWidth="xl" sx={{ mb: 5 }}>
+        <Container maxWidth="lg" sx={{ mb: 5 }}>
           <Card sx={{ width: "100%", p: 4, mt: 1 }}>
             <Typography variant="h5" color="textSecondary" sx={{ mb: 3 }}>
               Projeto Teste
