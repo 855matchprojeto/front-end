@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Grid, CardMedia, Typography, Box } from "@mui/material";
+import { Card, Grid, CardMedia, Typography, Tooltip } from "@mui/material";
 import { CardContent, CardActions, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router-dom";
@@ -7,6 +7,8 @@ import { getProjetosInteresses } from "../services/api_projetos";
 import { postInteresseProjeto } from "../services/api_projetos";
 import { deleteInteresseProjeto } from "../services/api_projetos";
 import { limitString } from "../services/util";
+import { styled } from '@mui/material/styles';
+import { tooltipClasses } from '@mui/material/Tooltip';
 
 //--estilo--
 const useStyles = makeStyles({
@@ -16,7 +18,15 @@ const useStyles = makeStyles({
   },
   actions: {
     display: "flex",
-    justifyContent: "space-around",
+    marginTop: "auto"
+  }
+});
+
+const BigTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 450,
   },
 });
 //---------
@@ -75,20 +85,11 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
   return (
     <Grid item xs={12} sm={6} md={4} lg={4}>
       {!componentLoading && (
-        <Card
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            height: "350px",
-          }}
-        >
-          <Box>
+        <Card sx={{ display: "flex", flexDirection: "column", maxWidth: 400, height: 450 }}>
             <CardMedia
               sx={{
                 width: "100%",
                 bgcolor: "#dedede",
-                margin: "auto",
                 backgroundSize: "cover",
                 border: "1px solid #c0c0c0",
               }}
@@ -98,45 +99,61 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
               // image={info.image ? info.image : defaultImageUrl }
               src={info.image ? info.image : defaultImageUrl}
             />
-          </Box>
 
-          <CardContent>
-            <Typography variant="subtitle1">{info.titulo}</Typography>
-            <Typography variant="body1" noWrap>
-              {" "}
-              {limitString(info.descricao, 5)}{" "}
+          <CardContent sx={{width: "100%"}}>
+            <Typography variant="h6">{info.titulo}</Typography>
+
+            <Typography variant="body2" display="inline" style={{textJustify: "justify"}}>
+                {info.descricao && limitString(info.descricao, 150)}
             </Typography>
+
+            { info.descricao && info.descricao.length > 150 && 
+              <BigTooltip title={info.descricao} arrow>            
+                <Typography variant="body2" display="inline" style={{textAlign: "justify", color: "darkblue", fontWeight: 600}}>
+                  {" ..."}
+                </Typography>
+              </BigTooltip>
+            }
           </CardContent>
 
           <CardActions className={classes.actions}>
-            <Button
-              color={ type === "projetos" ? (btnInteresse ? "error" : "success" ) : "primary" }
-              onClick={() => {
-                if (type === "projetos") {
-                  updateInteresse();
-                } else {
-                  history.push("/editproject", {
-                    data: [info.id, info.guid],
-                  });
-                }
-              }}
-            >
-              {type === "projetos"
-                ? btnInteresse
-                  ? "Remover interesse"
-                  : "Marcar interesse"
-                : "Editar"}
-            </Button>
+            <Grid item xs={6} sm={6} md={6} lg={6} style={{display: "flex", justifyContent: "center"}}>            
+              <Button
+                size="small"
+                variant="outlined"
+                color={ type === "projetos" ? (btnInteresse ? "error" : "success" ) : "primary" }
+                onClick={() => {
+                  if (type === "projetos") {
+                    updateInteresse();
+                  } else {
+                    history.push("/editproject", {
+                      data: [info.id, info.guid],
+                    });
+                  }
+                }}
+              >
+                {type === "projetos"
+                  ? btnInteresse
+                    ? "Remover interesse"
+                    : "Marcar interesse"
+                  : "Editar"}
+              </Button>
+            </Grid>
 
-            <Button
-              color="secondary"
-              onClick={() =>
-                history.push("/projeto", { data: [info.id, info.guid] })
-              }
-            >
-              Detalhes
-            </Button>
+            <Grid item xs={6} sm={6} md={6} lg={6} style={{display: "flex", justifyContent: "center"}}>
+              <Button
+                color="secondary"
+                variant="outlined"
+                size="small"
+                onClick={() =>
+                  history.push("/projeto", { data: [info.id, info.guid] })
+                }
+              >
+                Detalhes
+              </Button>
+            </Grid>
           </CardActions>
+
         </Card>
       )}
     </Grid>
