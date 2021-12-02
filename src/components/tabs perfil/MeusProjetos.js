@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { getMeusProjetos } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
+import Cards from "../Cards";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -63,99 +64,54 @@ const MeusProjetos = () => {
   */
 
   useEffect(() => {
-    async function doGetMeusProjetos()
-    {
+    async function doGetMeusProjetos() {
       setComponentLoading(true);
-      try 
-      {
+      try {
         const res = await getMeusProjetos();
-        if (res.status === 200) 
-          setMeusProjetos(res.data);
-      } 
-      catch (err) 
-      {
+        if (res.status === 200) setMeusProjetos(res.data);
+      } catch (err) {
         console.log(err);
       }
 
       setComponentLoading(false);
-    };
+    }
 
     doGetMeusProjetos();
   }, []);
 
   return (
-      <>
-        { !componentLoading && 
+    <>
+      {!componentLoading && (
+        <Grid container spacing={2}>
+          {meusProjetos.length > 0 ? (
+            <Cards valores={meusProjetos} cardsType="meusprojetos" />
+          ) : (
             <Grid container spacing={2}>
-              {
-                meusProjetos.length > 0 ? 
-                (
-                  meusProjetos.map((projeto) => (
-                    <Grid item xs={12} sm={4}>
-                      
-                      <Card>
-                        <CardMedia className={classes.media} image={projeto.image} />
-                        <CardContent>
-                          <Typography variant="subtitle1">{projeto.title}</Typography>
-                          <p>{projeto.description}</p>
-                        </CardContent>
-                        <CardActions>
-                          <Box
-                            sx={{
-                              width: "100%",
-                              display: "flex",
-                              justifyContent: "end",
-                              mr: 2,
-                            }}
-                          >
-                            <Button
-                              color="primary"
-                              onClick={() => {
-                                console.log("Teste");
-                                history.push("/editproject");
-                              }}
-                            >
-                              Editar
-                            </Button>
-                            <Button
-                              color="secondary"
-                              onClick={() => {
-                                console.log("Teste");
-                                history.push("/projeto");
-                              }}
-                            >
-                              Detalhes
-                            </Button>
-                          </Box>
-                        </CardActions>
-                      </Card>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  color="textSecondary"
+                  sx={{
+                    p: 4,
+                    fontSize: "1.5em",
+                  }}
+                >
+                  Você ainda não criou nenhum projeto.
+                </Typography>
+              </Box>
+            </Grid>
+          )}
+        </Grid>
+      )}
 
-                    </Grid>
-                  ))
-                ) 
-                :
-                (              
-                  <Grid container spacing={2}>
-                    <Box sx={{width: "100%", display: "flex", justifyContent: "center"}}>
-                      <Typography
-                        variant="subtitle1"
-                        color="textSecondary"
-                        sx={{
-                          p: 4,
-                          fontSize: "1.5em",
-                        }}
-                      >
-                        Você ainda não criou nenhum projeto.
-                      </Typography>
-                    </Box>
-                  </Grid>
-                )
-              }
-            </Grid>    
-        }
-
-        { componentLoading && <LoadingBox/>}
-      </>
+      {componentLoading && <LoadingBox />}
+    </>
   );
 };
 

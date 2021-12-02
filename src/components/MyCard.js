@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Grid, CardMedia, Typography,Box } from "@mui/material";
+import { Card, Grid, CardMedia, Typography, Box } from "@mui/material";
 import { CardContent, CardActions, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router-dom";
@@ -21,7 +21,8 @@ const useStyles = makeStyles({
 });
 //---------
 
-const MyCard = ({ info }) => {
+const MyCard = ({ info, type, valores, setValores, page }) => {
+  const defaultImageUrl = "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
   const [btnInteresse, setBtnInteresse] = React.useState(false);
   const [componentLoading, setComponentLoading] = React.useState(true);
 
@@ -30,78 +31,114 @@ const MyCard = ({ info }) => {
   const classes = useStyles();
   let history = useHistory();
 
-  async function updateInteresse()
-  {
-    if(btnInteresse)
+  async function updateInteresse() {
+    if (btnInteresse){
       await deleteInteresseProjeto(info.guid);
-    else
-      await postInteresseProjeto(info.guid);
+      if (page === 'perfil') {
+        setValores(valores.filter((valor) => valor.guid !== info.guid));
+      }
+    } 
+    else await postInteresseProjeto(info.guid);
 
     setBtnInteresse(!btnInteresse);
   }
 
-  React.useEffect(() => 
-  {
-      async function getStatusInteresse() 
-      {
-          setComponentLoading(true);
-          let aux = await getProjetosInteresses();
-          aux = aux.data;
-          
-          if (aux.length === 0) // usuario nao tem interesse em nenhum projeto
-          {
-            setBtnInteresse(false);
-          }
-          else  // usuario tem interesse em algum projeto, verificar se o atual é um deles
-          {
-            aux.forEach(function (item, index) {
-              if (item.id === pid)
-              {
-                setBtnInteresse(true);
-                return;
-              }
-            });
-          }
+  React.useEffect(() => {
+    if (type === "projetos") {
+      async function getStatusInteresse() {
+        setComponentLoading(true);
+        let aux = await getProjetosInteresses();
+        aux = aux.data;
 
-          setComponentLoading(false);
+        if (aux.length === 0) {
+          // usuario nao tem interesse em nenhum projeto
+          setBtnInteresse(false);
+        } // usuario tem interesse em algum projeto, verificar se o atual é um deles
+        else {
+          aux.forEach(function (item, index) {
+            if (item.id === pid) {
+              setBtnInteresse(true);
+              return;
+            }
+          });
+        }
+
+        setComponentLoading(false);
       }
-      
-      getStatusInteresse();
 
-  },[pid])
+      getStatusInteresse();
+    } else {
+      setComponentLoading(false);
+    }
+  }, [pid]);
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
-      { !componentLoading &&
-        <Card style={{display: "flex", flexDirection: "column", justifyContent: "space-between", height : "350px"}}>
-
+      {!componentLoading && (
+        <Card
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: "350px",
+          }}
+        >
           <Box>
-            <CardMedia sx={{width: "100%",bgcolor: "#dedede",margin: "auto", backgroundSize: "cover", border: "1px solid #c0c0c0" }}
-              className={classes.media} 
+            <CardMedia
+              sx={{
+                width: "100%",
+                bgcolor: "#dedede",
+                margin: "auto",
+                backgroundSize: "cover",
+                border: "1px solid #c0c0c0",
+              }}
+              // className={classes.media}
+              height="194"
               component="img"
-              image={info.image}
+              // image={info.image ? info.image : defaultImageUrl }
+              src={info.image ? info.image : defaultImageUrl}
             />
           </Box>
-          
+
           <CardContent>
             <Typography variant="subtitle1">{info.titulo}</Typography>
-            <Typography variant="body1" noWrap > {limitString(info.descricao, 5)} </Typography>
+            <Typography variant="body1" noWrap>
+              {" "}
+              {limitString(info.descricao, 5)}{" "}
+            </Typography>
           </CardContent>
 
           <CardActions className={classes.actions}>
-            <Button color={btnInteresse ? "error" : "success"} onClick={() => updateInteresse()}>
-              {btnInteresse ? "Remover interesse" : "Marcar interesse"}
+            <Button
+              color={ type === "projetos" ? (btnInteresse ? "error" : "success" ) : "primary" }
+              onClick={() => {
+                if (type === "projetos") {
+                  updateInteresse();
+                } else {
+                  history.push("/editproject", {
+                    data: [info.id, info.guid],
+                  });
+                }
+              }}
+            >
+              {type === "projetos"
+                ? btnInteresse
+                  ? "Remover interesse"
+                  : "Marcar interesse"
+                : "Editar"}
             </Button>
 
             <Button
               color="secondary"
-              onClick={() => history.push("/projeto", { data: [info.id, info.guid] })}
+              onClick={() =>
+                history.push("/projeto", { data: [info.id, info.guid] })
+              }
             >
               Detalhes
             </Button>
           </CardActions>
         </Card>
-      }
+      )}
     </Grid>
   );
 };
