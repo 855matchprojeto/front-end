@@ -180,6 +180,7 @@ const MeusDados = () => {
             interesses: res.data.interesses,
             cursos: res.data.cursos,
             email: res.data.emails && res.data.emails.length > 0 ? res.data.emails[0].email : '',
+            url_imagem: res.data.url_imagem
           });
 
           console.log(res);
@@ -240,7 +241,7 @@ const MeusDados = () => {
                 <CardHeader
                   title={
                     <Typography variant="h6" align="center">
-                      {user && `${user.name}`}
+                      {`${user.name}`}
                     </Typography>
                   }
                 />
