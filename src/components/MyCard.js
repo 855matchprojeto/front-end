@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 });
 //---------
 
-const MyCard = ({ info, type }) => {
+const MyCard = ({ info, type, valores, setValores, page }) => {
   const [btnInteresse, setBtnInteresse] = React.useState(false);
   const [componentLoading, setComponentLoading] = React.useState(true);
 
@@ -31,7 +31,12 @@ const MyCard = ({ info, type }) => {
   let history = useHistory();
 
   async function updateInteresse() {
-    if (btnInteresse) await deleteInteresseProjeto(info.guid);
+    if (btnInteresse){
+      await deleteInteresseProjeto(info.guid);
+      if (page === 'perfil') {
+        setValores(valores.filter((valor) => valor.guid !== info.guid));
+      }
+    } 
     else await postInteresseProjeto(info.guid);
 
     setBtnInteresse(!btnInteresse);
