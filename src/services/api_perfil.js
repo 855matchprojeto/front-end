@@ -64,7 +64,36 @@ export const doHandleTextFieldChange = async (field, value) => {
 }
 
 export const getProfiles =  async (data) => {
-    return perf.get(`profiles`,data).then(res => res.data.items)
+
+    // lista de ids de interesses, filtro
+    let interests_in = [];
+    data[0].forEach(element => interests_in.push(element.id));
+
+    // lista de ids de cursos, filtro
+    let courses_in = [];
+    data[1].forEach(element => courses_in.push(element.id));
+
+    // pesquisa, nomes de usuarios
+    let pesquisa = data[2];
+
+    let query_its = "";
+    interests_in.forEach(element => query_its  += "interests_in=" + element + "&");
+
+    let query_crs = "";
+    courses_in.forEach(element => query_crs += "courses_in=" + element + "&");
+
+    let query = query_its + query_crs;
+
+    if (pesquisa.length === 0)
+    {
+        query = query.slice(0,query.length-1);
+    }
+    else
+    {
+        query += "display_name_ilike="+pesquisa;
+    }
+
+    return perf.get(`profiles?${query}`).then(res => res.data.items)
 }
 
 export const getProfilesGUID = async (guid) => {
