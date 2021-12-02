@@ -5,22 +5,21 @@ import {TextField, Stack, Chip, Card, Autocomplete } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { getProjetos } from "../services/api_projetos";
 import { doGetAllCourses,doGetInteresses } from "../services/api_perfil";
+import { useSnackbar } from "notistack";
 import LoadingBox from "../components/LoadingBox";
+import axios from 'axios';
+import { getToken } from "../services/auth";
 
 const EditProject = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const location =  useLocation();
   const pid = location.state?.data[0];
   const guid = location.state?.data[1];
   const imageUrl = "https://source.unsplash.com/random";
+  const defaultImageUrl = "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
   const imageRef = React.useRef();
 
-  const [fields, setFields] = React.useState({
-    image: imageUrl,
-    titulo: "Projeto Teste",
-    cursos: [],
-    areas: [],
-    descricao: "Esse é um projeto Teste",
-  });
+  const [fields, setFields] = React.useState(null);
 
   const [image, setImage] = React.useState(null);
   const [imageFile, setImageFile] = React.useState(null);
@@ -40,10 +39,17 @@ const EditProject = () => {
   const [cursosSelecionados, setCursosSelecionados] = React.useState(null);
 
   const handleChangeFields = (e) => { setFields({ ...fields, [e.target.name]: e.target.value }); };
-  const handleChangeAreas = (e, value) => { setAreasSelecionadas(value); };
-  const handleChangeCursos = (e, value) => { setCursosSelecionados(value); };
+  const handleChangeAreas = (e, value) => { 
+    setAreasSelecionadas(value); 
+    console.log(value);
+    console.log(e.target.value);
+  };
+  const handleChangeCursos = (e, value) => {
+    setCursosSelecionados(value);
 
-  const handleCreateProject = async (e) => {
+  };
+
+  const handleEditProject = async (e) => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
@@ -52,16 +58,56 @@ const EditProject = () => {
       descricao: fields.descricao,
       interesses: areasSelecionadas.map((area) => area.id),
       cursos: cursosSelecionados.map((curso) => curso.id),
+      entidades: [],
+      tags: [],
     };
 
-    console.log(form);
+    try {
+      const res = await axios.put(`https://projetos-match-projetos.herokuapp.com/projetos/${guid}`, form, {
+        headers: {
+          'Authorization': `Bearer ${getToken} `,
+        }
+      });
 
-    console.log("Sucesso?");
+      if (res.status === 200) {
+        enqueueSnackbar('Projeto atualizado com sucesso!', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center'
+          },
+          variant: 'success'
+
+        });
+        
+      } else {
+        enqueueSnackbar('Erro ao atualizar o projeto!', {
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'center'
+          },
+          variant: 'error'
+
+        });
+
+      }
+
+    } catch(err) {
+      console.log(err);
+      enqueueSnackbar('Erro ao atualizar o projeto!', {
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'center'
+        },
+        variant: 'error'
+
+      });
+    }
+    
 
     setIsLoading(false);
   };
 
-  // pagina carregando, esconde conteudo
+ 
   const [pageLoading, setPageLoading] = React.useState(true);
 
   const [allInteresses, setAllInteresses] = React.useState([]);
@@ -71,16 +117,20 @@ const EditProject = () => {
     async function getInteresses() 
     {
       setPageLoading(true);
-      try 
-      {
-        const res = await doGetInteresses();
-        if (res.statusText === "OK") 
+      try {
+        const res = await axios.get('https://projetos-match-projetos.herokuapp.com/interesse', {
+          headers: {
+            Authorization: `Bearer ${getToken}`
+          }
+        });
+
+        if (res.status === 200){ 
           console.log('teste interesses');
           console.log(res.data);
           setAllInteresses(res.data);
-      } 
-      catch (err) 
-      {
+        } 
+     
+      } catch (err) {
         console.log(err);
       }
     }
@@ -89,9 +139,12 @@ const EditProject = () => {
     {
       try 
       {
-        const res = await doGetAllCourses();
+        const res = await axios.get('https://projetos-match-projetos.herokuapp.com/curso', {
+          headers: {
+            Authorization: `Bearer ${getToken}`
+          }
+        });
         if (res.status === 200 && res.statusText === "OK") 
-          console.log('teste courses');
           console.log(res.data);
           setAllCourses(res.data);
         
@@ -114,14 +167,18 @@ const EditProject = () => {
       {
         // faz uma chamada de api com o pid (project id) e seta dados basicos
         try {
-          const info = await getProjetos(pid,true);
+          // const info = await getProjetos(pid,true);
+          const info = await axios.get(`https://projetos-match-projetos.herokuapp.com/projetos?id=${pid}`, {
+            headers: {
+              Authorization: `Bearer ${getToken}`
+            }
+          });
           if (info.status === 200) {
             const infoData = info.data[0];
-            setFields({...infoData, 
-              image: fields.image,
-              cursos: fields.cursos,
-              areas: fields.areas
-            });
+            setFields(infoData);
+            setCursosSelecionados(infoData.cursos);
+            setAreasSelecionadas(infoData.interesses);
+            console.log(infoData);
           } 
 
         } catch(err) {
@@ -169,7 +226,7 @@ const EditProject = () => {
                       }}
                     >
                       <img
-                        src={image ? image : imageUrl}
+                        src={image ? image : defaultImageUrl}
                         alt="Not Found"
                         style={{ width: "100%", height: "100%" }}
                       />
@@ -204,7 +261,7 @@ const EditProject = () => {
                     <TextField
                       type="input"
                       name="titulo"
-                      value={fields.titulo}
+                      value={fields ? fields.titulo : ''}
                       fullWidth
                       label="Título do projeto"
                       onChange={(e) => handleChangeFields(e, null)}
@@ -217,6 +274,7 @@ const EditProject = () => {
                         multiple
                         options={allCourses && allCourses}
                         freeSolo
+                        value={cursosSelecionados ? cursosSelecionados : []}
                         getOptionLabel={(option) => option.nome_exibicao}
                         renderTags={(value, getTagProps) =>
                           value.map((option, index) => (
@@ -248,6 +306,7 @@ const EditProject = () => {
                         getOptionLabel={(option) => option.nome_exibicao}
                         name="areas"
                         id="areas"
+                        value={areasSelecionadas ? areasSelecionadas : []}
                         freeSolo
                         renderTags={(value, getTagProps) =>
                           value.map((option, index) => (
@@ -277,7 +336,7 @@ const EditProject = () => {
                       name="descricao"
                       multiline
                       rows={3}
-                      value={fields.descricao}
+                      value={fields ? fields.descricao : ''}
                       fullWidth
                       label="Descrição do projeto"
                       onChange={(e) => handleChangeFields(e, null)}
@@ -287,7 +346,7 @@ const EditProject = () => {
                   <Grid item xs={12} sx={{ mt: 1 }}>
                     <Button
                       variant="contained"
-                      onClick={handleCreateProject}
+                      onClick={handleEditProject}
                       disabled={isLoading}
                     >
                       Salvar
