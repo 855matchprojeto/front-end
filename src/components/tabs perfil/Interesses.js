@@ -10,19 +10,13 @@ const Interesses = () => {
   const [componentLoading, setComponentLoading] = useState(true);
 
   useEffect(() => {
-    async function doGetProjInteresses()
-    {
+    async function doGetProjInteresses() {
       setComponentLoading(true);
-      try 
-      {
+      try {
         const res = await getProjetosInteresses();
 
-        if (res.status === 200) 
-          setInteresses(res.data);
-        
-      } 
-      catch (err) 
-      {
+        if (res.status === 200) setInteresses(res.data);
+      } catch (err) {
         console.log(err);
       }
       setComponentLoading(false);
@@ -32,33 +26,38 @@ const Interesses = () => {
   }, []);
 
   return (
-      <>
-        { !componentLoading && 
-          <Grid container spacing={2}>
-            { interesses.length > 0 ? <Cards valores={interesses} cardsType="projetos"/>
-              :
-              (
-                <Grid container spacing={2}>
-                  <Box sx={{width: "100%", display: "flex", justifyContent: "center"}}>
-                    <Typography
-                      variant="subtitle1"
-                      color="textSecondary"
-                      sx={{
-                        p: 4,
-                        fontSize: "1.5em",
-                      }}
-                    >
-                      Você ainda não tem nenhum projeto com interesse.
-                    </Typography>
-                  </Box>
-                </Grid>
-              )
-            }
-          </Grid>       
-        }
+    <>
+      {!componentLoading && (
+        <Grid container spacing={2}>
+          {interesses.length > 0 ? (
+            <Cards valores={interesses} cardsType="projetos" />
+          ) : (
+            <Grid container spacing={2}>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Typography
+                  variant="subtitle1"
+                  color="textSecondary"
+                  sx={{
+                    p: 4,
+                    fontSize: "1.5em",
+                  }}
+                >
+                  Você ainda não tem nenhum projeto com interesse.
+                </Typography>
+              </Box>
+            </Grid>
+          )}
+        </Grid>
+      )}
 
-        { componentLoading && <LoadingBox/> }
-      </>      
+      {componentLoading && <LoadingBox />}
+    </>
   );
 };
 
