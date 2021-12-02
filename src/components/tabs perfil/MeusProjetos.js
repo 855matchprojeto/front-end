@@ -4,8 +4,10 @@ import { CardActions, Box, Button, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { getMeusProjetos } from "../../services/api_projetos";
+import { getToken } from "../../services/auth";
 import LoadingBox from "../LoadingBox";
 import Cards from "../Cards";
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -67,7 +69,12 @@ const MeusProjetos = () => {
     async function doGetMeusProjetos() {
       setComponentLoading(true);
       try {
-        const res = await getMeusProjetos();
+        // const res = await getMeusProjetos();
+        const res = await axios.get('https://projetos-match-projetos.herokuapp.com/users/me/projects', {
+          headers: {
+            Authorization: `Bearer ${getToken}`
+          }
+        })
         if (res.status === 200) setMeusProjetos(res.data);
       } catch (err) {
         console.log(err);
