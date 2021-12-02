@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions } from "@mui/material"; 
-import { Box, Button, Chip, Autocomplete } from "@mui/material";
+import { Box, CardMedia, Button, Chip, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "../../components/LoadingBox";
 
@@ -229,7 +229,7 @@ const MeusDados = () => {
 
   return (
     <>
-      { !componentLoading &&
+      { !componentLoading && user &&
         <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <Card>
@@ -243,9 +243,9 @@ const MeusDados = () => {
 
                 <CardContent style={{display: "flex", justifyContent: "center"}}>
                   <Box>
-                    <img
+                    <CardMedia
                       alt="Not Found"
-                      src={perfilImageUrl}
+                      image={("url_imagem" in user && user.url_imagem !== null) ? user.url_imagem : perfilImageUrl} 
                       style={{ width: "100px", height: "100px" }}
                     />
                   </Box>

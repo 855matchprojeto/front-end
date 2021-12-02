@@ -7,6 +7,7 @@ import { getProfilesGUID } from "../services/api_perfil";
 
 const ProfileInfo = () => {
   const [profInfo, getProfileInfo] = useState([]);
+  const defaultImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
@@ -42,7 +43,7 @@ const ProfileInfo = () => {
                         <Card sx={{ mt: 2 }}>
           
                           <Box sx={{width: "100%", bgcolor: "#dedede"}}>
-                            <CardMedia component="img" image={profInfo.image} height="300" sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}/>
+                            <CardMedia component="img" image={("url_imagem" in profInfo && profInfo.url_imagem !== null) ? profInfo.url_imagem : defaultImageUrl}  height="300" sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}/>
                           </Box>
           
                           <CardContent>

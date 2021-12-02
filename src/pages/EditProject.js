@@ -14,13 +14,7 @@ const EditProject = () => {
   const imageUrl = "https://source.unsplash.com/random";
   const imageRef = React.useRef();
 
-  const [fields, setFields] = React.useState({
-    image: imageUrl,
-    titulo: "Projeto Teste",
-    cursos: [],
-    areas: [],
-    descricao: "Esse é um projeto Teste",
-  });
+  const [fields, setFields] = React.useState([]);
 
   const [image, setImage] = React.useState(null);
   const [imageFile, setImageFile] = React.useState(null);
@@ -117,11 +111,8 @@ const EditProject = () => {
           const info = await getProjetos(pid,true);
           if (info.status === 200) {
             const infoData = info.data[0];
-            setFields({...infoData, 
-              image: fields.image,
-              cursos: fields.cursos,
-              areas: fields.areas
-            });
+            setFields(infoData);
+            console.log(infoData);
           } 
 
         } catch(err) {
@@ -149,7 +140,7 @@ const EditProject = () => {
 
   return (
     <>
-      { !pageLoading &&
+      { !pageLoading && fields &&
         <Container maxWidth="xl" sx={{ mb: 5 }}>
           <Card sx={{ width: "100%", p: 4, mt: 1 }}>
             <Typography variant="h5" color="textSecondary" sx={{ mb: 3 }}>
@@ -169,7 +160,7 @@ const EditProject = () => {
                       }}
                     >
                       <img
-                        src={image ? image : imageUrl}
+                        src={("url_imagem" in fields && fields.url_imagem !== null) ? fields.url_imagem : imageUrl}
                         alt="Not Found"
                         style={{ width: "100%", height: "100%" }}
                       />
