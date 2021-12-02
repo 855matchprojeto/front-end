@@ -22,6 +22,7 @@ const useStyles = makeStyles({
 //---------
 
 const MyCard = ({ info, type, valores, setValores, page }) => {
+  const defaultImageUrl = "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
   const [btnInteresse, setBtnInteresse] = React.useState(false);
   const [componentLoading, setComponentLoading] = React.useState(true);
 
@@ -91,9 +92,11 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
                 backgroundSize: "cover",
                 border: "1px solid #c0c0c0",
               }}
-              className={classes.media}
+              // className={classes.media}
+              height="194"
               component="img"
-              image={info.image}
+              // image={info.image ? info.image : defaultImageUrl }
+              src={info.image ? info.image : defaultImageUrl}
             />
           </Box>
 
