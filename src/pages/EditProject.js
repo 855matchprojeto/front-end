@@ -47,16 +47,6 @@ const EditProject = () => {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
-    const formTeste = new FormData();
-
-    formTeste.append("titulo", fields.titulo);
-    formTeste.append("descricao", fields.descricao);
-    formTeste.append("areas", areasSelecionadas);
-    formTeste.append("cursos", cursosSelecionados);
-    formTeste.append("image", imageFile, imageFile.name);
-
-    console.log(formTeste);
-
     const form = {
       titulo: fields.titulo,
       descricao: fields.descricao,
