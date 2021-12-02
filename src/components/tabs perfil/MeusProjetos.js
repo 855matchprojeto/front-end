@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Grid, Card, CardMedia, CardContent } from "@mui/material";
-import { CardActions, Box, Button, Typography } from "@mui/material";
+import { Grid, Box, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { getMeusProjetos } from "../../services/api_projetos";
