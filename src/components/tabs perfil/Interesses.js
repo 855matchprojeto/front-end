@@ -30,7 +30,7 @@ const Interesses = () => {
       {!componentLoading && (
         <Grid container spacing={2}>
           {interesses.length > 0 ? (
-            <Cards valores={interesses} cardsType="projetos" />
+            <Cards valores={interesses} cardsType="projetos" page="perfil" />
           ) : (
             <Grid container spacing={2}>
               <Box

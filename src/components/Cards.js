@@ -28,7 +28,7 @@ const Cards = (props) => {
       {cards &&
         (cardsType === "projetos" || cardsType === "meusprojetos") &&
         cards.map((card, index) => (
-          <MyCard key={card.id} info={card} type={cardsType} />
+          <MyCard key={card.id} info={card} type={cardsType} setValores={setCards} valores={cards} page={props.page} />
         ))}
       {cards &&
         cardsType === "usuarios" &&
