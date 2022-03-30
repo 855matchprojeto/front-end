@@ -149,22 +149,22 @@ const Projetos = () => {
     <> 
       { !pageLoading &&
         <Container maxWidth="lg" sx={{ mb: 5 }}>
-          <Card sx={{ width: "100%", p: 4, mt: 2 }}>
-            <Typography variant="h5" color="textSecondary" sx={{ mb: 2 }}>
+          <Card sx={{ width: "100%", p: 4, mt: 1, minHeight: '90vh' }}>
+            <Typography variant="h5" color="textSecondary" sx={{ mb: 3 }}>
               Criar novo projeto
             </Typography>
 
             <Grid container spacing={1} sx={{ mb: 3 }}>
 
-              <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
-                <Box>
-                  <Box>
+              <Grid item xs={12} md={6} sx={{ mt: 1 }}>
                     <Box
                       sx={{
                         width: "80%",
+                        mx: 'auto',
                         height: "300px",
                         bgcolor: "text.secondary",
-                        mb: 2,
+                        mb: 1,
+                        mt: 2,
                       }}
                     >
                       <img
@@ -173,28 +173,35 @@ const Projetos = () => {
                         style={{ width: "100%", height: "100%" }}
                       />
                     </Box>
-                    <Box>
+                    <Box sx={{ position: 'relative', mb: 5, width: "80%",
+                        mx: 'auto' }}>
                       <input
                         type="file"
                         style={{ display: "none" }}
                         ref={imageRef}
                         onChange={(e) => handleImageFile(e)}
+                        accept=".png, .jpg, .jpeg"
                       />
                       <Button
                         variant="outlined"
                         onClick={() => imageRef.current.click()}
                         size="small"
-                        sx={{ mb: 4 }}
+                        sx={{ 
+                          mb: 5,
+                          mt: 1,
+                          mx: 'auto',
+                          position: 'absolute',
+                          right: '50%',
+                          transform: 'translateX(50%)',
+                        }}
                       >
                         Upload
                         <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
                       </Button>
                     </Box>
-                  </Box>
-                </Box>
               </Grid>
 
-              <Grid item xs={12} sm={6} sx={{ mt: 1 }}>
+              <Grid item xs={12} md={6} sx={{ mt: 1 }}>
 
                 <Box component="form">
                   <TextField
@@ -281,7 +288,15 @@ const Projetos = () => {
                     />
                 </Box>
 
-                <Grid item xs={12}>
+                <Grid 
+                  item 
+                  xs={12}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    mt: 2
+                  }}
+                >
                     <Button 
                       type="submit" 
                       variant="contained" 
