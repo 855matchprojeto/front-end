@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 
+import 'overlayscrollbars/css/OverlayScrollbars.css';
 import "./index.css";
 import Base from "./pages/Base";
 
