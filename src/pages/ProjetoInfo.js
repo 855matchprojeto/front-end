@@ -1,6 +1,7 @@
 import React,{ useState, useEffect } from "react";
 import {Container, Box, Typography, CardContent, Card } from "@mui/material";
 import {Grid, CardMedia, CardActions, Button, Chip } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { useLocation } from "react-router";
 import { getProjetos } from "../services/api_projetos";
 import { postInteresseProjeto } from "../services/api_projetos";
@@ -8,7 +9,22 @@ import { deleteInteresseProjeto } from "../services/api_projetos";
 import { getProjetosInteresses } from "../services/api_projetos";
 import LoadingBox from "../components/LoadingBox";
 
+//--estilo--
+//const theme = createTheme();
+
+const useStyles = makeStyles({
+ container: {
+   display: "flex",
+   flexDirection: "column",
+   justifyContent: "center",
+   height: "100%",
+ }
+});
+//---------
+
 const ProjetoInfo = () => {
+  const classes = useStyles();
+
   const [projectInfo, getProjectInfo] = useState(false);
   //const [projectCursos, getProjectCursos] = useState(false);
   //const [projectAreas, getProjectAreas] = useState(false);
@@ -80,17 +96,34 @@ const ProjetoInfo = () => {
   return (
     <>
       { !pageLoading &&
-        <Container maxWidth="md" sx={{mb: 5}}>
+        <Container className={classes.container}>
           { projectInfo &&
             <Box sx={{color: "text.secondary"}}>
-              <Card sx={{ mt: 2 }}>
 
-                <Box sx={{width: "100%", bgcolor: "#dedede"}}>
-                  <CardMedia component="img" src={projectInfo.url_imagem ? projectInfo.url_imagem : defaultImageUrl} height="300" sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}/>
-                </Box>
+                {/*<Box 
+                      component="img"
+                      sx={{
+                            borderRadius: 100,
+                            width: 150, 
+                            height: 150, 
+                            bgcolor: "#dedede",
+                            display: "flex",
+                            margin: "auto"
+                          }}
+                      src={projectInfo.url_imagem ? projectInfo.url_imagem : defaultImageUrl}
+                  >
+                </Box>*/}
+
+              <Card sx={{ mt: 2, mb: 2 }}>
+
+                <CardMedia 
+                  component="img" 
+                  src={projectInfo.url_imagem ? projectInfo.url_imagem : defaultImageUrl} 
+                  sx={{ width: "100%", maxWidth: "500px", margin: "auto", backgroundSize: "cover" }}
+                />
 
                 <CardContent>
-                  <Grid container spacing={2} sx={{p: 3}}>
+                  <Grid container spacing={1} sx={{p: 2}}>
                   
                     <Grid item xs={12}>
                       <Typography variant="h5" sx={{ color: "text.secondary" }}>
@@ -98,7 +131,7 @@ const ProjetoInfo = () => {
                       </Typography>
                     </Grid>
 
-                    <Grid item xs={12} sx={{mt: 2}}>
+                    <Grid item xs={12} sx={{mt: 1}}>
                       <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: "bold" }}>
                         Descrição:
                       </Typography>
@@ -110,7 +143,7 @@ const ProjetoInfo = () => {
                       </Typography>
                     </Grid>
 
-                    <Grid item xs={12} sx={{mt: 2}}>
+                    <Grid item xs={12} sx={{mt: 1}}>
                       <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: "text.secondary" }}>
                         Cursos Envolvidos:
                       </Typography>
