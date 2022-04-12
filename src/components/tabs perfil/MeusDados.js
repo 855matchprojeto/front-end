@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions } from "@mui/material"; 
-import { Box, CardMedia, Button, Chip, Autocomplete } from "@mui/material";
+import { CardMedia, Button, Chip, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "../../components/LoadingBox";
 
@@ -13,31 +13,31 @@ import { doGetAllCourses, doGetInteresses } from "../../services/api_perfil";
 import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    marginTop: "8px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+  card: {
+    width: "100%",
+    display:"flex", 
+    flexDirection: "column", 
+    alignItems: "center"
   },
-  form: {
-    width: "50%",
-    display: "flex",
-    flexDirection: "column",
-    marginTop: "40px",
+
+  cardContent: {
+    display: "flex", 
+    flexDirection: "column", 
+    width: "100%"
   },
-  textField: {
-    marginBottom: "24px",
-  },
-  title: {
-    marginTop: "32px",
-  },
+
   media: {
-    height: 0,
-    paddingTop: "56.25%",
+    width: "150px", 
+    height: "150px", 
+    border: "1px solid black", 
+    borderRadius: "100%" 
   },
+
   actions: {
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "start",
+    padding: "16px",
+    width: "100%",
   },
 }));
 
@@ -235,168 +235,146 @@ const MeusDados = () => {
   return (
     <>
       { !componentLoading && user &&
-        <Grid container spacing={2}>
-              <Card sx={{display:"flex", flexDirection: "column", margin: "auto", alignItems: "center"}}>
+        <Grid container>
+              <Card className={classes.card}>
                 <CardHeader title={<Typography variant="h6">Perfil</Typography>}/>
 
-                <Box>
-                  <CardMedia
+                <CardMedia
                     alt="Not Found"
                     image={("url_imagem" in user && user.url_imagem !== null) ? user.url_imagem : perfilImageUrl} 
-                    style={{ margin: "auto", width: "150px", height: "150px", border: "1px solid black", borderRadius: "100%" }}
-                  />
-                </Box>
+                    className={classes.media}
+                />
 
-                <CardContent>
-                  <Grid container style={{ width: "100%" }} spacing={2}>
+                <CardContent className={classes.cardContent}>
                     {/* email,nome,sobrenome */}
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        className={classes.textField}
-                        type="email"
-                        label="Email"
-                        name="email"
-                        variant="outlined"
-                        placeholder="Email"
-                        value={user ? user.email : ""}
-                        size="small"
-                        fullWidth
-                        disabled
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        className={classes.textField}
-                        type="text"
-                        label="Nome"
-                        name="name"
-                        variant="outlined"
-                        placeholder="Nome"
-                        value={user ? user.name : ""}
-                        onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
-                        fullWidth
-                        size="small"
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        className={classes.textField}
-                        type="input"
-                        label="Sobrenome"
-                        name="sobrenome"
-                        variant="outlined"
-                        placeholder="Sobrenome"
-                        value={user ? user.sobrenome : ""}
-                        onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
-                        fullWidth
-                        size="small"
-                      />
-                    </Grid>
-
-                    {/* caixa de cursos */}
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle2">Cursos</Typography>
-                    </Grid>
-
-                    <Grid item xs={12}>
-                        <Autocomplete
-                          options={allCourses}
-                          getOptionLabel={(option) => option.nome_exibicao}
-                          name="cursos"
-                          id="cursos"
-                          freeSolo
-                          onChange={(e, value) => updateCourses(value,"insert")}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Cursos"
-                              placeholder="Cursos"
-                              value=""
-                              size="small"
-                            />
-                          )}
+                    <Grid container spacing={1} sx={{mt: 1}}>
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          type="email"
+                          label="Email"
+                          name="email"
+                          variant="outlined"
+                          placeholder="Email"
+                          value={user ? user.email : ""}
+                          size="small"
+                          fullWidth
+                          disabled
                         />
+                      </Grid>
                     </Grid>
 
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{ display: "flex", flexWrap: "wrap" }}
-                    >
-                      {user &&
-                        user.cursos.map((curso, index) => (
-                          <Chip
-                            variant="outlined"
-                            label={curso.nome_exibicao}
-                            sx={{ mr: 1, mb: 1 }}
-                            key={index}
-                            onDelete={() => updateCourses(curso,"delete")}
+                    <Grid container spacing={1} sx={{mt: 1}}>
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          type="text"
+                          label="Nome"
+                          name="name"
+                          variant="outlined"
+                          placeholder="Nome"
+                          value={user ? user.name : ""}
+                          onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          type="input"
+                          label="Sobrenome"
+                          name="sobrenome"
+                          variant="outlined"
+                          placeholder="Sobrenome"
+                          value={user ? user.sobrenome : ""}
+                          onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container spacing={1} columns={12} sx={{mt: 1}}>
+
+                      {/* caixa de cursos */}
+                      <Grid item xs={12} md={6}>
+                        <Typography variant="subtitle2">Cursos</Typography>
+
+                        <Autocomplete
+                            options={allCourses}
+                            getOptionLabel={(option) => option.nome_exibicao}
+                            name="cursos"
+                            id="cursos"
+                            freeSolo
+                            onChange={(e, value) => updateCourses(value,"insert")}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Cursos"
+                                placeholder="Cursos"
+                                value=""
+                                size="small"
+                              />
+                            )}
                           />
-                        ))}
-                    </Grid>
 
-                    {/* caixa de interesses */}
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle2">
-                        Áreas de Interesse
-                      </Typography>
-                    </Grid>
+                        <Grid item xs={12} sx={{ display: "flex", flexWrap: "wrap"}}>
+                          { user &&
+                            user.cursos.map((curso, index) => (
+                              <Chip
+                                label={curso.nome_exibicao}
+                                key={index}
+                                sx={{mt: 1, ml: 1}}
+                                onDelete={() => updateCourses(curso,"delete")}
+                              />
+                            ))}
+                        </Grid>
 
-                    <Grid item xs={12}>
-                      <Autocomplete
-                        options={allInteresses}
-                        getOptionLabel={(option) => option.nome_exibicao}
-                        name="interesses"
-                        id="interesses"
-                        freeSolo
-                        onChange={(e, value) => updateAreas(e, value,"insert")}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Interesses"
-                            placeholder="Interesses"
-                            autoComplete="off"
-                            size="small"
-                            fullWidth
+                      </Grid>
+                      
+                      {/* caixa de interesses */}
+                      <Grid item xs={12} md={6}>
+                          <Typography variant="subtitle2"> Áreas de Interesse </Typography>
+                          
+                          <Autocomplete
+                                  options={allInteresses}
+                                  getOptionLabel={(option) => option.nome_exibicao}
+                                  name="interesses"
+                                  id="interesses"
+                                  freeSolo
+                                  onChange={(e, value) => updateAreas(e, value,"insert")}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Interesses"
+                                      placeholder="Interesses"
+                                      autoComplete="off"
+                                      size="small"
+                                      fullWidth
+                                    />
+                                  )}
                           />
-                        )}
-                      />
+                        
+                          <Grid item xs={12} sx={{ display: "flex", flexWrap: "wrap" }}>
+                            { user &&
+                              user.interesses.map((area, index) => (
+                                <Chip
+                                  label={area.nome_exibicao}
+                                  key={index}
+                                  sx={{mt: 1, ml: 1}}
+                                  onDelete={(e) => updateAreas(e,area,"delete")}
+                                />
+                              ))}
+                          </Grid>
+                      </Grid>
+
                     </Grid>
 
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{ display: "flex", flexWrap: "wrap" }}
-                    >
-                      {user &&
-                        user.interesses.map((area, index) => (
-                          <Chip
-                            variant="outlined"
-                            label={area.nome_exibicao}
-                            sx={{ mr: 1, mb: 1 }}
-                            key={index}
-                            onDelete={(e) => updateAreas(e,area,"delete")}
-                          />
-                        ))}
-                    </Grid>
-                  </Grid>
                 </CardContent>
 
-                <CardActions
-                  style={{
-                    display: "flex",
-                    justifyContent: "start",
-                    width: "100%",
-                    margin: "auto",
-                  }}
-                >
-                  <Grid item xs={12}>
+                <CardActions className={classes.actions}>
                   <Button variant="contained" color="primary" onClick={() => handleSave()} disabled={isLoading}>
                     Salvar
                   </Button>
-                  </Grid>
                 </CardActions>
 
               </Card>
