@@ -236,33 +236,16 @@ const MeusDados = () => {
     <>
       { !componentLoading && user &&
         <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <Card>
-                <CardHeader
-                  title={
-                    <Typography variant="h6" align="center">
-                      {`${user.name}`}
-                    </Typography>
-                  }
-                />
+              <Card sx={{display:"flex", flexDirection: "column", margin: "auto", alignItems: "center"}}>
+                <CardHeader title={<Typography variant="h6">Perfil</Typography>}/>
 
-                <CardContent style={{display: "flex", justifyContent: "center"}}>
-                  <Box>
-                    <CardMedia
-                      alt="Not Found"
-                      image={("url_imagem" in user && user.url_imagem !== null) ? user.url_imagem : perfilImageUrl} 
-                      style={{ width: "100px", height: "100px" }}
-                    />
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} sm={8}>
-              <Card>
-                <CardHeader
-                  title={<Typography variant="h6">Perfil</Typography>}
-                />
+                <Box>
+                  <CardMedia
+                    alt="Not Found"
+                    image={("url_imagem" in user && user.url_imagem !== null) ? user.url_imagem : perfilImageUrl} 
+                    style={{ margin: "auto", width: "150px", height: "150px", border: "1px solid black", borderRadius: "100%" }}
+                  />
+                </Box>
 
                 <CardContent>
                   <Grid container style={{ width: "100%" }} spacing={2}>
@@ -272,9 +255,11 @@ const MeusDados = () => {
                         className={classes.textField}
                         type="email"
                         label="Email"
+                        name="email"
                         variant="outlined"
                         placeholder="Email"
                         value={user ? user.email : ""}
+                        size="small"
                         fullWidth
                         disabled
                       />
@@ -291,6 +276,7 @@ const MeusDados = () => {
                         value={user ? user.name : ""}
                         onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
                         fullWidth
+                        size="small"
                       />
                     </Grid>
 
@@ -305,11 +291,12 @@ const MeusDados = () => {
                         value={user ? user.sobrenome : ""}
                         onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
                         fullWidth
+                        size="small"
                       />
                     </Grid>
 
                     {/* caixa de cursos */}
-                    <Grid item xs={12} sx={{ mb: 1 }}>
+                    <Grid item xs={12}>
                       <Typography variant="subtitle2">Cursos</Typography>
                     </Grid>
 
@@ -327,7 +314,7 @@ const MeusDados = () => {
                               label="Cursos"
                               placeholder="Cursos"
                               value=""
-                              fullWidth
+                              size="small"
                             />
                           )}
                         />
@@ -351,7 +338,7 @@ const MeusDados = () => {
                     </Grid>
 
                     {/* caixa de interesses */}
-                    <Grid item xs={12} sx={{ mb: 1 }}>
+                    <Grid item xs={12}>
                       <Typography variant="subtitle2">
                         Áreas de Interesse
                       </Typography>
@@ -371,6 +358,7 @@ const MeusDados = () => {
                             label="Interesses"
                             placeholder="Interesses"
                             autoComplete="off"
+                            size="small"
                             fullWidth
                           />
                         )}
@@ -399,23 +387,19 @@ const MeusDados = () => {
                 <CardActions
                   style={{
                     display: "flex",
-                    justifyContent: "end",
-                    marginRight: "24px",
-                    marginBottom: "16px",
+                    justifyContent: "start",
+                    width: "100%",
+                    margin: "auto",
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleSave()}
-                    disabled={isLoading}
-                  >
+                  <Grid item xs={12}>
+                  <Button variant="contained" color="primary" onClick={() => handleSave()} disabled={isLoading}>
                     Salvar
                   </Button>
+                  </Grid>
                 </CardActions>
 
               </Card>
-            </Grid>
         </Grid>
       }
 

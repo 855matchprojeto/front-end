@@ -99,3 +99,7 @@ export const getProfiles =  async (data,page_size) => {
 export const getProfilesGUID = async (guid) => {
     return perf.get(`profiles/${guid}`).then(res => res.data)
 }
+
+export const setProfilePic = async (data) => {
+    return perf.post(`files/upload`).then(res => res.data)
+}
