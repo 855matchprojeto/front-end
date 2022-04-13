@@ -1,16 +1,15 @@
 import React from "react";
 import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions } from "@mui/material"; 
-import { CardMedia, Button, Chip, Autocomplete } from "@mui/material";
+import { CardMedia, Button, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "../../components/LoadingBox";
+import { useSnackbar } from "notistack";
+
+import { doGetDataUser, doGetAllCourses, doGetInteresses } from "../../services/api_perfil";
 
 import { doHandleDelete,doHandleDeleteCourses } from "../../services/api_perfil";
 import { doAdicionaInteresse } from "../../services/api_perfil";
 import { doHandleChangeCourses,doHandleSave  } from "../../services/api_perfil";
-
-import { doGetDataUser } from "../../services/api_perfil";
-import { doGetAllCourses, doGetInteresses } from "../../services/api_perfil";
-import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -53,99 +52,17 @@ const MeusDados = () => {
   const [allInteresses, setAllInteresses] = React.useState([]);
   const [allCourses, setAllCourses] = React.useState([]);
 
-
-  async function updateCourses(value,type)
+  async function handleSave() 
   {
-    if(type === "delete")
-    {
-      const res = await doHandleDeleteCourses(value);
-
-      if (res.status === 204) 
-      {
-        setUser({
-          ...user,
-          cursos: user.cursos.filter( (curso) => curso.nome_exibicao !== value.nome_exibicao)} );
-        console.log("Curso removido com sucesso!");
-      }
-    }
-    else if(type === "insert")
-    {
-      if (value) 
-      {
-        const newCourse = user.cursos.find( (curso) => curso.nome_exibicao === value.nome_exibicao);
-  
-        if (!newCourse) 
-        {
-          try 
-          {
-            const res = await doHandleChangeCourses(value);
-  
-            if (res.status === 201) 
-            {
-              console.log("ADICIONADO COM SUCESSO");
-              console.log(value);
-              setUser({ ...user, cursos: [...user.cursos, value] });
-            }
-          } 
-          catch (err) 
-          {
-            console.log(err);
-          }
-        }
-      }
-    }
-  }
-
-  async function updateAreas(e,value,type)
-  {
-    if(type === "delete")
-    {
-      const res = await doHandleDelete(value);
-
-      if (res.status === 204) 
-      {
-        setUser({
-          ...user,
-          interesses: user.interesses.filter((interesse) => interesse.nome_exibicao !== value.nome_exibicao)
-        });
-        console.log("Interesse removido com sucesso!");
-      }
-    }
-    else if(type === "insert")
-    {
-      const newInterest = user.interesses.find( (interesse) => interesse.nome_exibicao === value.nome_exibicao);
-
-      console.log(value.id);
-
-      if(!newInterest)
-      {
-        try 
-        {        
-          const res = await doAdicionaInteresse(value.id);
-  
-          if (res.status === 201) 
-          {
-            console.log("ADICIONADO COM SUCESSO");
-            console.log(value);
-            setUser({ ...user, interesses: [...user.interesses, value] });
-          }
-        } 
-        catch (err) 
-        {
-          console.log(err);
-        }
-      }
-    }
-  }
-
-  async function handleSave() {
     setIsLoading(true);
     const nome_exibicao = `${user.name} ${user.sobrenome}`;
 
-    try {
+    try 
+    {
       const res = await doHandleSave(nome_exibicao);
 
-      if (res.status === 200) {
+      if (res.status === 200) 
+      {
         enqueueSnackbar("Dados atualizados com sucesso!", {
           anchorOrigin: {
             horizontal: "right",
@@ -154,27 +71,26 @@ const MeusDados = () => {
           variant: "success",
         });
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) 
+    {console.log(err)}
+
     setIsLoading(false);
   }
   
   const [componentLoading, setComponentLoading] = React.useState(true);
 
-  React.useEffect(() => {
-
+  React.useEffect(() => 
+  {
     async function getDataUser() 
     {
       setComponentLoading(true);
       try 
       {
-        
         const res = await doGetDataUser();
   
         if (res.status === 200) 
         {
-          await setUser({
+          setUser({
             name: res.data.nome_exibicao.split(" ")[0],
             sobrenome: res.data.nome_exibicao.split(" ")[1],
             interesses: res.data.interesses,
@@ -182,18 +98,10 @@ const MeusDados = () => {
             email: res.data.emails && res.data.emails.length > 0 ? res.data.emails[0].email : '',
             url_imagem: res.data.url_imagem
           });
-
-          console.log(res);
-
-
-
-          
         }
       } 
       catch (err) 
-      {
-        console.log(err);
-      }
+      {console.log(err)}
     }
 
     async function getInteresses() 
@@ -202,13 +110,10 @@ const MeusDados = () => {
       {
         const res = await doGetInteresses();
         if (res.statusText === "OK") 
-          setAllInteresses(res.data);
-      
+          setAllInteresses(res.data); 
       } 
       catch (err) 
-      {
-        console.log(err);
-      }
+      {console.log(err)}
     }  
 
     async function getAllCourses() 
@@ -217,13 +122,11 @@ const MeusDados = () => {
       {
         const res = await doGetAllCourses();
         if (res.status === 200 && res.statusText === "OK") 
-          setAllCourses(res.data);
-        
+          setAllCourses(res.data);      
       }
       catch (err) 
-      {
-        console.log(err);
-      }
+      {console.log(err)}
+
       setComponentLoading(false);
     }
 
@@ -297,75 +200,53 @@ const MeusDados = () => {
 
                       {/* caixa de cursos */}
                       <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle2">Cursos</Typography>
-
                         <Autocomplete
-                            options={allCourses}
-                            getOptionLabel={(option) => option.nome_exibicao}
-                            name="cursos"
-                            id="cursos"
-                            freeSolo
-                            onChange={(e, value) => updateCourses(value,"insert")}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Cursos"
-                                placeholder="Cursos"
-                                value=""
-                                size="small"
-                              />
-                            )}
-                          />
+                          options={allCourses}
+                          getOptionLabel={(option) => option.nome_exibicao}
+                          value={user.cursos}
+                          name="cursos"
+                          id="cursos"
+                          multiple
 
-                        <Grid item xs={12} sx={{ display: "flex", flexWrap: "wrap"}}>
-                          { user &&
-                            user.cursos.map((curso, index) => (
-                              <Chip
-                                label={curso.nome_exibicao}
-                                key={index}
-                                sx={{mt: 1, ml: 1}}
-                                onDelete={() => updateCourses(curso,"delete")}
-                              />
-                            ))}
-                        </Grid>
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Cursos"
+                              placeholder="Cursos"
+                              autoComplete="off"
+                              size="small"
+                              fullWidth
+                            />
+                          )}
 
+                          onChange={(e,v) => setUser({...user, cursos: v})}
+                        />
                       </Grid>
                       
                       {/* caixa de interesses */}
                       <Grid item xs={12} md={6}>
-                          <Typography variant="subtitle2"> Áreas de Interesse </Typography>
-                          
                           <Autocomplete
-                                  options={allInteresses}
-                                  getOptionLabel={(option) => option.nome_exibicao}
-                                  name="interesses"
-                                  id="interesses"
-                                  freeSolo
-                                  onChange={(e, value) => updateAreas(e, value,"insert")}
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      label="Interesses"
-                                      placeholder="Interesses"
-                                      autoComplete="off"
-                                      size="small"
-                                      fullWidth
-                                    />
-                                  )}
-                          />
-                        
-                          <Grid item xs={12} sx={{ display: "flex", flexWrap: "wrap" }}>
-                            { user &&
-                              user.interesses.map((area, index) => (
-                                <Chip
-                                  label={area.nome_exibicao}
-                                  key={index}
-                                  sx={{mt: 1, ml: 1}}
-                                  onDelete={(e) => updateAreas(e,area,"delete")}
-                                />
-                              ))}
-                          </Grid>
-                      </Grid>
+                            options={allInteresses}
+                            getOptionLabel={(option) => option.nome_exibicao}
+                            value={user.interesses}
+                            name="interesses"
+                            id="interesses"
+                            multiple
+
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Áreas de Interesse"
+                                placeholder="Interesses"
+                                autoComplete="off"
+                                size="small"
+                                fullWidth
+                              />
+                            )}
+
+                            onChange={(e,v) => setUser({...user, interesses: v})}
+                          />                                
+                      </Grid>             
 
                     </Grid>
 
