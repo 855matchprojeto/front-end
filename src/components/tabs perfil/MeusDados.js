@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions } from "@mui/material"; 
 import { CardMedia, Button, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -6,17 +6,16 @@ import LoadingBox from "../../components/LoadingBox";
 import { useSnackbar } from "notistack";
 
 import { doGetDataUser, doGetAllCourses, doGetInteresses } from "../../services/api_perfil";
-
-import { doHandleDelete,doHandleDeleteCourses } from "../../services/api_perfil";
-import { doAdicionaInteresse } from "../../services/api_perfil";
-import { doHandleChangeCourses,doHandleSave  } from "../../services/api_perfil";
+import { doUpdateCourses, doUpdateInteresse } from "../../services/api_perfil";
+import { doSaveProfile } from "../../services/api_perfil";
 
 const useStyles = makeStyles((theme) => ({
   card: {
     width: "100%",
     display:"flex", 
     flexDirection: "column", 
-    alignItems: "center"
+    alignItems: "center",
+    boxShadow: "none",
   },
 
   cardContent: {
@@ -29,7 +28,9 @@ const useStyles = makeStyles((theme) => ({
     width: "150px", 
     height: "150px", 
     border: "1px solid black", 
-    borderRadius: "100%" 
+    "&:hover": {
+      bgcolor: "red"
+    },
   },
 
   actions: {
@@ -47,85 +48,46 @@ const MeusDados = () => {
   const perfilImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
 
   const [isLoading, setIsLoading] = React.useState(false);
+  const [componentLoading, setComponentLoading] = React.useState(true);
 
   const [user, setUser] = React.useState(null);
   const [allInteresses, setAllInteresses] = React.useState([]);
   const [allCourses, setAllCourses] = React.useState([]);
-
-  async function handleSave() 
-  {
-    setIsLoading(true);
-    const nome_exibicao = `${user.name} ${user.sobrenome}`;
-
-    try 
-    {
-      const res = await doHandleSave(nome_exibicao);
-
-      if (res.status === 200) 
-      {
-        enqueueSnackbar("Dados atualizados com sucesso!", {
-          anchorOrigin: {
-            horizontal: "right",
-            vertical: "top",
-          },
-          variant: "success",
-        });
-      }
-    } catch (err) 
-    {console.log(err)}
-
-    setIsLoading(false);
-  }
+  const imageUpload = useRef(null);
   
-  const [componentLoading, setComponentLoading] = React.useState(true);
-
   React.useEffect(() => 
   {
     async function getDataUser() 
     {
       setComponentLoading(true);
-      try 
+
+      const res = await doGetDataUser();
+      if (res.status === 200) 
       {
-        const res = await doGetDataUser();
-  
-        if (res.status === 200) 
-        {
-          setUser({
-            name: res.data.nome_exibicao.split(" ")[0],
-            sobrenome: res.data.nome_exibicao.split(" ")[1],
-            interesses: res.data.interesses,
-            cursos: res.data.cursos,
-            email: res.data.emails && res.data.emails.length > 0 ? res.data.emails[0].email : '',
-            url_imagem: res.data.url_imagem
-          });
-        }
-      } 
-      catch (err) 
-      {console.log(err)}
+        setUser({
+          name: res.data.nome_exibicao.split(" ")[0],
+          sobrenome: res.data.nome_exibicao.split(" ")[1],
+          interesses: res.data.interesses,
+          bio: res.data.bio,
+          cursos: res.data.cursos,
+          email: res.data.emails && res.data.emails.length > 0 ? res.data.emails[0].email : '',
+          url_imagem: res.data.imagem_perfil !== null ? res.data.imagem_perfil.url : null
+        });
+      }
     }
 
     async function getInteresses() 
     {
-      try 
-      {
-        const res = await doGetInteresses();
-        if (res.statusText === "OK") 
-          setAllInteresses(res.data); 
-      } 
-      catch (err) 
-      {console.log(err)}
+      const res = await doGetInteresses();
+      if (res.status === 200 && res.statusText === "OK") 
+        setAllInteresses(res.data); 
     }  
 
     async function getAllCourses() 
     {
-      try 
-      {
-        const res = await doGetAllCourses();
-        if (res.status === 200 && res.statusText === "OK") 
-          setAllCourses(res.data);      
-      }
-      catch (err) 
-      {console.log(err)}
+      const res = await doGetAllCourses();
+      if (res.status === 200 && res.statusText === "OK") 
+        setAllCourses(res.data);   
 
       setComponentLoading(false);
     }
@@ -135,21 +97,116 @@ const MeusDados = () => {
     getAllCourses();
   }, []);
 
+  async function updateCourses(v)
+  {
+    let aux = user.cursos;
+    let flag;
+
+    if(aux.length > v.length)//delete
+    {
+      aux = aux.filter(({id}) => !v.find(el => el.id === id));
+      flag = false;
+    }
+    else//insert
+    {
+      aux = v.filter(({id}) => !aux.find(el => el.id === id));
+      flag = true;
+    }
+
+    await doUpdateCourses(aux[0].id,flag);
+    setUser({...user, cursos: v});
+  }
+
+  async function updateInteresses(v)
+  {
+    let aux = user.interesses;
+    let flag;
+
+    if(aux.length > v.length)//delete
+    {
+      aux = aux.filter(({id}) => !v.find(el => el.id === id));
+      flag = false;
+    }
+    else//insert
+    {
+      aux = v.filter(({id}) => !aux.find(el => el.id === id));
+      flag = true;
+    }
+
+    await doUpdateInteresse(aux[0].id,flag);
+    setUser({...user, interesses: v});
+  }
+
+  async function handleSave() 
+  {
+    setIsLoading(true);
+    const aux = {
+      "nome_exibicao": `${user.name} ${user.sobrenome}`,
+      "imagem_perfil": user.imagem_perfil,
+      "bio": user.bio,             
+    };
+
+    const res = await doSaveProfile(aux);
+    if (res.status === 200) 
+    {
+      enqueueSnackbar("Dados atualizados com sucesso!", 
+      {
+        anchorOrigin: 
+        {
+          horizontal: "right",
+          vertical: "top",
+        },
+        variant: "success",
+      });
+    }
+    setIsLoading(false);
+  }
+
+  async function Base64(img)
+  {
+    return new Promise(resolve => {
+        let reader = new FileReader();
+        reader.readAsDataURL(img);
+
+        reader.onload = () => {
+          const res = reader.result.split(',').pop();
+          resolve(res);
+        };
+    });
+  }
+
+  async function updateImage(e)
+  {
+    let img = e.target.files[0];
+    let aux = await Base64(img);
+    
+    img = {
+      "file_name": img.name,
+      "file_type": `.${img.type.split("/")[1]}`,
+      "b64_content": aux
+    }
+
+    setUser({...user, imagem_perfil: img});
+  }
+
   return (
     <>
       { !componentLoading && user &&
         <Grid container>
               <Card className={classes.card}>
                 <CardHeader title={<Typography variant="h6">Perfil</Typography>}/>
+                <input ref={imageUpload} type="file" accept="image/*" style={{display:"none"}} onChange={(e) => updateImage(e)}/>
 
                 <CardMedia
                     alt="Not Found"
-                    image={("url_imagem" in user && user.url_imagem !== null) ? user.url_imagem : perfilImageUrl} 
+                    component={Button}
+                    image={(user.imagem_perfil !== null) ? user.url_imagem : perfilImageUrl} 
                     className={classes.media}
+                    onClick={() => imageUpload.current && imageUpload.current.click()}
                 />
 
                 <CardContent className={classes.cardContent}>
-                    {/* email,nome,sobrenome */}
+                    {/* email */}
                     <Grid container spacing={1} sx={{mt: 1}}>
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -166,6 +223,7 @@ const MeusDados = () => {
                       </Grid>
                     </Grid>
 
+                    {/* nome,sobrenome */}
                     <Grid container spacing={1} sx={{mt: 1}}>
                       <Grid item xs={12} md={6}>
                         <TextField
@@ -196,14 +254,32 @@ const MeusDados = () => {
                       </Grid>
                     </Grid>
 
-                    <Grid container spacing={1} columns={12} sx={{mt: 1}}>
+                    {/* bio */}
+                    <Grid container spacing={1} sx={{mt: 1}}>
+                      <Grid item xs={12}>
+                        <TextField
+                          type="text"
+                          label="Bio"
+                          name="bio"
+                          variant="outlined"
+                          placeholder="Bio"
+                          value={user ? user.bio : ""}
+                          onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
+                          size="small"
+                          multiline
+                          fullWidth
+                        />
+                      </Grid>
+                    </Grid>
 
+                    <Grid container spacing={1} columns={12} sx={{mt: 1}}>
                       {/* caixa de cursos */}
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} md={6} sx={{mt: 1}}>
                         <Autocomplete
                           options={allCourses}
                           getOptionLabel={(option) => option.nome_exibicao}
                           value={user.cursos}
+                          isOptionEqualToValue={(o, v) => o.id === v.id}
                           name="cursos"
                           id="cursos"
                           multiple
@@ -219,16 +295,17 @@ const MeusDados = () => {
                             />
                           )}
 
-                          onChange={(e,v) => setUser({...user, cursos: v})}
+                          onChange={(e,v) => updateCourses(v)}
                         />
                       </Grid>
                       
                       {/* caixa de interesses */}
-                      <Grid item xs={12} md={6}>
+                      <Grid item xs={12} md={6} sx={{mt: 1}}>
                           <Autocomplete
                             options={allInteresses}
                             getOptionLabel={(option) => option.nome_exibicao}
                             value={user.interesses}
+                            isOptionEqualToValue={(o, v) => o.id === v.id}
                             name="interesses"
                             id="interesses"
                             multiple
@@ -244,10 +321,9 @@ const MeusDados = () => {
                               />
                             )}
 
-                            onChange={(e,v) => setUser({...user, interesses: v})}
+                            onChange={(e,v) => updateInteresses(v)}
                           />                                
                       </Grid>             
-
                     </Grid>
 
                 </CardContent>

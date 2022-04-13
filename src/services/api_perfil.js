@@ -22,45 +22,64 @@ perf.interceptors.response.use(
     }
 )
 
-export const doHandleDelete = async (dados) => {
-    return perf.delete(`/profiles/user/me/link-interest/${dados.id}`).then(res => res)
+// remove ou adiciona interesse ao perfil
+export const doUpdateInteresse = async (id,flag) => {
+    if(flag)
+    {
+        return perf.post(`/profiles/user/me/link-interest/${id}`)
+        .then(res => res)
+        .catch(err => console.log(err))
+    }
+    else
+    {
+        return perf.delete(`/profiles/user/me/link-interest/${id}`)
+        .then(res => res)
+        .catch(err => console.log(err))
+    }
 }
 
-export const doHandleDeleteCourses = async (dados) => {
-    return perf.delete(`/profiles/user/me/link-course/${dados.id}`).then(res => res)
+// remove ou adiciona curso ao perfil
+export const doUpdateCourses = async (id,flag) => {
+    if(flag)
+    {
+        return perf.post(`/profiles/user/me/link-course/${id}`)
+        .then(res => res)
+        .catch(err => console.log(err))
+    }
+    else
+    {
+        return perf.delete(`/profiles/user/me/link-course/${id}`)
+        .then(res => res)
+        .catch(err => console.log(err))
+    }
 }
 
+// atualiza outras informacoes do perfil
+export const doSaveProfile = async (user) => {
+    return perf.patch(`/profiles/user/me`,user)
+            .then(res => res)
+            .catch(err => console.log(err))
+}
+
+// retorna informacoes do perfil
 export const doGetDataUser = async () => {
-    return perf.get(`/profiles/user/me`).then(res => res)
+    return perf.get(`/profiles/user/me`)
+            .then(res => res)
+            .catch(err => console.log(err))
 };
 
-export const doAdicionaCurso = async (id) => {
-    return perf.post(`/profiles/user/me/link-course/${id}`).then(res => res)
-}
-
-export const doAdicionaInteresse = async (id) => {
-    return perf.post(`/profiles/user/me/link-interest/${id}`).then(res => res)
-}
-
+// retorna cursos do perfil
 export const doGetAllCourses = async () => {
-    return perf.get(`/courses`).then(res => res)
+    return perf.get(`/courses`)
+        .then(res => res)
+        .catch(err => console.log(err))
 }
 
-export const doHandleChangeCourses = async (value) => {
-    return perf.post(`/profiles/user/me/link-course/${value.id}`).then(res => res)
-}
-
+// retorna interesses do perfil
 export const doGetInteresses = async () => {
-    return perf.get(`/interests`).then(res => res)
-}
-
-export const doHandleSave = async (nome_exibicao) => {
-    return perf.patch(`/profiles/user/me`,{nome_exibicao})
-}
-
-export const doHandleTextFieldChange = async (field, value) => {
-    return perf.post(`/profiles/user/me/link-interest/${value.id}`).then(res => res)
-    
+    return perf.get(`/interests`)
+        .then(res => res)
+        .catch(err => console.log(err))
 }
 
 export const getProfiles =  async (data,page_size) => {
@@ -85,21 +104,13 @@ export const getProfiles =  async (data,page_size) => {
     let query = query_its + query_crs;
 
     if (pesquisa.length === 0)
-    {
         query = query.slice(0,query.length-1);
-    }
     else
-    {
         query += `display_name_ilike=${pesquisa}&page_size=${page_size}`;
-    }
 
     return perf.get(`profiles?${query}`).then(res => res.data.items)
 }
 
 export const getProfilesGUID = async (guid) => {
     return perf.get(`profiles/${guid}`).then(res => res.data)
-}
-
-export const setProfilePic = async (data) => {
-    return perf.post(`files/upload`).then(res => res.data)
 }
