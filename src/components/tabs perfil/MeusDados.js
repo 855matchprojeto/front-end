@@ -4,6 +4,7 @@ import { CardMedia, Button, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "../../components/LoadingBox";
 import { useSnackbar } from "notistack";
+import PersonIcon from '@mui/icons-material/Person';
 
 import { doGetDataUser, doGetAllCourses, doGetInteresses } from "../../services/api_perfil";
 import { doUpdateCourses, doUpdateInteresse } from "../../services/api_perfil";
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     height: "150px", 
     border: "1px solid black", 
     "&:hover": {
-      bgcolor: "red"
+      opacity: "0.8"
     },
   },
 
@@ -44,8 +45,6 @@ const useStyles = makeStyles((theme) => ({
 const MeusDados = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
-
-  const perfilImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [componentLoading, setComponentLoading] = React.useState(true);
@@ -199,8 +198,8 @@ const MeusDados = () => {
 
                 <CardMedia
                     alt="Not Found"
-                    component={Button}
-                    image={(user.imagem_perfil !== null) ? user.url_imagem : perfilImageUrl} 
+                    component={(user.imagem_perfil !== null) ? Button : PersonIcon}
+                    image={(user.imagem_perfil !== null) ? user.url_imagem : ""} 
                     className={classes.media}
                     onClick={() => imageUpload.current && imageUpload.current.click()}
                 />
@@ -325,7 +324,6 @@ const MeusDados = () => {
                           />                                
                       </Grid>             
                     </Grid>
-
                 </CardContent>
 
                 <CardActions className={classes.actions}>
