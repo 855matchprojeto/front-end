@@ -1,17 +1,19 @@
 import React, {useState} from "react";
 import { Link as RouterLink } from "react-router-dom";
-
+import LoadingBox  from '../components/LoadingBox';
 import Copyright from "../components/Copyright";
+import { useSnackbar } from "notistack";
 import {Formik} from 'formik'
-import {Container, Button, TextField, Grid, Box, Typography,Snackbar,Alert,Link } from "@mui/material";
+import {Container, Button, TextField, Grid, Box, Typography,Snackbar,Alert,Link, CircularProgress } from "@mui/material";
 import * as Yup from "yup";
 import {Logar} from "../services/api_auth";
 import {login} from "../services/auth";
 
 const Login = () => {
-
+  const { enqueueSnackbar } = useSnackbar();
   const [alert, setAlert] = useState(false);
   const [alertContent, setAlertContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   function closeAlert(){
     setAlert(false)
@@ -21,6 +23,7 @@ const Login = () => {
   const values = {username: '', password: ''}
 
   async function fazerLogin(values){
+    setIsLoading(true);
     try 
     {
       const Token = await Logar(values);
@@ -28,13 +31,22 @@ const Login = () => {
       if(Token.status === 200)
       {
         login(Token.data.access_token);
+        setIsLoading(false);
+        
       }
     } 
     catch (err) 
     {
-      setAlertContent(err.response.data.message)
-      setAlert(true)
+      setIsLoading(false);
+      enqueueSnackbar(err.response.data.message, {
+        anchorOrigin: {
+          horizontal: 'center',
+          vertical: 'top'
+        },
+        variant: 'error'
+      });
     }
+  
   }
 
   const validationSchema = Yup.object().shape({
@@ -47,7 +59,11 @@ const Login = () => {
   //---------------------------------------------
   
   return (
-    <Container component="main" maxWidth="xs">
+    <>
+    <Container 
+      component="main" 
+      maxWidth="xs"
+    >
       <Box
           sx={{
             marginTop: 8,
@@ -56,13 +72,6 @@ const Login = () => {
             alignItems: 'center',
           }}
         >
-
-        <Snackbar open={alert} autoHideDuration={6000} onClose={closeAlert} anchorOrigin={{ vertical:'top', horizontal:'center'}}>
-          <Alert onClose={closeAlert} severity="error" sx={{ width: '100%' }}>
-            {alertContent}
-          </Alert>
-        </Snackbar>
-
         <Typography variant="h4">Match de Projetos</Typography>
         <Typography component="h1" variant="h5" sx={{mt: 2}}> Login </Typography>
 
@@ -72,7 +81,13 @@ const Login = () => {
           onSubmit = {values => {fazerLogin(values)}}
         >
           {props => (
-            <Box component="form" onSubmit={props.handleSubmit} sx={{ mt: 2}}>
+            <Box component="form" onSubmit={props.handleSubmit} sx={{ mt: 2, position: 'relative'}}>
+               
+               {isLoading && (
+                <Box sx={{position: 'absolute', right: '50%', top: '50%', zIndex: 200, transform: 'translate(50%,-50%)'}}>
+                  <CircularProgress size={100} color="secondary" />
+                </Box>
+               )}
 
               <TextField 
                 id="username" 
@@ -99,7 +114,18 @@ const Login = () => {
                 value={props.values.password} onChange={props.handleChange}
               />
 
-              <Button type="submit" variant="contained" fullWidth color="primary"  sx={{ mt: 3, mb: 2 }}> Logar </Button>
+              <Button 
+                type="submit" 
+                disabled={isLoading}
+                variant="contained" 
+                fullWidth 
+                color="primary"  
+                sx={{ 
+                  mt: 3, mb: 2 
+                }}
+              > 
+                Logar 
+              </Button>
 
 
               <Grid container>
@@ -119,7 +145,8 @@ const Login = () => {
       </Box>
 
       <Box mt={6} mb={4}> <Copyright /> </Box>
-    </Container>
+      </Container>
+    </>
   );
 };
 

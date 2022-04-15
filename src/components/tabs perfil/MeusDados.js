@@ -1,43 +1,44 @@
-import React from "react";
+import React, {useRef} from "react";
 import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions } from "@mui/material"; 
-import { Box, CardMedia, Button, Chip, Autocomplete } from "@mui/material";
+import { CardMedia, Button, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "../../components/LoadingBox";
-
-import { doHandleDelete,doHandleDeleteCourses } from "../../services/api_perfil";
-import { doAdicionaInteresse } from "../../services/api_perfil";
-import { doHandleChangeCourses,doHandleSave  } from "../../services/api_perfil";
-
-import { doGetDataUser } from "../../services/api_perfil";
-import { doGetAllCourses, doGetInteresses } from "../../services/api_perfil";
 import { useSnackbar } from "notistack";
+import PersonIcon from '@mui/icons-material/Person';
+
+import { doGetDataUser, doGetAllCourses, doGetInteresses } from "../../services/api_perfil";
+import { doUpdateCourses, doUpdateInteresse } from "../../services/api_perfil";
+import { doSaveProfile } from "../../services/api_perfil";
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    marginTop: "8px",
-    display: "flex",
-    flexDirection: "column",
+  card: {
+    width: "100%",
+    display:"flex", 
+    flexDirection: "column", 
     alignItems: "center",
+    boxShadow: "none",
   },
-  form: {
-    width: "50%",
-    display: "flex",
-    flexDirection: "column",
-    marginTop: "40px",
+
+  cardContent: {
+    display: "flex", 
+    flexDirection: "column", 
+    width: "100%"
   },
-  textField: {
-    marginBottom: "24px",
-  },
-  title: {
-    marginTop: "32px",
-  },
+
   media: {
-    height: 0,
-    paddingTop: "56.25%",
+    width: "150px", 
+    height: "150px", 
+    border: "1px solid black", 
+    "&:hover": {
+      opacity: "0.8"
+    },
   },
+
   actions: {
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "start",
+    padding: "16px",
+    width: "100%",
   },
 }));
 
@@ -45,185 +46,48 @@ const MeusDados = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
 
-  const perfilImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
-
   const [isLoading, setIsLoading] = React.useState(false);
+  const [componentLoading, setComponentLoading] = React.useState(true);
 
   const [user, setUser] = React.useState(null);
   const [allInteresses, setAllInteresses] = React.useState([]);
   const [allCourses, setAllCourses] = React.useState([]);
-
-
-  async function updateCourses(value,type)
+  const imageUpload = useRef(null);
+  
+  React.useEffect(() => 
   {
-    if(type === "delete")
-    {
-      const res = await doHandleDeleteCourses(value);
-
-      if (res.status === 204) 
-      {
-        setUser({
-          ...user,
-          cursos: user.cursos.filter( (curso) => curso.nome_exibicao !== value.nome_exibicao)} );
-        console.log("Curso removido com sucesso!");
-      }
-    }
-    else if(type === "insert")
-    {
-      if (value) 
-      {
-        const newCourse = user.cursos.find( (curso) => curso.nome_exibicao === value.nome_exibicao);
-  
-        if (!newCourse) 
-        {
-          try 
-          {
-            const res = await doHandleChangeCourses(value);
-  
-            if (res.status === 201) 
-            {
-              console.log("ADICIONADO COM SUCESSO");
-              console.log(value);
-              setUser({ ...user, cursos: [...user.cursos, value] });
-            }
-          } 
-          catch (err) 
-          {
-            console.log(err);
-          }
-        }
-      }
-    }
-  }
-
-  async function updateAreas(e,value,type)
-  {
-    if(type === "delete")
-    {
-      const res = await doHandleDelete(value);
-
-      if (res.status === 204) 
-      {
-        setUser({
-          ...user,
-          interesses: user.interesses.filter((interesse) => interesse.nome_exibicao !== value.nome_exibicao)
-        });
-        console.log("Interesse removido com sucesso!");
-      }
-    }
-    else if(type === "insert")
-    {
-      const newInterest = user.interesses.find( (interesse) => interesse.nome_exibicao === value.nome_exibicao);
-
-      console.log(value.id);
-
-      if(!newInterest)
-      {
-        try 
-        {        
-          const res = await doAdicionaInteresse(value.id);
-  
-          if (res.status === 201) 
-          {
-            console.log("ADICIONADO COM SUCESSO");
-            console.log(value);
-            setUser({ ...user, interesses: [...user.interesses, value] });
-          }
-        } 
-        catch (err) 
-        {
-          console.log(err);
-        }
-      }
-    }
-  }
-
-  async function handleSave() {
-    setIsLoading(true);
-    const nome_exibicao = `${user.name} ${user.sobrenome}`;
-
-    try {
-      const res = await doHandleSave(nome_exibicao);
-
-      if (res.status === 200) {
-        enqueueSnackbar("Dados atualizados com sucesso!", {
-          anchorOrigin: {
-            horizontal: "right",
-            vertical: "top",
-          },
-          variant: "success",
-        });
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    setIsLoading(false);
-  }
-  
-  const [componentLoading, setComponentLoading] = React.useState(true);
-
-  React.useEffect(() => {
-
     async function getDataUser() 
     {
       setComponentLoading(true);
-      try 
+
+      const res = await doGetDataUser();
+      if (res.status === 200) 
       {
-        
-        const res = await doGetDataUser();
-  
-        if (res.status === 200) 
-        {
-          await setUser({
-            name: res.data.nome_exibicao.split(" ")[0],
-            sobrenome: res.data.nome_exibicao.split(" ")[1],
-            interesses: res.data.interesses,
-            cursos: res.data.cursos,
-            email: res.data.emails && res.data.emails.length > 0 ? res.data.emails[0].email : '',
-            url_imagem: res.data.url_imagem
-          });
-
-          console.log(res);
-
-
-
-          
-        }
-      } 
-      catch (err) 
-      {
-        console.log(err);
+        setUser({
+          name: res.data.nome_exibicao.split(" ")[0],
+          sobrenome: res.data.nome_exibicao.split(" ")[1],
+          interesses: res.data.interesses,
+          bio: res.data.bio,
+          cursos: res.data.cursos,
+          email: res.data.emails && res.data.emails.length > 0 ? res.data.emails[0].email : '',
+          url_imagem: res.data.imagem_perfil !== null ? res.data.imagem_perfil.url : null
+        });
       }
     }
 
     async function getInteresses() 
     {
-      try 
-      {
-        const res = await doGetInteresses();
-        if (res.statusText === "OK") 
-          setAllInteresses(res.data);
-      
-      } 
-      catch (err) 
-      {
-        console.log(err);
-      }
+      const res = await doGetInteresses();
+      if (res.status === 200 && res.statusText === "OK") 
+        setAllInteresses(res.data); 
     }  
 
     async function getAllCourses() 
     {
-      try 
-      {
-        const res = await doGetAllCourses();
-        if (res.status === 200 && res.statusText === "OK") 
-          setAllCourses(res.data);
-        
-      }
-      catch (err) 
-      {
-        console.log(err);
-      }
+      const res = await doGetAllCourses();
+      if (res.status === 200 && res.statusText === "OK") 
+        setAllCourses(res.data);   
+
       setComponentLoading(false);
     }
 
@@ -232,190 +96,243 @@ const MeusDados = () => {
     getAllCourses();
   }, []);
 
+  async function updateCourses(v)
+  {
+    let aux = user.cursos;
+    let flag;
+
+    if(aux.length > v.length)//delete
+    {
+      aux = aux.filter(({id}) => !v.find(el => el.id === id));
+      flag = false;
+    }
+    else//insert
+    {
+      aux = v.filter(({id}) => !aux.find(el => el.id === id));
+      flag = true;
+    }
+
+    await doUpdateCourses(aux[0].id,flag);
+    setUser({...user, cursos: v});
+  }
+
+  async function updateInteresses(v)
+  {
+    let aux = user.interesses;
+    let flag;
+
+    if(aux.length > v.length)//delete
+    {
+      aux = aux.filter(({id}) => !v.find(el => el.id === id));
+      flag = false;
+    }
+    else//insert
+    {
+      aux = v.filter(({id}) => !aux.find(el => el.id === id));
+      flag = true;
+    }
+
+    await doUpdateInteresse(aux[0].id,flag);
+    setUser({...user, interesses: v});
+  }
+
+  async function handleSave() 
+  {
+    setIsLoading(true);
+    const aux = {
+      "nome_exibicao": `${user.name} ${user.sobrenome}`,
+      "imagem_perfil": user.imagem_perfil,
+      "bio": user.bio,             
+    };
+
+    const res = await doSaveProfile(aux);
+    if (res.status === 200) 
+    {
+      enqueueSnackbar("Dados atualizados com sucesso!", 
+      {
+        anchorOrigin: 
+        {
+          horizontal: "right",
+          vertical: "top",
+        },
+        variant: "success",
+      });
+    }
+    setIsLoading(false);
+  }
+
+  async function Base64(img)
+  {
+    return new Promise(resolve => {
+        let reader = new FileReader();
+        reader.readAsDataURL(img);
+
+        reader.onload = () => {
+          const res = reader.result.split(',').pop();
+          resolve(res);
+        };
+    });
+  }
+
+  async function updateImage(e)
+  {
+    let img = e.target.files[0];
+    let aux = await Base64(img);
+    
+    img = {
+      "file_name": img.name,
+      "file_type": `.${img.type.split("/")[1]}`,
+      "b64_content": aux
+    }
+
+    setUser({...user, imagem_perfil: img});
+  }
+
   return (
     <>
       { !componentLoading && user &&
-        <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <Card>
-                <CardHeader
-                  title={
-                    <Typography variant="h6" align="center">
-                      {`${user.name}`}
-                    </Typography>
-                  }
+        <Grid container>
+              <Card className={classes.card}>
+                <CardHeader title={<Typography variant="h6">Perfil</Typography>}/>
+                <input ref={imageUpload} type="file" accept="image/*" style={{display:"none"}} onChange={(e) => updateImage(e)}/>
+
+                <CardMedia
+                    alt="Not Found"
+                    component={(user.imagem_perfil !== null) ? Button : PersonIcon}
+                    image={(user.imagem_perfil !== null) ? user.url_imagem : ""} 
+                    className={classes.media}
+                    onClick={() => imageUpload.current && imageUpload.current.click()}
                 />
 
-                <CardContent style={{display: "flex", justifyContent: "center"}}>
-                  <Box>
-                    <CardMedia
-                      alt="Not Found"
-                      image={("url_imagem" in user && user.url_imagem !== null) ? user.url_imagem : perfilImageUrl} 
-                      style={{ width: "100px", height: "100px" }}
-                    />
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} sm={8}>
-              <Card>
-                <CardHeader
-                  title={<Typography variant="h6">Perfil</Typography>}
-                />
-
-                <CardContent>
-                  <Grid container style={{ width: "100%" }} spacing={2}>
-                    {/* email,nome,sobrenome */}
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        className={classes.textField}
-                        type="email"
-                        label="Email"
-                        variant="outlined"
-                        placeholder="Email"
-                        value={user ? user.email : ""}
-                        fullWidth
-                        disabled
-                      />
+                <CardContent className={classes.cardContent}>
+                    {/* email */}
+                    <Grid container spacing={1} sx={{mt: 1}}>
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          type="email"
+                          label="Email"
+                          name="email"
+                          variant="outlined"
+                          placeholder="Email"
+                          value={user ? user.email : ""}
+                          size="small"
+                          fullWidth
+                          disabled
+                        />
+                      </Grid>
                     </Grid>
 
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        className={classes.textField}
-                        type="text"
-                        label="Nome"
-                        name="name"
-                        variant="outlined"
-                        placeholder="Nome"
-                        value={user ? user.name : ""}
-                        onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
-                        fullWidth
-                      />
+                    {/* nome,sobrenome */}
+                    <Grid container spacing={1} sx={{mt: 1}}>
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          type="text"
+                          label="Nome"
+                          name="name"
+                          variant="outlined"
+                          placeholder="Nome"
+                          value={user ? user.name : ""}
+                          onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          type="input"
+                          label="Sobrenome"
+                          name="sobrenome"
+                          variant="outlined"
+                          placeholder="Sobrenome"
+                          value={user ? user.sobrenome : ""}
+                          onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
                     </Grid>
 
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        className={classes.textField}
-                        type="input"
-                        label="Sobrenome"
-                        name="sobrenome"
-                        variant="outlined"
-                        placeholder="Sobrenome"
-                        value={user ? user.sobrenome : ""}
-                        onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
-                        fullWidth
-                      />
+                    {/* bio */}
+                    <Grid container spacing={1} sx={{mt: 1}}>
+                      <Grid item xs={12}>
+                        <TextField
+                          type="text"
+                          label="Bio"
+                          name="bio"
+                          variant="outlined"
+                          placeholder="Bio"
+                          value={user ? user.bio : ""}
+                          onChange={(e) => setUser ({ ...user, [e.target.name]: e.target.value})}
+                          size="small"
+                          multiline
+                          fullWidth
+                        />
+                      </Grid>
                     </Grid>
 
-                    {/* caixa de cursos */}
-                    <Grid item xs={12} sx={{ mb: 1 }}>
-                      <Typography variant="subtitle2">Cursos</Typography>
-                    </Grid>
-
-                    <Grid item xs={12}>
+                    <Grid container spacing={1} columns={12} sx={{mt: 1}}>
+                      {/* caixa de cursos */}
+                      <Grid item xs={12} md={6} sx={{mt: 1}}>
                         <Autocomplete
                           options={allCourses}
                           getOptionLabel={(option) => option.nome_exibicao}
+                          value={user.cursos}
+                          isOptionEqualToValue={(o, v) => o.id === v.id}
                           name="cursos"
                           id="cursos"
-                          freeSolo
-                          onChange={(e, value) => updateCourses(value,"insert")}
+                          multiple
+
                           renderInput={(params) => (
                             <TextField
                               {...params}
                               label="Cursos"
                               placeholder="Cursos"
-                              value=""
+                              autoComplete="off"
+                              size="small"
                               fullWidth
                             />
                           )}
+
+                          onChange={(e,v) => updateCourses(v)}
                         />
-                    </Grid>
+                      </Grid>
+                      
+                      {/* caixa de interesses */}
+                      <Grid item xs={12} md={6} sx={{mt: 1}}>
+                          <Autocomplete
+                            options={allInteresses}
+                            getOptionLabel={(option) => option.nome_exibicao}
+                            value={user.interesses}
+                            isOptionEqualToValue={(o, v) => o.id === v.id}
+                            name="interesses"
+                            id="interesses"
+                            multiple
 
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{ display: "flex", flexWrap: "wrap" }}
-                    >
-                      {user &&
-                        user.cursos.map((curso, index) => (
-                          <Chip
-                            variant="outlined"
-                            label={curso.nome_exibicao}
-                            sx={{ mr: 1, mb: 1 }}
-                            key={index}
-                            onDelete={() => updateCourses(curso,"delete")}
-                          />
-                        ))}
-                    </Grid>
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Áreas de Interesse"
+                                placeholder="Interesses"
+                                autoComplete="off"
+                                size="small"
+                                fullWidth
+                              />
+                            )}
 
-                    {/* caixa de interesses */}
-                    <Grid item xs={12} sx={{ mb: 1 }}>
-                      <Typography variant="subtitle2">
-                        Áreas de Interesse
-                      </Typography>
+                            onChange={(e,v) => updateInteresses(v)}
+                          />                                
+                      </Grid>             
                     </Grid>
-
-                    <Grid item xs={12}>
-                      <Autocomplete
-                        options={allInteresses}
-                        getOptionLabel={(option) => option.nome_exibicao}
-                        name="interesses"
-                        id="interesses"
-                        freeSolo
-                        onChange={(e, value) => updateAreas(e, value,"insert")}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Interesses"
-                            placeholder="Interesses"
-                            autoComplete="off"
-                            fullWidth
-                          />
-                        )}
-                      />
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{ display: "flex", flexWrap: "wrap" }}
-                    >
-                      {user &&
-                        user.interesses.map((area, index) => (
-                          <Chip
-                            variant="outlined"
-                            label={area.nome_exibicao}
-                            sx={{ mr: 1, mb: 1 }}
-                            key={index}
-                            onDelete={(e) => updateAreas(e,area,"delete")}
-                          />
-                        ))}
-                    </Grid>
-                  </Grid>
                 </CardContent>
 
-                <CardActions
-                  style={{
-                    display: "flex",
-                    justifyContent: "end",
-                    marginRight: "24px",
-                    marginBottom: "16px",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleSave()}
-                    disabled={isLoading}
-                  >
+                <CardActions className={classes.actions}>
+                  <Button variant="contained" color="primary" onClick={() => handleSave()} disabled={isLoading}>
                     Salvar
                   </Button>
                 </CardActions>
 
               </Card>
-            </Grid>
         </Grid>
       }
 

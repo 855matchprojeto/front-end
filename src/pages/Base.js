@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import Copyright from '../components/Copyright';
 import { Box, useMediaQuery } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 //--estilo--
 
 const useStyles = makeStyles(theme => ({
@@ -25,16 +25,18 @@ const Base = (props) => {
     return (
         <>
             <Header />
-            <div 
-                className={classes.container} 
-                style={{ 
-                    padding: matches && '0px', 
-                    marginTop: matches ? '0px' :'16px' 
-                }}
-            >
-                {props.children}
-                <Box mt={6} mb={4} component={Copyright}/>
-            </div>
+            <OverlayScrollbarsComponent options={{scrollbars:{autoHide:"scroll"}}}>
+                <div 
+                    className={classes.container}
+                     style={{ 
+                        padding: matches && '0px', 
+                        marginTop: matches ? '0px' :'16px' 
+                    }}
+                  >
+                    {props.children}
+                    <Box mt={6} mb={4} component={Copyright}/>
+                </div>
+            </OverlayScrollbarsComponent>
         </>
     )
 }
