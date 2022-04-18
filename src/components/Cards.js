@@ -12,7 +12,8 @@ const useStyles = makeStyles({
   grid: {
     display: "flex",
     marginTop: theme.spacing(1),
-    width: "100%"
+    width: "100%",
+    maxWidth: "1400px"
   },
 });
 

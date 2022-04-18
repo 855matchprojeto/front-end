@@ -69,7 +69,7 @@ const useStyles = makeStyles({
   },
 
   stack: {
-    width: "100%", 
+    width: "100%"
   },
 
   stackMobile: {
@@ -279,7 +279,7 @@ const Home = () => {
             }
           </Container>
 
-          <Grid style={{width: "100%", display: "flex", justifyContent: "center"}} p={1}>
+          <Grid style={{width: "100%", display: "flex", justifyContent: "center", maxWidth: "1400px"}} p={1}>
             <Stack direction="row" spacing={1} className={matches ? classes.stackMobile : classes.stack}>         
               <TextField
                 id="select-n-cards" 

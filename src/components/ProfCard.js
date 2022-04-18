@@ -64,8 +64,8 @@ const ProfCard = ({ info }) => {
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
         <Card className={classes.card}>
               <CardMedia
-                component={(info.imagem_perfil !== null) ? "img" : PersonIcon}
-                image={("url_imagem" in info && info.url_imagem !== null) ? info.url_imagem : ""} 
+                component={(info.url_imagem !== null) ? "img" : PersonIcon}
+                image={(info.url_imagem !== null) ? info.url_imagem : ""} 
                 className={classes.media}
               />
           
