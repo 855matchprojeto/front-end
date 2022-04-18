@@ -55,7 +55,7 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
 
 const useStyles = makeStyles({
   grid: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
 
   pagination: {
@@ -71,9 +71,7 @@ const useStyles = makeStyles({
     justifyContent: "center",
     display:"flex", 
     width: '2rem', 
-    height: '2rem',
-    //border: "1px solid black",
-    //borderRadius: "100%"
+    height: '2rem'
   }
 });
 //---------
@@ -190,7 +188,7 @@ const Home = () => {
   return (
     <>
       { !pageLoading &&
-        <Container className={classes.grid} maxWidth="lg">
+        <Container className={classes.grid}>
 
           <Typography variant="h6"> {!typeSearch ? "Projetos" : "Usuários"} </Typography>
         
@@ -209,7 +207,7 @@ const Home = () => {
 
           <Container>
             { typeSearch && 
-              <Grid container style={{marginTop: "5px"}} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+              <Grid style={{marginTop: "5px"}} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
               
                 <Grid item xs={6}>
                   <Autocomplete

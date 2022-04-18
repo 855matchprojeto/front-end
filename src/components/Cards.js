@@ -10,7 +10,9 @@ const theme = createTheme();
 
 const useStyles = makeStyles({
   grid: {
+    display: "flex",
     marginTop: theme.spacing(1),
+    width: "100%"
   },
 });
 
@@ -24,7 +26,7 @@ const Cards = (props) => {
   }, [props.valores]);
 
   return (
-    <Grid className={classes.grid} container spacing={2}>
+    <Grid className={classes.grid} container spacing={1}>
       {cards &&
         (cardsType === "projetos" || cardsType === "meusprojetos") &&
         cards.map((card, index) => (
