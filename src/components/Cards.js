@@ -31,11 +31,11 @@ const Cards = (props) => {
       {cards &&
         (cardsType === "projetos" || cardsType === "meusprojetos") &&
         cards.map((card, index) => (
-          <MyCard key={card.id} info={card} type={cardsType} setValores={setCards} valores={cards} page={props.page} />
+          <MyCard key={index} info={card} type={cardsType} setValores={setCards} valores={cards} page={props.page} />
         ))}
       {cards &&
         cardsType === "usuarios" &&
-        cards.map((card, index) => <ProfCard key={card.id} info={card} />)}
+        cards.map((card, index) => <ProfCard key={index} info={card} />)}
     </Grid>
   );
 };

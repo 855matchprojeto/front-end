@@ -1,7 +1,7 @@
 import React from "react";
 import Cards from "../components/Cards";
 import { Container, Grid, createTheme, Typography, Pagination, useMediaQuery } from "@mui/material";
-import { Autocomplete, Chip, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
+import { Autocomplete, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { chunk } from '../services/util';
@@ -108,35 +108,8 @@ const Home = () => {
   const  [selectedInteresses, setSelectedInteresses] = React.useState([]);
   const  [selectedCourses, setSelectedCourses] = React.useState([]);
 
-  const [allInteresses, setAllInteresses] = React.useState([]);
-  const [allCourses, setAllCourses] = React.useState([]);
-
-
-  // funcoes para adicionar das listas de selecionados
-  function addSelectedCourse(value)
-  {
-    const achou = selectedCourses.find(element => element.id === value.id);
-    if(achou === undefined)
-      setSelectedCourses(selectedCourses.concat([value]));
-  }
-
-  function addSelectedInteresse(value)
-  {
-    const achou = selectedInteresses.find(element => element.id === value.id);
-    if(achou === undefined)
-      setSelectedInteresses(selectedInteresses.concat([value]));
-  }
-
-  // funcoes para remover das listas de selecionados
-  function removeSelectedCourse(value)
-  {
-    setSelectedCourses(selectedCourses.filter(element => element.id  !== value.id)) 
-  }
-
-  function removeSelectedInteresse(value)
-  {
-    setSelectedInteresses(selectedInteresses.filter(element => element.id  !== value.id))
-  }
+  const [allInteresses, setAllInteresses] = React.useState({});
+  const [allCourses, setAllCourses] = React.useState({});
 
   function fazerPesquisa(e)
   {
@@ -208,71 +181,52 @@ const Home = () => {
               
                 <Grid item xs={6}>
                   <Autocomplete
-                      options={allInteresses}
-                      getOptionLabel={(option) => option.nome_exibicao}
-                      name="interesses"
-                      id="interesses"
-                      size="small"
-                      freeSolo
-                      onChange={(e, value) => addSelectedInteresse(value)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Filtrar Interesses"
-                          placeholder="Interesses"
-                          autoComplete="off"
-                        />
-                      )}
-                    />
+                    options={allInteresses}
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    value={selectedInteresses}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    name="interesses"
+                    id="interesses"
+                    size="small"
+                    multiple
+                    freeSolo
+
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Filtrar Interesses"
+                        placeholder="Filtrar Interesses"
+                        fullWidth
+                      />
+                    )}
+
+                    onChange={(e,v) => setSelectedInteresses(v)}
+                  />  
                 </Grid>
 
                 <Grid item xs={6}>
                   <Autocomplete
-                      options={allCourses}
-                      getOptionLabel={(option) => option.nome_exibicao}
-                      name="cursos"
-                      id="cursos"
-                      size="small"
-                      freeSolo
-                      onChange={(e, value) => addSelectedCourse(value)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Filtrar Cursos"
-                          placeholder="Cursos"
-                          value=""
-                          fullWidth
-                        />
-                      )}
-                    />
-                </Grid>
+                    options={allCourses}
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    value={selectedCourses}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    name="cursos"
+                    id="cursos"
+                    size="small"
+                    multiple
+                    freeSolo
 
-                <Grid item xs={6}>
-                  {  selectedInteresses.length > 0 &&
-                      selectedInteresses.map((interesse, index) => (
-                        <Chip
-                          variant="outlined"
-                          label={interesse.nome_exibicao}
-                          sx={{ mr: 1, mb: 1 }}
-                          key={index}
-                          onDelete={() => removeSelectedInteresse(interesse)}
-                        />
-                      ))
-                  }
-                </Grid>
-
-                <Grid item xs={6}>
-                  { selectedCourses &&
-                    selectedCourses.map((curso, index) => (
-                      <Chip
-                        variant="outlined"
-                        label={curso.nome_exibicao}
-                        sx={{ mr: 1, mb: 1 }}
-                        key={index}
-                        onDelete={() => removeSelectedCourse(curso)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Filtrar Cursos"
+                        placeholder="Filtrar Cursos"
+                        fullWidth
                       />
-                    ))
-                    }
+                    )}
+
+                    onChange={(e, v) => setSelectedCourses(v)}
+                  />
                 </Grid>
               
               </Grid>
