@@ -20,7 +20,7 @@ const useStyles = makeStyles({
     display: "flex", 
     flexDirection: "column", 
     width: "100%",
-    maxWidth: 400, 
+    maxWidth: 380, 
     height: 450
   },
   
@@ -107,7 +107,7 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
   }, [pid,type]);
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid}>
+    <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
       {!componentLoading && (
         <Card className={classes.card}>
             <CardMedia
@@ -143,6 +143,7 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
                 else 
                   history.push("/editproject", {data: [info.id, info.guid]});
               }}
+              sx={{textTransform: 'none'}}
             >
               {type === "projetos" ? 
               (btnInteresse ? "Remover interesse" : "Marcar interesse") :
@@ -153,6 +154,7 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
                 color="secondary" 
                 variant="outlined" 
                 size="small"
+                sx={{textTransform: 'none'}}
                 onClick={() => history.push("/projeto", { data: [info.id, info.guid] })}
               >
                 Detalhes

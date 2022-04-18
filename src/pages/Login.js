@@ -1,23 +1,16 @@
 import React, {useState} from "react";
 import { Link as RouterLink } from "react-router-dom";
-import LoadingBox  from '../components/LoadingBox';
 import Copyright from "../components/Copyright";
 import { useSnackbar } from "notistack";
 import {Formik} from 'formik'
-import {Container, Button, TextField, Grid, Box, Typography,Snackbar,Alert,Link, CircularProgress } from "@mui/material";
+import {Container, Button, TextField, Grid, Box, Typography, Link, CircularProgress } from "@mui/material";
 import * as Yup from "yup";
 import {Logar} from "../services/api_auth";
 import {login} from "../services/auth";
 
 const Login = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const [alert, setAlert] = useState(false);
-  const [alertContent, setAlertContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  function closeAlert(){
-    setAlert(false)
-  }
 
   // initial values / validation / login
   const values = {username: '', password: ''}

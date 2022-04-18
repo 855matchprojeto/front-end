@@ -6,7 +6,7 @@ import LoadingBox from "../../components/LoadingBox";
 import { useSnackbar } from "notistack";
 import PersonIcon from '@mui/icons-material/Person';
 
-import { doGetDataUser, doGetAllCourses, doGetInteresses } from "../../services/api_perfil";
+import { doGetDataUser, doGetAllCourses, doGetAllInteresses } from "../../services/api_perfil";
 import { doUpdateCourses, doUpdateInteresse } from "../../services/api_perfil";
 import { doSaveProfile } from "../../services/api_perfil";
 
@@ -77,7 +77,7 @@ const MeusDados = () => {
 
     async function getInteresses() 
     {
-      const res = await doGetInteresses();
+      const res = await doGetAllInteresses();
       if (res.status === 200 && res.statusText === "OK") 
         setAllInteresses(res.data); 
     }  
@@ -87,7 +87,6 @@ const MeusDados = () => {
       const res = await doGetAllCourses();
       if (res.status === 200 && res.statusText === "OK") 
         setAllCourses(res.data);   
-
       setComponentLoading(false);
     }
 

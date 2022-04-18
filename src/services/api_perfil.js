@@ -76,7 +76,7 @@ export const doGetAllCourses = async () => {
 }
 
 // retorna interesses do perfil
-export const doGetInteresses = async () => {
+export const doGetAllInteresses = async () => {
     return perf.get(`/interests`)
         .then(res => res)
         .catch(err => console.log(err))

@@ -26,7 +26,7 @@ const Cards = (props) => {
   }, [props.valores]);
 
   return (
-    <Grid className={classes.grid} container spacing={1}>
+    <Grid className={classes.grid} container>
       {cards &&
         (cardsType === "projetos" || cardsType === "meusprojetos") &&
         cards.map((card, index) => (
