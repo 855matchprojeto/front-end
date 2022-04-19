@@ -5,7 +5,7 @@ const LoadingBox = (props) => {
 
     return(
         <Container style={{display: "flex", height: "100%", alignItems: "center", justifyContent: "center",alignSelf: "center"}} maxWidth="lg">
-          <CircularProgress size={150} color="secondary" />
+          <CircularProgress size={100} color="secondary" />
         </Container>
     )
 

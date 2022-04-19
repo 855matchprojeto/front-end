@@ -6,18 +6,45 @@ import { limitString } from "../services/util";
 import { useHistory } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tooltipClasses } from '@mui/material/Tooltip';
+import PersonIcon from '@mui/icons-material/Person';
 
 //--estilo--
 const useStyles = makeStyles({
-  media: {
-    height: 0,
-    paddingTop: "56.25%",
+  grid: {
+    display: "flex",
+    justifyContent: "center",
   },
+
+  card: {
+    display: "flex", 
+    flexDirection: "column", 
+    width: "100%",
+    maxWidth: 380, 
+    height: 450
+  },
+
+  media: {
+    width: "100%",
+    bgcolor: "#dedede",
+    backgroundSize: "cover",
+    height: "200px"
+  },
+
   actions: {
     display: "flex",
     marginTop: "auto",
     justifyContent: "center"
   },
+
+  desc: {
+    textAlign: "justify"
+  },
+
+  tooltip: {
+    display: "inline",
+    color: "darkblue", 
+    fontWeight: 600
+  }
 });
 
 const BigTooltip = styled(({ className, ...props }) => (
@@ -33,38 +60,31 @@ const ProfCard = ({ info }) => {
   const classes = useStyles();
   let history = useHistory();
 
-  const defaultImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
-
   return (
-    <Grid item xs={12} sm={6} md={4} lg={4}>
-        <Card sx={{ display: "flex", flexDirection: "column", maxWidth: 400, height: 450 }}>
+    <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
+        <Card className={classes.card}>
               <CardMedia
-              sx={{
-                width: "100%",
-                bgcolor: "#dedede",
-                backgroundSize: "cover",
-                border: "1px solid #c0c0c0",
-              }}
-              // className={classes.media}
-              height="200"
-              component="img"
-              src={("url_imagem" in info && info.url_imagem !== null) ? info.url_imagem : defaultImageUrl} 
-            />
+                component={(info.url_imagem !== null) ? "img" : PersonIcon}
+                image={(info.url_imagem !== null) ? info.url_imagem : ""} 
+                className={classes.media}
+              />
           
           <CardContent sx={{width: "100%"}}>
             <Typography variant="subtitle1">{info.nome_exibicao}</Typography>
 
-            <Typography variant="body2" display="inline" style={{textJustify: "justify"}}>
+            <Typography variant="body2" className={classes.desc}>
               {info.bio && limitString(info.bio, 150)} 
+
+              { info.bio && info.bio.length > 150 && 
+                <BigTooltip title={info.bio} arrow>            
+                  <Typography variant="body2" className={classes.tooltip} display="inline">
+                    {" ..."}
+                  </Typography>
+                </BigTooltip>
+              }
             </Typography>
 
-            { info.bio && info.bio.length > 150 && 
-              <BigTooltip title={info.bio} arrow>            
-                <Typography variant="body2" display="inline" style={{textAlign: "justify", color: "darkblue", fontWeight: 600}}>
-                  {" ..."}
-                </Typography>
-              </BigTooltip>
-            }
+
           </CardContent>
 
           <CardActions className={classes.actions}>

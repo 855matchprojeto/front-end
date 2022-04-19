@@ -1,14 +1,14 @@
 import React from "react";
 import Cards from "../components/Cards";
-import { Container, Grid, createTheme, Typography, Pagination, FormControl,InputLabel } from "@mui/material";
-import { Autocomplete, Chip, Box, TextField, MenuItem, Select, styled, alpha, InputBase } from "@mui/material";
+import { Container, Grid, createTheme, Typography, Pagination, useMediaQuery } from "@mui/material";
+import { Autocomplete, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { chunk } from '../services/util';
 import { getProjetos } from "../services/api_projetos";
 import { getProfiles } from "../services/api_perfil";
 import LoadingBox from "../components/LoadingBox";
-import {doGetAllCourses,doGetInteresses} from "../services/api_perfil";
+import {doGetAllCourses,doGetAllInteresses} from "../services/api_perfil";
 
 //--estilo--
 const theme = createTheme();
@@ -55,7 +55,9 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
 
 const useStyles = makeStyles({
   grid: {
-    marginTop: theme.spacing(2)
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 
   pagination: {
@@ -63,7 +65,16 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: theme.spacing(1)
+    padding: theme.spacing(0.5)
+  },
+
+  stack: {
+    width: "100%"
+  },
+
+  stackMobile: {
+    width: "100%",
+    maxWidth: 380
   },
 
   boxIcon: {
@@ -71,15 +82,14 @@ const useStyles = makeStyles({
     justifyContent: "center",
     display:"flex", 
     width: '2rem', 
-    height: '2rem',
-    //border: "1px solid black",
-    //borderRadius: "100%"
+    height: '2rem'
   }
 });
 //---------
 
 const Home = () => {
   const classes = useStyles();
+  const matches = useMediaQuery('(max-width: 600px)');
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = React.useState(true);
@@ -98,35 +108,8 @@ const Home = () => {
   const  [selectedInteresses, setSelectedInteresses] = React.useState([]);
   const  [selectedCourses, setSelectedCourses] = React.useState([]);
 
-  const [allInteresses, setAllInteresses] = React.useState([]);
-  const [allCourses, setAllCourses] = React.useState([]);
-
-
-  // funcoes para adicionar das listas de selecionados
-  function addSelectedCourse(value)
-  {
-    const achou = selectedCourses.find(element => element.id === value.id);
-    if(achou === undefined)
-      setSelectedCourses(selectedCourses.concat([value]));
-  }
-
-  function addSelectedInteresse(value)
-  {
-    const achou = selectedInteresses.find(element => element.id === value.id);
-    if(achou === undefined)
-      setSelectedInteresses(selectedInteresses.concat([value]));
-  }
-
-  // funcoes para remover das listas de selecionados
-  function removeSelectedCourse(value)
-  {
-    setSelectedCourses(selectedCourses.filter(element => element.id  !== value.id)) 
-  }
-
-  function removeSelectedInteresse(value)
-  {
-    setSelectedInteresses(selectedInteresses.filter(element => element.id  !== value.id))
-  }
+  const [allInteresses, setAllInteresses] = React.useState({});
+  const [allCourses, setAllCourses] = React.useState({});
 
   function fazerPesquisa(e)
   {
@@ -157,28 +140,13 @@ const Home = () => {
           setPageCount(x.length);
         }
 
-        try 
-        {
-          const res = await doGetInteresses();
-          if (res.statusText === "OK") 
-            setAllInteresses(res.data);
-        
-        } 
-        catch (err) 
-        {
-          console.log(err);
-        }
+        let res = await doGetAllInteresses();
+        if (res.status === 200 && res.statusText === "OK") 
+          setAllInteresses(res.data);
     
-        try 
-        {
-          const res = await doGetAllCourses();
-          if (res.status === 200 && res.statusText === "OK") 
-            setAllCourses(res.data);          
-        }
-        catch (err) 
-        {
-          console.log(err);
-        }
+        res = await doGetAllCourses();
+        if (res.status === 200 && res.statusText === "OK") 
+          setAllCourses(res.data); 
 
         setPageLoading(false);
       }
@@ -190,7 +158,7 @@ const Home = () => {
   return (
     <>
       { !pageLoading &&
-        <Container className={classes.grid} maxWidth="lg">
+        <Grid container className={classes.grid}>
 
           <Typography variant="h6"> {!typeSearch ? "Projetos" : "Usuários"} </Typography>
         
@@ -209,128 +177,104 @@ const Home = () => {
 
           <Container>
             { typeSearch && 
-              <Grid container style={{marginTop: "5px"}} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+              <Grid container style={{marginTop: "5px"}} spacing={1}>
               
                 <Grid item xs={6}>
                   <Autocomplete
-                      options={allInteresses}
-                      getOptionLabel={(option) => option.nome_exibicao}
-                      name="interesses"
-                      id="interesses"
-                      size="small"
-                      freeSolo
-                      onChange={(e, value) => addSelectedInteresse(value)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Filtrar Interesses"
-                          placeholder="Interesses"
-                          autoComplete="off"
-                        />
-                      )}
-                    />
+                    options={allInteresses}
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    value={selectedInteresses}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    name="interesses"
+                    id="interesses"
+                    size="small"
+                    multiple
+                    freeSolo
+
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Filtrar Interesses"
+                        placeholder="Filtrar Interesses"
+                        fullWidth
+                      />
+                    )}
+
+                    onChange={(e,v) => setSelectedInteresses(v)}
+                  />  
                 </Grid>
 
                 <Grid item xs={6}>
                   <Autocomplete
-                      options={allCourses}
-                      getOptionLabel={(option) => option.nome_exibicao}
-                      name="cursos"
-                      id="cursos"
-                      size="small"
-                      freeSolo
-                      onChange={(e, value) => addSelectedCourse(value)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Filtrar Cursos"
-                          placeholder="Cursos"
-                          value=""
-                          fullWidth
-                        />
-                      )}
-                    />
-                </Grid>
+                    options={allCourses}
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    value={selectedCourses}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    name="cursos"
+                    id="cursos"
+                    size="small"
+                    multiple
+                    freeSolo
 
-                <Grid item xs={6}>
-                  {  selectedInteresses.length > 0 &&
-                      selectedInteresses.map((interesse, index) => (
-                        <Chip
-                          variant="outlined"
-                          label={interesse.nome_exibicao}
-                          sx={{ mr: 1, mb: 1 }}
-                          key={index}
-                          onDelete={() => removeSelectedInteresse(interesse)}
-                        />
-                      ))
-                  }
-                </Grid>
-
-                <Grid item xs={6}>
-                  { selectedCourses &&
-                    selectedCourses.map((curso, index) => (
-                      <Chip
-                        variant="outlined"
-                        label={curso.nome_exibicao}
-                        sx={{ mr: 1, mb: 1 }}
-                        key={index}
-                        onDelete={() => removeSelectedCourse(curso)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Filtrar Cursos"
+                        placeholder="Filtrar Cursos"
+                        fullWidth
                       />
-                    ))
-                    }
+                    )}
+
+                    onChange={(e, v) => setSelectedCourses(v)}
+                  />
                 </Grid>
               
               </Grid>
             }
           </Container>
 
-          <FormControl size="small" variant="standard" style={{minWidth: "50px", marginTop: theme.spacing(2)}}>
-            <InputLabel id="lbl-n-cards">Cards</InputLabel>
+          <Grid style={{width: "100%", display: "flex", justifyContent: "center", maxWidth: "1400px"}} p={1}>
+            <Stack direction="row" spacing={1} className={matches ? classes.stackMobile : classes.stack}>         
+              <TextField
+                id="select-n-cards" 
+                value={n_cards} 
+                label="Cards" 
+                onChange={(event) => setNcards(event.target.value)}
+                sx={{width: "fit-content"}}
+                variant="standard"
+                select
+              >
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+                <MenuItem value={100}>100</MenuItem>
+              </TextField>
 
-            <Select 
-              labelId="lbl-n-cards" 
-              id="select-n-cards" 
-              value={n_cards} 
-              label="Cards" 
-              onChange={(event) => setNcards(event.target.value)}
-            >
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={20}>20</MenuItem>
-              <MenuItem value={50}>50</MenuItem>
-              <MenuItem value={100}>100</MenuItem>
-            </Select>
-          </FormControl>
+              <TextField 
+                id="select-type-search" 
+                value={typeSearch} 
+                label="Tipo de pesquisa" 
+                onChange={(event) => setTypeSearch(event.target.value)}
+                sx={{width: "100px"}}
+                variant="standard"
+                select
+              >
+                <MenuItem value={false}>Projetos</MenuItem>
+                <MenuItem value={true}>Usuários</MenuItem>
+              </TextField>
+            </Stack>
+          </Grid>
 
-          <FormControl size="small" variant="standard" style={{marginLeft: "10px", minWidth: "100px", marginTop: theme.spacing(2)}}>
-            <InputLabel id="lbl-type-search"> Tipo de pesquisa </InputLabel>
-
-            <Select 
-              labelId="lbl-type-search" 
-              id="select-type-search" 
-              value={typeSearch} 
-              label="Tipo de pesquisa" 
-              onChange={(event) => setTypeSearch(event.target.value)}
-            >
-              <MenuItem value={false}>Projetos</MenuItem>
-              <MenuItem value={true}>Usuários</MenuItem>
-            </Select>
-          </FormControl>
-
-          { !typeSearch &&
-            <Cards valores={cardsProjetos[page-1]} cardsType="projetos"/>
-          }
-
-          { typeSearch &&
-            <Cards valores={cardsProfiles[page-1]} cardsType="usuarios"/>
-          }
+          {!typeSearch && <Cards valores={cardsProjetos[page-1]} cardsType="projetos"/>}
+          {typeSearch && <Cards valores={cardsProfiles[page-1]} cardsType="usuarios"/>}
 
           <Container className={classes.pagination}>
             <Pagination 
               count={pageCount} 
               defaultPage={1}
               page={page} 
-              onChange={(event, value) => {setPage(value)}}
+              onChange={(e, v) => {setPage(v)}}
               shape="rounded" 
               variant="outlined" 
               color="primary" 
@@ -340,7 +284,7 @@ const Home = () => {
             />
           </Container>
 
-        </Container>
+        </Grid>
       }
 
       { pageLoading && <LoadingBox/>}

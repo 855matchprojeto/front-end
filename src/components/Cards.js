@@ -10,7 +10,10 @@ const theme = createTheme();
 
 const useStyles = makeStyles({
   grid: {
+    display: "flex",
     marginTop: theme.spacing(1),
+    width: "100%",
+    maxWidth: "1400px"
   },
 });
 
@@ -24,15 +27,15 @@ const Cards = (props) => {
   }, [props.valores]);
 
   return (
-    <Grid className={classes.grid} container spacing={2}>
+    <Grid className={classes.grid} container>
       {cards &&
         (cardsType === "projetos" || cardsType === "meusprojetos") &&
         cards.map((card, index) => (
-          <MyCard key={card.id} info={card} type={cardsType} setValores={setCards} valores={cards} page={props.page} />
+          <MyCard key={index} info={card} type={cardsType} setValores={setCards} valores={cards} page={props.page} />
         ))}
       {cards &&
         cardsType === "usuarios" &&
-        cards.map((card, index) => <ProfCard key={card.id} info={card} />)}
+        cards.map((card, index) => <ProfCard key={index} info={card} />)}
     </Grid>
   );
 };
