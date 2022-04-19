@@ -40,34 +40,8 @@ const useStyles = makeStyles({
     borderLeft: "1px solid " + theme.palette.primary.main,
     transition: "all 0.5s",
 
-    "&::before": {
-      content: '"»"',
-      top: "14px",
-      transition: "0.1s",
-      opacity: 0,
-    },
-    "&::after": {
-      content: '"«"',
-      top: "14px",
-      transition: "0.1s",
-      opacity: 0,
-    },
-
     "&:hover": {
-      "&::before": {
-        content: '"»"',
-        color: theme.palette.primary.contrastText,
-        top: "14px",
-        transition: "0.5s",
-        opacity: 1,
-      },
-      "&::after": {
-        content: '"«"',
-        color: theme.palette.primary.contrastText,
-        top: "14px",
-        transition: "0.5s",
-        opacity: 1,
-      },
+      backgroundColor: "rgba(0,0,0,0.15)",
       cursor: "pointer",
     },
   },
@@ -87,41 +61,16 @@ const useStyles = makeStyles({
   },
   navLinkMobile: {
     margin: 8,
+    padding: theme.spacing(1),
     textDecoration: "none",
     color: "white",
     fontSize: "1rem",
-    padding: theme.spacing(1),
     fontWeight: "bold",
     borderLeft: "1px solid " + theme.palette.primary.main,
 
-    "&::before": {
-      content: '"»"',
-      top: "14px",
-      transition: "0.1s",
-      opacity: 0,
-    },
-    "&::after": {
-      content: '"«"',
-      top: "14px",
-      transition: "0.1s",
-      opacity: 0,
-    },
-
     "&:hover": {
-      "&::before": {
-        content: '"»"',
-        color: theme.palette.primary.contrastText,
-        top: "14px",
-        transition: "0.5s",
-        opacity: 1,
-      },
-      "&::after": {
-        content: '"«"',
-        color: theme.palette.primary.contrastText,
-        top: "14px",
-        transition: "0.5s",
-        opacity: 1,
-      },
+      backgroundColor: "rgba(0,0,0,0.15)",
+      cursor: "pointer",
     },
   },
   activeMobile: {
