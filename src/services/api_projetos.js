@@ -36,11 +36,15 @@ export const postProjetos = async (dados) => {
 }
 
 export const getProjetosInteresses = async () => {
-    return proj.get(`/users/me/projects/interested-in`).then(res => res)
+    return proj.get(`/users/me/projects/interested-in`)
+        .then(res => res)
+        .catch(err => console.log(err))
 }
 
 export const getMeusProjetos = async () => {
-    return proj.get(`/users/me/projects`).then(res => res)
+    return proj.get(`/users/me/projects`)
+        .then(res => res)
+        .catch(err => console.log(err))
 }
 
 export const postInteresseProjeto = async (guid) => {
