@@ -34,7 +34,9 @@ const Base = (props) => {
                     }}
                   >
                     {props.children}
-                    <Box mt={6} mb={4} component={Copyright}/>
+                    <Box mt={1} mb={1}>
+                      <Copyright/>
+                    </Box>
                 </div>
             </OverlayScrollbarsComponent>
         </>
