@@ -68,12 +68,12 @@ const Perfil = () => {
               </TabPanel>
 
               {/* ABA MEUS PROJETOS */}
-              <TabPanel value="projetos">
+              <TabPanel value="projetos" sx={{padding:"0px"}}>
                 <TabBox> <MeusProjetos/> </TabBox>
               </TabPanel>
 
               {/* ABA MEUS INTERESSES */}
-              <TabPanel value="interesses">
+              <TabPanel value="interesses" sx={{padding:"0px"}}>
                 <TabBox> <Interesses/> </TabBox>
               </TabPanel>
             </TabContext>

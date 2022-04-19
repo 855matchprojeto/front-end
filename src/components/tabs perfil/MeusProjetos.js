@@ -1,83 +1,31 @@
 import { useState, useEffect } from "react";
-import { Grid, Box, Typography } from "@mui/material";
-import { useHistory } from "react-router-dom";
+import { Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { getMeusProjetos } from "../../services/api_projetos";
-import { getToken } from "../../services/auth";
 import LoadingBox from "../LoadingBox";
 import Cards from "../Cards";
-import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    marginTop: "8px",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  form: {
-    width: "50%",
-    display: "flex",
-    flexDirection: "column",
-    marginTop: "40px",
-  },
-  textField: {
-    marginBottom: "24px",
-  },
-  title: {
-    marginTop: "32px",
-  },
-  media: {
-    height: 0,
-    paddingTop: "56.25%",
-  },
-  actions: {
-    display: "flex",
-    justifyContent: "space-around",
-  },
+  font: {
+    p: 4, 
+    fontSize: "1.5em"
+  }
 }));
 
 const MeusProjetos = () => {
   const classes = useStyles();
-  const history = useHistory();
 
-  // puxa projetos
   const [meusProjetos, setMeusProjetos] = useState([]);
   const [componentLoading, setComponentLoading] = useState(true);
 
-  /*
-  const meusProjetos = [
-    {
-      id: 1,
-      title: "Título 1",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
-      image: "https://source.unsplash.com/random",
-    },
-    {
-      id: 2,
-      title: "Título 2",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. cumque incidunt magnam cum vero repellendus tempore quasi deserunt.",
-      image: "https://source.unsplash.com/random",
-    },
-  ];  
-  */
-
   useEffect(() => {
-    async function doGetMeusProjetos() {
+    async function doGetMeusProjetos() 
+    {
       setComponentLoading(true);
-      try {
-        // const res = await getMeusProjetos();
-        const res = await axios.get('https://projetos-match-projetos.herokuapp.com/users/me/projects', {
-          headers: {
-            Authorization: `Bearer ${getToken}`
-          }
-        })
-        if (res.status === 200) setMeusProjetos(res.data);
-      } catch (err) {
-        console.log(err);
-      }
+
+      const res = await getMeusProjetos();
+      if (res.status === 200) 
+        setMeusProjetos(res.data);
 
       setComponentLoading(false);
     }
@@ -88,30 +36,12 @@ const MeusProjetos = () => {
   return (
     <>
       {!componentLoading && (
-        <Grid container spacing={2}>
-          {meusProjetos.length > 0 ? (
-            <Cards valores={meusProjetos} cardsType="meusprojetos" />
-          ) : (
-            <Grid container spacing={2}>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography
-                  variant="subtitle1"
-                  color="textSecondary"
-                  sx={{
-                    p: 4,
-                    fontSize: "1.5em",
-                  }}
-                >
-                  Você ainda não criou nenhum projeto.
-                </Typography>
-              </Box>
-            </Grid>
+        <Grid spacing={0.5}>
+          {meusProjetos.length > 0 ? 
+          ( <Cards valores={meusProjetos} cardsType="meusprojetos" />) : 
+          ( <Typography variant="subtitle1" color="textSecondary" className={classes.font}>
+            Você ainda não criou nenhum projeto.
+            </Typography>
           )}
         </Grid>
       )}
