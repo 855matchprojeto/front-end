@@ -37,11 +37,11 @@ Desse modo, ocorre a conexão entre as pessoas interessadas no projeto, tornando
 
 ### página de detalhes do projeto, seja ele criado pelo usuário atual ou por outro, onde o usuário pode mostrar interesse no projeto
 
-<img width="939" alt="Captura de Tela 2021-11-25 às 11 30 38" src="https://user-images.githubusercontent.com/27248223/164270517-16d554f6-822f-457a-8289-983dc001fd74.png">
+<img width="939" alt="Captura de Tela 2021-11-25 às 11 30 38" src="https://user-images.githubusercontent.com/27248223/164272096-ddbc66af-e13a-470b-907c-4b2eee2d2632.png">
 
 ### página de perfil do usuário atual, permitindo edição dos dados
 
-<img width="939" alt="Captura de Tela 2021-11-25 às 11 30 38" src="https://user-images.githubusercontent.com/45739756/143462637-cb215f5c-97a3-41ec-beca-17b1d397ee9d.png">
+<img width="939" alt="Captura de Tela 2021-11-25 às 11 30 38" src="https://user-images.githubusercontent.com/27248223/164272004-c15fb8e9-f9c8-4186-8980-50b08eb90792.png">
 
 ### página de edição de projeto criado pelo usuário atual
 
