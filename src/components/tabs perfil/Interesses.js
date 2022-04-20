@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Interesses = () => {
   const classes = useStyles();
-
   const [interesses, setInteresses] = useState([]);
   const [componentLoading, setComponentLoading] = useState(true);
 
