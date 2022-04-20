@@ -92,8 +92,6 @@ export const doUpdateAreas = async (dados,flag) => {
     }
     else
     {
-        console.log(dados)
-
         return proj.delete(`/rel_projeto_interesse`, { data: dados})
         .then(res => res)
         .catch(err => console.log(err))

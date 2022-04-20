@@ -56,10 +56,8 @@ const EditProject = () => {
       flag = true;
     }
     
-    const res = await doUpdateCourses([{id_projetos: pid, id_cursos: aux[0].id}],flag);
-    
-    if(res.status === 204)
-      setCursosSelecionados(v);
+    await doUpdateCourses([{id_projetos: pid, id_cursos: aux[0].id}],flag);   
+    setCursosSelecionados(v);
   }
 
   async function updateAreas(v)
@@ -78,9 +76,8 @@ const EditProject = () => {
       flag = true;
     }
 
-    const res = await doUpdateAreas([{id_projetos: pid, id_interesses: aux[0].id}],flag);
-    if(res.status === 204)
-      setAreasSelecionadas(v);      
+    await doUpdateAreas([{id_projetos: pid, id_interesses: aux[0].id}],flag);
+    setAreasSelecionadas(v);      
   }
 
   // termina aqui 
@@ -256,7 +253,6 @@ const EditProject = () => {
                         isOptionEqualToValue={(o, v) => o.id === v.id}
                         name="interesses"
                         id="interesses"
-                        size="small"
                         multiple
                         freeSolo
 
