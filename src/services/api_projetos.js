@@ -24,15 +24,34 @@ proj.interceptors.response.use(
 
 export const getProjetos = async (dados,isID) => {
     if (isID)
-        return proj.get(`/projetos`,{ params: {id:dados}}).then(res => res)
+    {
+        return proj.get(`/projetos`,{ params: {id:dados}})
+            .then(res => res)
+            .catch(err => console.log(err))
+    }
     else if (dados === "")
-        return proj.get(`/projetos`).then(res => res)
+    {
+        return proj.get(`/projetos`)
+            .then(res => res)
+            .catch(err => console.log(err))
+    }
     else
-        return proj.get(`/projetos`,{ params: {titulo_ilike:dados}}).then(res => res)
+    {
+        return proj.get(`/projetos`,{ params: {titulo_ilike:dados}})
+            .then(res => res)
+            .catch(err => console.log(err))
+    }
 }
 
 export const postProjetos = async (dados) => {
-    return proj.post(`/projetos`,dados).then(res => res)
+    return proj.post(`/projetos`,dados)
+        .then(res => res)
+}
+
+export const updateProjetos = async (guid,form) => {
+    return proj.put(`/projetos/${guid}`,form)
+        .then(res => res)
+        .catch(err => console.log(err))
 }
 
 export const getProjetosInteresses = async () => {
@@ -49,4 +68,48 @@ export const postInteresseProjeto = async (guid) => {
 
 export const deleteInteresseProjeto = async (guid) => {
     return proj.delete(`/users/me/project/${guid}/user-project-interest`)
+}
+
+export const doGetAllCourses = async () => {
+    return proj.get(`/curso`)
+        .then(res => res)
+        .catch(err => console.log(err))
+}
+
+export const doGetAllInteresses = async () => {
+    return proj.get(`/interesse`)
+        .then(res => res)
+        .catch(err => console.log(err))
+}
+
+// remove ou adiciona area ao projeto
+export const doUpdateAreas = async (dados,flag) => {
+    if(flag)
+    {
+        return proj.post(`/rel_projeto_interesse`, dados)
+        .then(res => res)
+        .catch(err => console.log(err))
+    }
+    else
+    {
+        return proj.delete(`/rel_projeto_interesse`, dados)
+        .then(res => res)
+        .catch(err => console.log(err))
+    }
+}
+
+// remove ou adiciona curso ao projeto
+export const doUpdateCourses = async (dados,flag) => {
+    if(flag)
+    {
+        return proj.post(`/rel_projeto_curso`, dados)
+        .then(res => res)
+        .catch(err => console.log(err))
+    }
+    else
+    {
+        return proj.delete(`/rel_projeto_curso`, dados)
+        .then(res => res)
+        .catch(err => console.log(err))
+    }
 }
