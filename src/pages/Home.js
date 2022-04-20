@@ -1,6 +1,6 @@
 import React from "react";
 import Cards from "../components/Cards";
-import { Container, Grid, createTheme, Typography, Pagination, useMediaQuery } from "@mui/material";
+import { Container, Grid, createTheme, Typography, TablePagination, useMediaQuery } from "@mui/material";
 import { Autocomplete, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -89,6 +89,8 @@ const Home = () => {
   const [cardsProjetos, setCardsProjetos] = React.useState(false);
   const [pesquisa,setPesquisa] = React.useState("");
 
+  const [page, setPage] = React.useState(1);
+  const [pageCount, setPageCount] = React.useState(1);
   const [n_cards, setNcards] =  React.useState(10);
   const [typeSearch, setTypeSearch] = React.useState(false);
 
@@ -263,6 +265,20 @@ const Home = () => {
           {!typeSearch && <Cards valores={cardsProjetos} cardsType="projetos"/>}
           {typeSearch && <Cards valores={cardsProfiles} cardsType="usuarios"/>}
 
+          <Container className={classes.pagination}>
+            <TablePagination 
+              count={pageCount} 
+              defaultPage={1}
+              page={page} 
+              onChange={(e, v) => {setPage(v)}}
+              shape="rounded" 
+              variant="outlined" 
+              color="primary" 
+              size="small" 
+              showFirstButton 
+              showLastButton
+            />
+          </Container>
         </Grid>
       }
 

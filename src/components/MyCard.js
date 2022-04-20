@@ -78,30 +78,29 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
   }
 
   useEffect(() => {
-    if (type === "projetos") 
-    {
-      async function getStatusInteresse() 
-      {
-        setComponentLoading(true);
-        let aux = (await getProjetosInteresses()).data;
-    
-        if (aux.length === 0) // usuario nao tem interesse em nenhum projeto
-          setBtnInteresse(false);
-        else 
-        {// usuario tem interesse em algum projeto, verificar se o atual é um deles
-          aux.forEach(function (item, index) {
-            if (item.id === pid) {
-              setBtnInteresse(true);
-              return;
-            }
-          });
-        }
 
-        setComponentLoading(false);
+    async function getStatusInteresse() 
+    {
+      setComponentLoading(true);
+      let aux = (await getProjetosInteresses()).data;
+  
+      if (aux.length === 0) // usuario nao tem interesse em nenhum projeto
+        setBtnInteresse(false);
+      else 
+      {// usuario tem interesse em algum projeto, verificar se o atual é um deles
+        aux.forEach(function (item, index) {
+          if (item.id === pid) {
+            setBtnInteresse(true);
+            return;
+          }
+        });
       }
 
+      setComponentLoading(false);
+    }
+
+    if (type === "projetos") 
       getStatusInteresse();
-    } 
     else
       setComponentLoading(false);
   }, [pid,type]);
