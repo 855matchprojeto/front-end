@@ -33,15 +33,15 @@ Nosso projeto é uma plataforma em que os usuários cadastrados (da Unicamp, vid
 Desse modo, ocorre a conexão entre as pessoas interessadas no projeto, tornando o processo de divulgação do projeto mais centralizado e simplificado.
 
 ## Prints das telas com descrição das funcionalidades. 
-<img width="883" alt="Captura de Tela 2021-11-25 às 11 30 52" src="https://user-images.githubusercontent.com/45739756/143462405-238cd087-ae71-44a5-99f8-b36f93cffae6.png">
+<img width="939" alt="Captura de Tela 2021-11-25 às 11 30 52" src="https://user-images.githubusercontent.com/27248223/164271708-2f3e049f-a99f-453e-818c-dae03c62b0d7.png">
 
 ### página de detalhes do projeto, seja ele criado pelo usuário atual ou por outro, onde o usuário pode mostrar interesse no projeto
 
-<img width="892" alt="Captura de Tela 2021-11-25 às 11 30 46" src="https://user-images.githubusercontent.com/45739756/143462565-9e591210-bd22-48cb-875c-32a5907d1603.png">
+<img width="939" alt="Captura de Tela 2021-11-25 às 11 30 38" src="https://user-images.githubusercontent.com/27248223/164272096-ddbc66af-e13a-470b-907c-4b2eee2d2632.png">
 
 ### página de perfil do usuário atual, permitindo edição dos dados
 
-<img width="939" alt="Captura de Tela 2021-11-25 às 11 30 38" src="https://user-images.githubusercontent.com/45739756/143462637-cb215f5c-97a3-41ec-beca-17b1d397ee9d.png">
+<img width="939" alt="Captura de Tela 2021-11-25 às 11 30 38" src="https://user-images.githubusercontent.com/27248223/164272004-c15fb8e9-f9c8-4186-8980-50b08eb90792.png">
 
 ### página de edição de projeto criado pelo usuário atual
 
