@@ -84,9 +84,6 @@ export const doGetAllInteresses = async () => {
 
 // remove ou adiciona area ao projeto
 export const doUpdateAreas = async (dados,flag) => {
-
-    console.log(dados)
-    
     if(flag)
     {
         return proj.post(`/rel_projeto_interesse`, dados)
@@ -103,9 +100,6 @@ export const doUpdateAreas = async (dados,flag) => {
 
 // remove ou adiciona curso ao projeto
 export const doUpdateCourses = async (dados,flag) => {
-
-    console.log(dados)
-
     if(flag)
     {
         return proj.post(`/rel_projeto_curso`, dados)

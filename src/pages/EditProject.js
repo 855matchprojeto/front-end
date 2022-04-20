@@ -55,9 +55,8 @@ const EditProject = () => {
       aux = v.filter(({id}) => !aux.find(el => el.id === id));
       flag = true;
     }
-    console.log(aux);
     
-    await doUpdateCourses([{id_projetos: pid, id_cursos: aux[0].id}],flag);
+    const res = await doUpdateCourses([{id_projetos: pid, id_cursos: aux[0].id}],flag);
     setCursosSelecionados(v);
   }
 
@@ -77,10 +76,8 @@ const EditProject = () => {
       flag = true;
     }
 
-    console.log(aux);
-
-    await doUpdateAreas([{id_projetos: pid, id_interesses: aux[0].id}],flag);
-    setAreasSelecionadas(v);    
+    const res = await doUpdateAreas([{id_projetos: pid, id_interesses: aux[0].id}],flag);
+    setAreasSelecionadas(v);      
   }
 
   // termina aqui 
@@ -125,24 +122,20 @@ const EditProject = () => {
   };
 
   useEffect(() => {
-    async function getInteresses() 
+    async function getDados() 
     {
       setPageLoading(true);
-      const res = await doGetAllInteresses();
+      let res = await doGetAllInteresses();
       if (res.status === 200 && res.statusText === "OK")
         setAllInteresses(res.data);
-    }
-  
-    async function getAllCourses() 
-    {
-      const res = await doGetAllCourses();
+      
+      res = await doGetAllCourses();
       if (res.status === 200 && res.statusText === "OK")
         setAllCourses(res.data);
       setPageLoading(false);
     }
 
-    getInteresses();
-    getAllCourses();
+    getDados();
   }, []);
 
   useEffect(() => 
