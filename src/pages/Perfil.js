@@ -17,7 +17,7 @@ const useStyles = makeStyles( ({
     width: "100%", 
     minHeight: "calc(100vh - 264px)", 
     display:"flex", 
-    justifyContent: "center", 
+    flexDirection: "column",
     padding: "0"
   }
 }));
@@ -42,25 +42,11 @@ const Perfil = () => {
             <TabContext value={valueTab} color="primary">
 
               {/* CONTROLE DE ABAS */}
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-
-                <TabList  indicatorColor="primary" 
-                          variant="scrollable" 
-                          scrollButtons="auto"
-                          onChange={handleChange}
-                >
-                  <Tab label="Meus Dados" value="perfil"/>
-                  <Tab label="Meus Projetos" value="projetos"/>
-                  <Tab label="Tenho Interesse" value="interesses"/>
-                </TabList>
-
-              </Box>
+              <TabList  indicatorColor="primary" variant="fullWidth" onChange={handleChange}>
+                <Tab label="Meus Dados" value="perfil"/>
+                <Tab label="Meus Projetos" value="projetos"/>
+                <Tab label="Tenho Interesse" value="interesses"/>
+              </TabList>
 
               {/* ABA DE PERFIL */}
               <TabPanel value="perfil">
@@ -68,12 +54,12 @@ const Perfil = () => {
               </TabPanel>
 
               {/* ABA MEUS PROJETOS */}
-              <TabPanel value="projetos">
+              <TabPanel value="projetos" sx={{padding:"0px"}}>
                 <TabBox> <MeusProjetos/> </TabBox>
               </TabPanel>
 
               {/* ABA MEUS INTERESSES */}
-              <TabPanel value="interesses">
+              <TabPanel value="interesses" sx={{padding:"0px"}}>
                 <TabBox> <Interesses/> </TabBox>
               </TabPanel>
             </TabContext>
