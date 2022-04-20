@@ -33,7 +33,7 @@ Nosso projeto é uma plataforma em que os usuários cadastrados (da Unicamp, vid
 Desse modo, ocorre a conexão entre as pessoas interessadas no projeto, tornando o processo de divulgação do projeto mais centralizado e simplificado.
 
 ## Prints das telas com descrição das funcionalidades. 
-<img width="883" alt="Captura de Tela 2021-11-25 às 11 30 52" src="https://user-images.githubusercontent.com/45739756/143462405-238cd087-ae71-44a5-99f8-b36f93cffae6.png">
+<img width="939" alt="Captura de Tela 2021-11-25 às 11 30 52" src="https://user-images.githubusercontent.com/27248223/164271708-2f3e049f-a99f-453e-818c-dae03c62b0d7.png">
 
 ### página de detalhes do projeto, seja ele criado pelo usuário atual ou por outro, onde o usuário pode mostrar interesse no projeto
 
