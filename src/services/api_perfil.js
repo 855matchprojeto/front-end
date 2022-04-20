@@ -105,7 +105,7 @@ export const getProfiles =  async (data,page_size) => {
     let query = query_its + query_crs;
 
     if (pesquisa.length === 0)
-        query = query.slice(0,query.length-1);
+        query += `page_size=${page_size}`;
     else
         query += `display_name_ilike=${pesquisa}&page_size=${page_size}`;
 

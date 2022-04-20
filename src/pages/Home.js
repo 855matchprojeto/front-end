@@ -4,7 +4,6 @@ import { Container, Grid, createTheme, Typography, Pagination, useMediaQuery } f
 import { Autocomplete, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { chunk } from '../services/util';
 import { getProjetos } from "../services/api_projetos";
 import { getProfiles } from "../services/api_perfil";
 import LoadingBox from "../components/LoadingBox";
@@ -90,6 +89,7 @@ const Home = () => {
   const [cardsProjetos, setCardsProjetos] = React.useState(false);
   const [pesquisa,setPesquisa] = React.useState("");
 
+  const [n_cards, setNcards] =  React.useState(10);
   const [typeSearch, setTypeSearch] = React.useState(false);
 
   // interesses e cursos para pesquisa
@@ -112,7 +112,7 @@ const Home = () => {
       { 
         setPageLoading(true);
 
-        if(typeSearch === true)
+        if(!typeSearch)
         {
           let aux = await getProjetos(pesquisa,false);
           setCardsProjetos(aux.data);
@@ -120,24 +120,16 @@ const Home = () => {
         else
         {        
           let dados = [selectedInteresses,selectedCourses,pesquisa];
-          let aux = await getProfiles(dados,1000);
+          let aux = await getProfiles(dados,n_cards);
           setCardsProfiles(aux);
         }
-
-        let res = await doGetAllInteresses();
-        if (res.status === 200 && res.statusText === "OK") 
-          setAllInteresses(res.data);
-    
-        res = await doGetAllCourses();
-        if (res.status === 200 && res.statusText === "OK") 
-          setAllCourses(res.data); 
 
         setPageLoading(false);
       }
 
       loadCards();
 
-  }, [typeSearch, pesquisa, selectedCourses, selectedInteresses])
+  }, [n_cards, typeSearch, pesquisa, selectedCourses, selectedInteresses])
 
   React.useEffect(() => 
   {
@@ -152,8 +144,6 @@ const Home = () => {
         res = await doGetAllCourses();
         if (res.status === 200 && res.statusText === "OK") 
           setAllCourses(res.data); 
-
-        setPageLoading(false);
       }
 
       loadFiltros();
@@ -180,7 +170,7 @@ const Home = () => {
           </SearchBox>
 
           <Container>
-            { !typeSearch && 
+            { typeSearch && 
               <Grid container style={{marginTop: "5px"}} spacing={1}>
               
                 <Grid item xs={6}>
@@ -238,12 +228,28 @@ const Home = () => {
           </Container>
 
           <Grid style={{width: "100%", display: "flex", justifyContent: "center", maxWidth: "1400px"}} p={1}>
-            <Stack direction="row" spacing={1} className={matches ? classes.stackMobile : classes.stack}>         
+            <Stack direction="row" spacing={1} className={matches ? classes.stackMobile : classes.stack}>    
+              <TextField
+                id="select-n-cards" 
+                value={n_cards} 
+                label="Cards" 
+                onChange={(e) => setNcards(e.target.value)}
+                sx={{width: "fit-content"}}
+                variant="standard"
+                select
+                >
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
+                  <MenuItem value={50}>50</MenuItem>
+                  <MenuItem value={100}>100</MenuItem>
+              </TextField>
+     
               <TextField 
                 id="select-type-search" 
                 value={typeSearch} 
                 label="Tipo de pesquisa" 
-                onChange={(event) => setTypeSearch(event.target.value)}
+                onChange={(e) => setTypeSearch(e.target.value)}
                 sx={{width: "100px"}}
                 variant="standard"
                 select
@@ -254,8 +260,8 @@ const Home = () => {
             </Stack>
           </Grid>
 
-          {typeSearch && <Cards valores={cardsProjetos} cardsType="projetos"/>}
-          {!typeSearch && <Cards valores={cardsProfiles} cardsType="usuarios"/>}
+          {!typeSearch && <Cards valores={cardsProjetos} cardsType="projetos"/>}
+          {typeSearch && <Cards valores={cardsProfiles} cardsType="usuarios"/>}
 
         </Grid>
       }
