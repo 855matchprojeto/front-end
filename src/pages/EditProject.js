@@ -55,8 +55,9 @@ const EditProject = () => {
       aux = v.filter(({id}) => !aux.find(el => el.id === id));
       flag = true;
     }
-
-    await doUpdateCourses([pid,aux[0].id],flag);
+    console.log(aux);
+    
+    await doUpdateCourses([{id_projetos: pid, id_cursos: aux[0].id}],flag);
     setCursosSelecionados(v);
   }
 
@@ -76,7 +77,9 @@ const EditProject = () => {
       flag = true;
     }
 
-    await doUpdateAreas([pid,aux[0].id],flag);
+    console.log(aux);
+
+    await doUpdateAreas([{id_projetos: pid, id_interesses: aux[0].id}],flag);
     setAreasSelecionadas(v);    
   }
 
