@@ -35,7 +35,7 @@ const Interesses = () => {
   return (
     <>
       {!componentLoading && (
-        <Grid spacing={0.5}>
+        <Grid container spacing={0.5}>
           {interesses.length > 0 ? 
           (<Cards valores={interesses} cardsType="projetos" page="perfil" />) : 
           ( <Typography variant="subtitle1" color="textSecondary" className={classes.font}>

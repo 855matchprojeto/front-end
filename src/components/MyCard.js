@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Grid, CardMedia, Typography, Tooltip } from "@mui/material";
 import { CardContent, CardActions, Button, tooltipClasses } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
@@ -57,8 +57,8 @@ const BigTooltip = styled(({ className, ...props }) => (
 //---------
 
 const MyCard = ({ info, type, valores, setValores, page }) => {
-  const [btnInteresse, setBtnInteresse] = React.useState(false);
-  const [componentLoading, setComponentLoading] = React.useState(true);
+  const [btnInteresse, setBtnInteresse] = useState(false);
+  const [componentLoading, setComponentLoading] = useState(true);
 
   const pid = info.id;
   const classes = useStyles();
@@ -77,7 +77,7 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
     setBtnInteresse(!btnInteresse);
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (type === "projetos") 
     {
       async function getStatusInteresse() 
