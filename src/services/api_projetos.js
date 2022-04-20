@@ -92,7 +92,9 @@ export const doUpdateAreas = async (dados,flag) => {
     }
     else
     {
-        return proj.delete(`/rel_projeto_interesse`, dados)
+        console.log(dados)
+
+        return proj.delete(`/rel_projeto_interesse`, { data: dados})
         .then(res => res)
         .catch(err => console.log(err))
     }
@@ -108,7 +110,7 @@ export const doUpdateCourses = async (dados,flag) => {
     }
     else
     {
-        return proj.delete(`/rel_projeto_curso`, dados)
+        return proj.delete(`/rel_projeto_curso`, { data: dados})
         .then(res => res)
         .catch(err => console.log(err))
     }

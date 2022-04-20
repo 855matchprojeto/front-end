@@ -57,7 +57,9 @@ const EditProject = () => {
     }
     
     const res = await doUpdateCourses([{id_projetos: pid, id_cursos: aux[0].id}],flag);
-    setCursosSelecionados(v);
+    
+    if(res.status === 204)
+      setCursosSelecionados(v);
   }
 
   async function updateAreas(v)
@@ -77,7 +79,8 @@ const EditProject = () => {
     }
 
     const res = await doUpdateAreas([{id_projetos: pid, id_interesses: aux[0].id}],flag);
-    setAreasSelecionadas(v);      
+    if(res.status === 204)
+      setAreasSelecionadas(v);      
   }
 
   // termina aqui 
@@ -167,7 +170,7 @@ const EditProject = () => {
             </Typography>
 
             <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={6} sx>
+              <Grid item xs={12} sm={6}>
                 <Box>
                   <Box>
                     <Box
