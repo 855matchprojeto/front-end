@@ -96,6 +96,8 @@ export const getProfiles =  async (data,page_size) => {
     // pesquisa, nomes de usuarios
     let pesquisa = data[2];
 
+    
+
     let query_its = "";
     interests_in.forEach(element => query_its  += "interests_in=" + element + "&");
 
@@ -108,9 +110,13 @@ export const getProfiles =  async (data,page_size) => {
         query += `page_size=${page_size}`;
     else
         query += `display_name_ilike=${pesquisa}&page_size=${page_size}`;
+    
+    // cursor
+    if(data.length === 4)
+        query += `&cursor=${data[3]}`
 
     return perf.get(`profiles?${query}`)
-        .then(res => res.data.items)
+        .then(res => res.data)
         .catch(err => console.log(err))
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import Cards from "../components/Cards";
-import { Container, Grid, createTheme, Typography, TablePagination, useMediaQuery } from "@mui/material";
+import { Container, Grid, createTheme, Typography, useMediaQuery } from "@mui/material";
 import { Autocomplete, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -8,6 +8,11 @@ import { getProjetos } from "../services/api_projetos";
 import { getProfiles } from "../services/api_perfil";
 import LoadingBox from "../components/LoadingBox";
 import {doGetAllCourses,doGetAllInteresses} from "../services/api_perfil";
+
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import { IconButton } from "@mui/material";
+import ProfCard from "../components/ProfCard";
 
 //--estilo--
 const theme = createTheme();
@@ -68,6 +73,14 @@ const useStyles = makeStyles({
     maxWidth: 380
   },
 
+  pagination: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: theme.spacing(0.5)
+  },
+
   boxIcon: {
     alignItems: "center",
     justifyContent: "center",
@@ -89,8 +102,6 @@ const Home = () => {
   const [cardsProjetos, setCardsProjetos] = React.useState(false);
   const [pesquisa,setPesquisa] = React.useState("");
 
-  const [page, setPage] = React.useState(1);
-  const [pageCount, setPageCount] = React.useState(1);
   const [n_cards, setNcards] =  React.useState(10);
   const [typeSearch, setTypeSearch] = React.useState(false);
 
@@ -150,6 +161,15 @@ const Home = () => {
 
       loadFiltros();
   }, [])
+
+  async function changePage(v)
+  {
+    setPageLoading(true);
+    let dados = [selectedInteresses,selectedCourses,pesquisa,v];
+    let aux = await getProfiles(dados,n_cards);
+    setCardsProfiles(aux);
+    setPageLoading(false);
+  }
 
   return (
     <>
@@ -262,23 +282,22 @@ const Home = () => {
             </Stack>
           </Grid>
 
-          {!typeSearch && <Cards valores={cardsProjetos} cardsType="projetos"/>}
-          {typeSearch && <Cards valores={cardsProfiles} cardsType="usuarios"/>}
+          {!typeSearch && cardsProjetos && <Cards valores={cardsProjetos} cardsType="projetos"/>}
+          {typeSearch && cardsProfiles && <Cards valores={cardsProfiles.items} cardsType="usuarios"/>}
 
-          <Container className={classes.pagination}>
-            <TablePagination 
-              count={pageCount} 
-              defaultPage={1}
-              page={page} 
-              onChange={(e, v) => {setPage(v)}}
-              shape="rounded" 
-              variant="outlined" 
-              color="primary" 
-              size="small" 
-              showFirstButton 
-              showLastButton
-            />
-          </Container>
+          { cardsProfiles && 
+            <>
+              <Container className={classes.pagination}>
+                <IconButton aria-label="prev" disabled={!cardsProfiles.previous_cursor} onClick={() => changePage(cardsProfiles.previous_cursor)}>
+                  <NavigateBeforeIcon />
+                </IconButton>
+
+                <IconButton aria-label="next" disabled={!cardsProfiles.next_cursor} onClick={() => changePage(cardsProfiles.next_cursor)}>
+                  <NavigateNextIcon />
+                </IconButton>
+              </Container>
+            </>
+          }
         </Grid>
       }
 

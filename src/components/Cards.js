@@ -32,8 +32,8 @@ const Cards = (props) => {
     <Grid className={classes.grid} container>
       { cards &&
         <>
-          { (cardsType === "usuarios") &&
-            cards.map((card, index) => <ProfCard key={index} info={card} />) ||
+          { (cardsType === "usuarios") ?
+            cards.map((card, index) => <ProfCard key={index} info={card} />) :
             cards.map((card, index) => <MyCard key={index} info={card} type={cardsType} setValores={setCards} valores={cards} page={props.page} />) 
           }
         </>
