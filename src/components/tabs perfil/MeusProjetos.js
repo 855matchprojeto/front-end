@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { getMeusProjetos } from "../../services/api_projetos";
@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
 
 const MeusProjetos = () => {
   const classes = useStyles();
-
   const [meusProjetos, setMeusProjetos] = useState([]);
   const [componentLoading, setComponentLoading] = useState(true);
 
@@ -40,7 +39,7 @@ const MeusProjetos = () => {
           {meusProjetos.length > 0 ? 
           ( <Cards valores={meusProjetos} cardsType="meusprojetos" />) : 
           ( <Typography variant="subtitle1" color="textSecondary" className={classes.font}>
-            Você ainda não criou nenhum projeto.
+              Você ainda não criou nenhum projeto.
             </Typography>
           )}
         </Grid>
