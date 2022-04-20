@@ -60,14 +60,6 @@ const useStyles = makeStyles({
     alignItems: "center",
   },
 
-  pagination: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: theme.spacing(0.5)
-  },
-
   stack: {
     width: "100%"
   },
@@ -96,10 +88,6 @@ const Home = () => {
 
   const [cardsProfiles, setCardsProfiles] = React.useState(false);
   const [cardsProjetos, setCardsProjetos] = React.useState(false);
-
-  const [page, setPage] = React.useState(1);
-  const [n_cards, setNcards] =  React.useState(10);
-  const [pageCount, setPageCount] = React.useState(1);
   const [pesquisa,setPesquisa] = React.useState("");
 
   const [typeSearch, setTypeSearch] = React.useState(false);
@@ -124,20 +112,16 @@ const Home = () => {
       { 
         setPageLoading(true);
 
-        if(typeSearch === false)
+        if(typeSearch === true)
         {
-          let valores = await getProjetos(pesquisa,false);
-          let x = chunk(valores.data,n_cards);
-          setCardsProjetos(x);
-          setPageCount(x.length);
+          let aux = await getProjetos(pesquisa,false);
+          setCardsProjetos(aux.data);
         }
         else
         {        
           let dados = [selectedInteresses,selectedCourses,pesquisa];
           let aux = await getProfiles(dados,1000);
-          let x = chunk(aux, n_cards);
-          setCardsProfiles(x);
-          setPageCount(x.length);
+          setCardsProfiles(aux);
         }
 
         let res = await doGetAllInteresses();
@@ -153,7 +137,27 @@ const Home = () => {
 
       loadCards();
 
-  }, [n_cards, typeSearch, pesquisa,selectedCourses,selectedInteresses])
+  }, [typeSearch, pesquisa, selectedCourses, selectedInteresses])
+
+  React.useEffect(() => 
+  {
+      async function loadFiltros() 
+      { 
+        setPageLoading(true);
+
+        let res = await doGetAllInteresses();
+        if (res.status === 200 && res.statusText === "OK") 
+          setAllInteresses(res.data);
+    
+        res = await doGetAllCourses();
+        if (res.status === 200 && res.statusText === "OK") 
+          setAllCourses(res.data); 
+
+        setPageLoading(false);
+      }
+
+      loadFiltros();
+  }, [])
 
   return (
     <>
@@ -176,7 +180,7 @@ const Home = () => {
           </SearchBox>
 
           <Container>
-            { typeSearch && 
+            { !typeSearch && 
               <Grid container style={{marginTop: "5px"}} spacing={1}>
               
                 <Grid item xs={6}>
@@ -235,22 +239,6 @@ const Home = () => {
 
           <Grid style={{width: "100%", display: "flex", justifyContent: "center", maxWidth: "1400px"}} p={1}>
             <Stack direction="row" spacing={1} className={matches ? classes.stackMobile : classes.stack}>         
-              <TextField
-                id="select-n-cards" 
-                value={n_cards} 
-                label="Cards" 
-                onChange={(event) => setNcards(event.target.value)}
-                sx={{width: "fit-content"}}
-                variant="standard"
-                select
-              >
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={20}>20</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
-                <MenuItem value={100}>100</MenuItem>
-              </TextField>
-
               <TextField 
                 id="select-type-search" 
                 value={typeSearch} 
@@ -266,23 +254,8 @@ const Home = () => {
             </Stack>
           </Grid>
 
-          {!typeSearch && <Cards valores={cardsProjetos[page-1]} cardsType="projetos"/>}
-          {typeSearch && <Cards valores={cardsProfiles[page-1]} cardsType="usuarios"/>}
-
-          <Container className={classes.pagination}>
-            <Pagination 
-              count={pageCount} 
-              defaultPage={1}
-              page={page} 
-              onChange={(e, v) => {setPage(v)}}
-              shape="rounded" 
-              variant="outlined" 
-              color="primary" 
-              size="small" 
-              showFirstButton 
-              showLastButton
-            />
-          </Container>
+          {typeSearch && <Cards valores={cardsProjetos} cardsType="projetos"/>}
+          {!typeSearch && <Cards valores={cardsProfiles} cardsType="usuarios"/>}
 
         </Grid>
       }

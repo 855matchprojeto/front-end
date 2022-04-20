@@ -119,14 +119,14 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
           <CardContent sx={{width: "100%"}}>
             <Typography variant="h6">{info.titulo}</Typography>
 
-            <Typography variant="body2" className={classes.desc}>
+            <Typography component="div" variant="body2" className={classes.desc}>
                 {info.descricao && limitString(info.descricao, 150)}
 
                 { info.descricao && info.descricao.length > 150 && 
                   <BigTooltip title={info.descricao} arrow>            
-                    <Typography variant="body2" className={classes.tooltip}>
+                    <div className={classes.tooltip}>
                       {" ..."}
-                    </Typography>
+                    </div>
                   </BigTooltip>
                 }
             </Typography>
