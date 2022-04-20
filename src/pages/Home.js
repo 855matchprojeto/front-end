@@ -1,6 +1,6 @@
 import React from "react";
 import Cards from "../components/Cards";
-import { Container, Grid, createTheme, Typography, useMediaQuery } from "@mui/material";
+import { Container, Grid, createTheme, Typography, useMediaQuery, IconButton } from "@mui/material";
 import { Autocomplete, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -11,8 +11,6 @@ import {doGetAllCourses,doGetAllInteresses} from "../services/api_perfil";
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import { IconButton } from "@mui/material";
-import ProfCard from "../components/ProfCard";
 
 //--estilo--
 const theme = createTheme();
