@@ -63,11 +63,11 @@ const ProfCard = ({ info }) => {
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
         <Card className={classes.card}>
-              <CardMedia
-                component={(info.url_imagem !== null) ? "img" : PersonIcon}
-                image={(info.url_imagem !== null) ? info.url_imagem : ""} 
-                className={classes.media}
-              />
+          <CardMedia
+            component={(info.imagem_perfil !== null) ? "img" : PersonIcon}
+            image={(info.imagem_perfil !== null) ? info.imagem_perfil.url : ""} 
+            className={classes.media}
+          />
           
           <CardContent sx={{width: "100%"}}>
             <Typography variant="subtitle1">{info.nome_exibicao}</Typography>
