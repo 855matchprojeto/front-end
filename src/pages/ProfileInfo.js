@@ -4,10 +4,10 @@ import {Grid, Chip, CardMedia } from "@mui/material";
 import { useLocation } from "react-router";
 import LoadingBox from "../components/LoadingBox";
 import { getProfilesGUID } from "../services/api_perfil";
+import PersonIcon from '@mui/icons-material/Person';
 
 const ProfileInfo = () => {
   const [profInfo, getProfileInfo] = useState([]);
-  const defaultImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png";
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
@@ -21,11 +21,8 @@ const ProfileInfo = () => {
        async function getInfos() 
        {
         setPageLoading(true);
-
         const info = await getProfilesGUID(guid);
         getProfileInfo(info);
-        console.log(info);
-
         setPageLoading(false);
        }
        
@@ -43,7 +40,12 @@ const ProfileInfo = () => {
                         <Card sx={{ mt: 2 }}>
           
                           <Box sx={{width: "100%", bgcolor: "#dedede"}}>
-                            <CardMedia component="img" image={("url_imagem" in profInfo && profInfo.url_imagem !== null) ? profInfo.url_imagem : defaultImageUrl}  height="300" sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}/>
+                            <CardMedia
+                              component={(profInfo.imagem_perfil !== null) ? "img" : PersonIcon}
+                              image={(profInfo.imagem_perfil !== null) ? profInfo.imagem_perfil.url : ""} 
+                              height="300"
+                              sx={{ margin: "auto", width: "100%", backgroundSize: "cover" }}
+                            />
                           </Box>
           
                           <CardContent>
@@ -76,10 +78,8 @@ const ProfileInfo = () => {
                               <Grid item xs={12}>
                                 <Box sx={{ display: "flex" }}>
                                   { 
-                                    profInfo.cursos.map((crs) => (
-                                    <>
-                                      <Chip variant="outlined" label={crs.nome_exibicao} sx={{ mr: 1 }} />
-                                    </>
+                                    profInfo.cursos.map((crs, index) => (
+                                      <Chip variant="outlined" key={index} label={crs.nome_exibicao} sx={{ mr: 1 }} />                            
                                   ))}
                                   </Box>
                               </Grid>
@@ -93,10 +93,8 @@ const ProfileInfo = () => {
                               <Grid item xs={12}>
                                 <Box sx={{ display: "flex" }}>
                                   { 
-                                    profInfo.interesses.map((its) => (
-                                    <>
-                                      <Chip variant="outlined" label={its.nome_exibicao} sx={{ mr: 1 }} />
-                                    </>
+                                    profInfo.interesses.map((its, index) => (
+                                      <Chip variant="outlined" key={index} label={its.nome_exibicao} sx={{ mr: 1 }} />
                                   ))}
                                   </Box>
                               </Grid>
