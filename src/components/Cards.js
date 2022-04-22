@@ -26,16 +26,18 @@ const Cards = (props) => {
     setCards(props.valores);
   }, [props.valores]);
 
+
+
   return (
     <Grid className={classes.grid} container>
-      {cards &&
-        (cardsType === "projetos" || cardsType === "meusprojetos") &&
-        cards.map((card, index) => (
-          <MyCard key={index} info={card} type={cardsType} setValores={setCards} valores={cards} page={props.page} />
-        ))}
-      {cards &&
-        cardsType === "usuarios" &&
-        cards.map((card, index) => <ProfCard key={index} info={card} />)}
+      { cards &&
+        <>
+          { (cardsType === "usuarios") ?
+            cards.map((card, index) => <ProfCard key={index} info={card} />) :
+            cards.map((card, index) => <MyCard key={index} info={card} type={cardsType} setValores={setCards} valores={cards} page={props.page} />) 
+          }
+        </>
+      }
     </Grid>
   );
 };
