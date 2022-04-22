@@ -1,10 +1,11 @@
-import React, {useRef} from "react";
+import React, {useRef, useState, useEffect} from "react";
 import { Typography, TextField, Grid, CardHeader, CardContent, Card, CardActions } from "@mui/material"; 
 import { CardMedia, Button, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "../../components/LoadingBox";
 import { useSnackbar } from "notistack";
 import PersonIcon from '@mui/icons-material/Person';
+import UploadIcon from '@mui/icons-material/Upload';
 
 import { doGetDataUser, doGetAllCourses, doGetAllInteresses } from "../../services/api_perfil";
 import { doUpdateCourses, doUpdateInteresse } from "../../services/api_perfil";
@@ -29,9 +30,18 @@ const useStyles = makeStyles((theme) => ({
     width: "150px", 
     height: "150px", 
     border: "1px solid black", 
+    padding: "0"
+  },
+
+  mediaUpload: {
+    display: "flex",
+    width: "100%", 
+    height: "100%", 
+    justifyContent: "center",
+    alignItems: "center",
     "&:hover": {
-      opacity: "0.8"
-    },
+      backgroundColor: "rgba(200,200,200,0.6)"
+    }
   },
 
   actions: {
@@ -46,15 +56,16 @@ const MeusDados = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();  
 
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [componentLoading, setComponentLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [componentLoading, setComponentLoading] = useState(true);
 
-  const [user, setUser] = React.useState(null);
-  const [allInteresses, setAllInteresses] = React.useState([]);
-  const [allCourses, setAllCourses] = React.useState([]);
+  const [user, setUser] = useState(null);
+  const [allInteresses, setAllInteresses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
   const imageUpload = useRef(null);
+  const [showUpload, setShowUpload] = useState(false);
   
-  React.useEffect(() => 
+  useEffect(() => 
   {
     async function getDataUser() 
     {
@@ -203,7 +214,15 @@ const MeusDados = () => {
                     image={(user.url_imagem !== null) ? user.url_imagem : ""} 
                     className={classes.media}
                     onClick={() => imageUpload.current && imageUpload.current.click()}
-                />
+                >
+                  <div 
+                    className={classes.mediaUpload} 
+                    onMouseEnter={() => setShowUpload(!showUpload)} 
+                    onMouseLeave={() => setShowUpload(!showUpload)}
+                  >
+                    {showUpload && <UploadIcon color="primary" fontSize="large" style={{border: "1px solid #1976d2", borderRadius: "100%"}}/>}
+                  </div>
+                </CardMedia>
 
                 <CardContent className={classes.cardContent}>
                     {/* email */}
