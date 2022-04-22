@@ -167,7 +167,7 @@ const MeusDados = () => {
         reader.readAsDataURL(img);
 
         reader.onload = () => {
-          const res = reader.result.split(',').pop();
+          const res = reader.result;
           resolve(res);
         };
     });
@@ -177,6 +177,8 @@ const MeusDados = () => {
   {
     let img = e.target.files[0];
     let aux = await Base64(img);
+    let url = aux;
+    aux = aux.split(',').pop();
     
     img = {
       "file_name": img.name,
@@ -184,7 +186,7 @@ const MeusDados = () => {
       "b64_content": aux
     }
 
-    setUser({...user, imagem_perfil: img});
+    setUser({...user, url_imagem: url, imagem_perfil: img});
   }
 
   return (
