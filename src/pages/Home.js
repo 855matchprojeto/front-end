@@ -1,14 +1,16 @@
 import React from "react";
 import Cards from "../components/Cards";
-import { Container, Grid, createTheme, Typography, Pagination, useMediaQuery } from "@mui/material";
+import { Container, Grid, createTheme, Typography, useMediaQuery, IconButton } from "@mui/material";
 import { Autocomplete, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { chunk } from '../services/util';
 import { getProjetos } from "../services/api_projetos";
 import { getProfiles } from "../services/api_perfil";
 import LoadingBox from "../components/LoadingBox";
 import {doGetAllCourses,doGetAllInteresses} from "../services/api_perfil";
+
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 //--estilo--
 const theme = createTheme();
@@ -60,14 +62,6 @@ const useStyles = makeStyles({
     alignItems: "center",
   },
 
-  pagination: {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: theme.spacing(0.5)
-  },
-
   stack: {
     width: "100%"
   },
@@ -75,6 +69,14 @@ const useStyles = makeStyles({
   stackMobile: {
     width: "100%",
     maxWidth: 380
+  },
+
+  pagination: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: theme.spacing(0.5)
   },
 
   boxIcon: {
@@ -96,12 +98,9 @@ const Home = () => {
 
   const [cardsProfiles, setCardsProfiles] = React.useState(false);
   const [cardsProjetos, setCardsProjetos] = React.useState(false);
-
-  const [page, setPage] = React.useState(1);
-  const [n_cards, setNcards] =  React.useState(10);
-  const [pageCount, setPageCount] = React.useState(1);
   const [pesquisa,setPesquisa] = React.useState("");
 
+  const [n_cards, setNcards] =  React.useState(10);
   const [typeSearch, setTypeSearch] = React.useState(false);
 
   // interesses e cursos para pesquisa
@@ -124,21 +123,30 @@ const Home = () => {
       { 
         setPageLoading(true);
 
-        if(typeSearch === false)
+        if(!typeSearch)
         {
-          let valores = await getProjetos(pesquisa,false);
-          let x = chunk(valores.data,n_cards);
-          setCardsProjetos(x);
-          setPageCount(x.length);
+          let aux = await getProjetos(pesquisa,false);
+          setCardsProjetos(aux.data);
         }
         else
         {        
           let dados = [selectedInteresses,selectedCourses,pesquisa];
-          let aux = await getProfiles(dados,1000);
-          let x = chunk(aux, n_cards);
-          setCardsProfiles(x);
-          setPageCount(x.length);
+          let aux = await getProfiles(dados,n_cards);
+          setCardsProfiles(aux);
         }
+
+        setPageLoading(false);
+      }
+
+      loadCards();
+
+  }, [n_cards, typeSearch, pesquisa, selectedCourses, selectedInteresses])
+
+  React.useEffect(() => 
+  {
+      async function loadFiltros() 
+      { 
+        setPageLoading(true);
 
         let res = await doGetAllInteresses();
         if (res.status === 200 && res.statusText === "OK") 
@@ -147,13 +155,19 @@ const Home = () => {
         res = await doGetAllCourses();
         if (res.status === 200 && res.statusText === "OK") 
           setAllCourses(res.data); 
-
-        setPageLoading(false);
       }
 
-      loadCards();
+      loadFiltros();
+  }, [])
 
-  }, [n_cards, typeSearch, pesquisa,selectedCourses,selectedInteresses])
+  async function changePage(v)
+  {
+    setPageLoading(true);
+    let dados = [selectedInteresses,selectedCourses,pesquisa,v];
+    let aux = await getProfiles(dados,n_cards);
+    setCardsProfiles(aux);
+    setPageLoading(false);
+  }
 
   return (
     <>
@@ -234,28 +248,28 @@ const Home = () => {
           </Container>
 
           <Grid style={{width: "100%", display: "flex", justifyContent: "center", maxWidth: "1400px"}} p={1}>
-            <Stack direction="row" spacing={1} className={matches ? classes.stackMobile : classes.stack}>         
+            <Stack direction="row" spacing={1} className={matches ? classes.stackMobile : classes.stack}>    
               <TextField
                 id="select-n-cards" 
                 value={n_cards} 
                 label="Cards" 
-                onChange={(event) => setNcards(event.target.value)}
+                onChange={(e) => setNcards(e.target.value)}
                 sx={{width: "fit-content"}}
                 variant="standard"
                 select
-              >
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={20}>20</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
-                <MenuItem value={100}>100</MenuItem>
+                >
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
+                  <MenuItem value={50}>50</MenuItem>
+                  <MenuItem value={100}>100</MenuItem>
               </TextField>
-
+     
               <TextField 
                 id="select-type-search" 
                 value={typeSearch} 
                 label="Tipo de pesquisa" 
-                onChange={(event) => setTypeSearch(event.target.value)}
+                onChange={(e) => setTypeSearch(e.target.value)}
                 sx={{width: "100px"}}
                 variant="standard"
                 select
@@ -266,24 +280,22 @@ const Home = () => {
             </Stack>
           </Grid>
 
-          {!typeSearch && <Cards valores={cardsProjetos[page-1]} cardsType="projetos"/>}
-          {typeSearch && <Cards valores={cardsProfiles[page-1]} cardsType="usuarios"/>}
+          {!typeSearch && cardsProjetos && <Cards valores={cardsProjetos} cardsType="projetos"/>}
+          {typeSearch && cardsProfiles && <Cards valores={cardsProfiles.items} cardsType="usuarios"/>}
 
-          <Container className={classes.pagination}>
-            <Pagination 
-              count={pageCount} 
-              defaultPage={1}
-              page={page} 
-              onChange={(e, v) => {setPage(v)}}
-              shape="rounded" 
-              variant="outlined" 
-              color="primary" 
-              size="small" 
-              showFirstButton 
-              showLastButton
-            />
-          </Container>
+          { cardsProfiles && 
+            <>
+              <Container className={classes.pagination}>
+                <IconButton aria-label="prev" disabled={!cardsProfiles.previous_cursor} onClick={() => changePage(cardsProfiles.previous_cursor)}>
+                  <NavigateBeforeIcon />
+                </IconButton>
 
+                <IconButton aria-label="next" disabled={!cardsProfiles.next_cursor} onClick={() => changePage(cardsProfiles.next_cursor)}>
+                  <NavigateNextIcon />
+                </IconButton>
+              </Container>
+            </>
+          }
         </Grid>
       }
 

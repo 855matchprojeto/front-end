@@ -72,14 +72,14 @@ const ProfCard = ({ info }) => {
           <CardContent sx={{width: "100%"}}>
             <Typography variant="subtitle1">{info.nome_exibicao}</Typography>
 
-            <Typography variant="body2" className={classes.desc}>
+            <Typography component="div" variant="body2" className={classes.desc}>
               {info.bio && limitString(info.bio, 150)} 
 
               { info.bio && info.bio.length > 150 && 
                 <BigTooltip title={info.bio} arrow>            
-                  <Typography variant="body2" className={classes.tooltip} display="inline">
+                  <div className={classes.tooltip} display="inline">
                     {" ..."}
-                  </Typography>
+                  </div>
                 </BigTooltip>
               }
             </Typography>
