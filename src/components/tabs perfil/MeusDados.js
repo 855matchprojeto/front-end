@@ -67,7 +67,7 @@ const MeusDados = () => {
           name: res.data.nome_exibicao.split(" ")[0],
           sobrenome: res.data.nome_exibicao.split(" ")[1],
           interesses: res.data.interesses,
-          bio: res.data.bio,
+          bio: res.data.bio !== null ? res.data.bio : '',
           cursos: res.data.cursos,
           email: res.data.emails && res.data.emails.length > 0 ? res.data.emails[0].email : '',
           url_imagem: res.data.imagem_perfil !== null ? res.data.imagem_perfil.url : null
@@ -197,8 +197,8 @@ const MeusDados = () => {
 
                 <CardMedia
                     alt="Not Found"
-                    component={(user.imagem_perfil !== null) ? Button : PersonIcon}
-                    image={(user.imagem_perfil !== null) ? user.url_imagem : ""} 
+                    component={(user.url_imagem !== null) ? Button : PersonIcon}
+                    image={(user.url_imagem !== null) ? user.url_imagem : ""} 
                     className={classes.media}
                     onClick={() => imageUpload.current && imageUpload.current.click()}
                 />
