@@ -1,31 +1,47 @@
 import React,{ useState, useEffect } from "react";
 import {Box, Typography, CardContent, Card } from "@mui/material";
-import {Grid, Chip, CardMedia } from "@mui/material";
+import {Grid, Chip, CardMedia, createTheme } from "@mui/material";
 import { useLocation } from "react-router";
 import LoadingBox from "../components/LoadingBox";
 import { makeStyles } from "@mui/styles";
 import { getProfilesGUID } from "../services/api_perfil";
 import PersonIcon from '@mui/icons-material/Person';
 
+const compTheme = createTheme();
+
 const useStyles = makeStyles((theme) => ({
   grid: {
-    maxWidth: "1400px",
-    border: "1px solid black",
-    alignSelf: "center"
+    maxWidth: "1000px",
+    alignSelf: "center",
+    marginTop: compTheme.spacing(4),
   },
-
+  
   card: {
     width: "100%",
     display:"flex", 
     flexDirection: "column", 
-    alignItems: "center",
-    boxShadow: "none",
+    alignItems: "center"
   },
 
   cardContent: {
     display: "flex", 
     flexDirection: "column", 
     width: "100%"
+  },
+
+  title: {
+    textAlign: "center",
+  },
+
+  subtitle: {
+    fontWeight: "bold",
+    color: compTheme.palette.text.secondary
+  },
+
+  bio: {
+    textAlign: "justify",
+    color: compTheme.palette.text.secondary,
+    textIndent: compTheme.spacing(4)
   },
 
   media: {
@@ -76,33 +92,28 @@ const ProfileInfo = () => {
               />
         
               <CardContent className={classes.cardContent}>
-                <Grid container spacing={2} sx={{p: 3}}>
+                <Grid container spacing={2}>
                 
                   <Grid item xs={12}>
-                    <Typography variant="h5" sx={{ color: "text.secondary" }}>
+                    <Typography variant="h5" className={classes.title}>
                       {profInfo.nome_exibicao}
                     </Typography>
                   </Grid>
 
-                  <Grid item xs={12} sx={{mt: 2}}>
-                    <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: "bold" }}>
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
                       Bio:
                     </Typography>
-                  </Grid>
 
-                  <Grid item xs={12}>
-                    <Typography variant="body" align="justify" sx={{ color: "text.secondary" }}>
+                    <Typography component="div" variant="body2" className={classes.bio}>
                       {profInfo.bio}
                     </Typography>
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: "text.secondary", mt: 2 }}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
                       Cursos:
                     </Typography>
-                  </Grid>
-
-                  <Grid item xs={12}>
                     <Box sx={{ display: "flex" }}>
                       { 
                         profInfo.cursos.map((crs, index) => (
@@ -112,12 +123,10 @@ const ProfileInfo = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: "text.secondary", mt: 2 }}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
                       Interesses:
                     </Typography>
-                  </Grid>
 
-                  <Grid item xs={12}>
                     <Box sx={{ display: "flex" }}>
                       { 
                         profInfo.interesses.map((its, index) => (
