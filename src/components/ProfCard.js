@@ -20,15 +20,26 @@ const useStyles = makeStyles({
     flexDirection: "column", 
     width: "100%",
     maxWidth: 380, 
-    height: 450
+    height: 400
+  },
+
+  mediaContainer: {
+    width: "100%", 
+    display:"flex", 
+    justifyContent: "center",
+    alignItems: "center",
+    background: "linear-gradient( gray 50%, rgba(0,0,0,0) 50%)",
+    height: "200px",
+    boxShadow: "0 0 1px #000"
   },
 
   media: {
-    width: "100%",
-    bgcolor: "#dedede",
-    backgroundSize: "cover",
-    height: "200px",
-    boxShadow: "0 0 1px #000"
+    width: "150px", 
+    height: "150px",
+    padding: "0",
+    border: "1px solid black", 
+    borderRadius: "4px",
+    background: "whitesmoke"
   },
 
   actions: {
@@ -64,11 +75,14 @@ const ProfCard = ({ info }) => {
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
         <Card className={classes.card}>
-          <CardMedia
-            component={(info.imagem_perfil !== null) ? "img" : PersonIcon}
-            image={(info.imagem_perfil !== null) ? info.imagem_perfil.url : ""} 
-            className={classes.media}
-          />
+
+          <div className={classes.mediaContainer}>
+            <CardMedia
+              component={(info.imagem_perfil !== null) ? "img" : PersonIcon}
+              image={(info.imagem_perfil !== null) ? info.imagem_perfil.url : ""} 
+              className={classes.media}
+            />
+          </div>
           
           <CardContent sx={{width: "100%"}}>
             <Typography variant="subtitle1">{info.nome_exibicao}</Typography>

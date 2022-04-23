@@ -283,7 +283,7 @@ const Home = () => {
           {!typeSearch && cardsProjetos && <Cards valores={cardsProjetos} cardsType="projetos"/>}
           {typeSearch && cardsProfiles && <Cards valores={cardsProfiles.items} cardsType="usuarios"/>}
 
-          { cardsProfiles && 
+          { cardsProfiles && (cardsProfiles.previous_cursor || cardsProfiles.next_cursor) &&
             <>
               <Container className={classes.pagination}>
                 <IconButton aria-label="prev" disabled={!cardsProfiles.previous_cursor} onClick={() => changePage(cardsProfiles.previous_cursor)}>
