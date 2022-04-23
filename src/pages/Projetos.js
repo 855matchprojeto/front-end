@@ -158,6 +158,7 @@ const Projetos = () => {
         <Box
           sx={{
             width: "100%",
+            mt: 4
           }}
         >
           <Card sx={{ width: "100%", p: 4, minHeight: "100vh" }}>

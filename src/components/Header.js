@@ -215,7 +215,6 @@ const Header = () => {
             role="button"
             onClick={() => logout()}
             className={classes.navLinkMobile}
-            activeClassName={classes.activeMobile}
           >
             {" "}
             Sair{" "}
