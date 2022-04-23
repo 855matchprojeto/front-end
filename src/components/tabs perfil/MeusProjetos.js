@@ -45,7 +45,11 @@ const MeusProjetos = () => {
         </Grid>
       )}
 
-      {componentLoading && <LoadingBox />}
+      { componentLoading && 
+        <div style={{margin: "auto"}}>
+          <LoadingBox/>
+        </div>
+      }
     </>
   );
 };
