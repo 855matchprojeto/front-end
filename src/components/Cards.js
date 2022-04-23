@@ -13,31 +13,33 @@ const useStyles = makeStyles({
     display: "flex",
     marginTop: theme.spacing(1),
     width: "100%",
-    maxWidth: "1400px"
+    maxWidth: "1400px",
   },
 });
 
 const Cards = (props) => {
   const classes = useStyles();
-  const [cards, setCards] = useState(false);
+  const cards = props.valores;
   const cardsType = props.cardsType;
-
-  useEffect(() => {
-    setCards(props.valores);
-  }, [props.valores]);
-
-
 
   return (
     <Grid className={classes.grid} container>
-      { cards &&
+      {cards && (
         <>
-          { (cardsType === "usuarios") ?
-            cards.map((card, index) => <ProfCard key={index} info={card} />) :
-            cards.map((card, index) => <MyCard key={index} info={card} type={cardsType} setValores={setCards} valores={cards} page={props.page} />) 
-          }
+          {cardsType === "usuarios"
+            ? cards.map((card, index) => <ProfCard key={index} info={card} />)
+            : cards.map((card, index) => (
+                <MyCard
+                  key={index}
+                  info={card}
+                  type={cardsType}
+                  setValores={props.setValores}
+                  valores={cards}
+                  page={props.page}
+                />
+              ))}
         </>
-      }
+      )}
     </Grid>
   );
 };
