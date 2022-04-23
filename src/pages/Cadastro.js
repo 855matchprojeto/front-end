@@ -107,7 +107,7 @@ const Cadastro = () => {
         },
         variant: "success",
       });
-      delay(1000);
+      await delay(2000);
       history.push("/");
     } else {
       enqueueSnackbar(signup.response.data.detail, {
