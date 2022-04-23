@@ -6,15 +6,13 @@ import {Formik} from 'formik'
 import * as Yup from "yup";
 import { Email } from "../services/api_auth";
 
-import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar } from "@mui/material";
+import { Container, Typography, TextField, Button, Box, Alert, Snackbar } from "@mui/material";
 import Copyright from "../components/Copyright";
 import { makeStyles } from "@mui/styles";
 import { delay } from "../services/util";
 
 //--estilo--
-const theme = createTheme();
-
-const useStyles = makeStyles( ({
+const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",

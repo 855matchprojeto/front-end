@@ -1,21 +1,19 @@
 import React from "react";
-import { Grid, createTheme } from "@mui/material";
+import { Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-
 import MyCard from "./MyCard";
 import ProfCard from "./ProfCard";
 
 //--estilo--
-const theme = createTheme();
-
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   grid: {
     display: "flex",
     marginTop: theme.spacing(1),
     width: "100%",
     maxWidth: "1400px",
   },
-});
+}));
+//---------
 
 const Cards = (props) => {
   const classes = useStyles();
