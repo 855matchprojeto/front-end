@@ -1,7 +1,7 @@
 import React from "react";
 import Cards from "../components/Cards";
 import { Container, Grid, Typography, useMediaQuery, IconButton } from "@mui/material";
-import { Autocomplete, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
+import { Autocomplete, Box, TextField, MenuItem, Stack, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { getProjetos } from "../services/api_projetos";
@@ -13,47 +13,6 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 //--estilo--
-const SearchBox = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "100%",
-
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
-//---------
-
-const SearchField = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 1),
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "#CFCFCF",
-  borderRadius: "5px",
-  "&:hover": {
-    backgroundColor: alpha("#CFCFCF", 0.5),
-  },
-}));
-
-const StyledInput = styled(InputBase)(({ theme }) => ({
-  "& .MuiInputBase-input": {
-    backgroundColor: "inherit",
-
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    marginLeft: "5px",
-    [theme.breakpoints.up("sm")]: {
-      width: "20ch",
-      "&:focus": {
-        width: "25ch",
-      },
-    },
-  },
-}));
-
 const useStyles = makeStyles(theme => ({
   grid: {
     display: "flex",
@@ -76,6 +35,42 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "center",
     padding: theme.spacing(0.5)
+  },
+
+  searchBox : {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(1),
+      width: "auto",
+    },
+  },
+
+  searchField : {
+    padding: theme.spacing(0, 1),
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: (theme.palette.mode === "dark" ? theme.palette.grey[900] : theme.palette.grey[400]),
+    color: "inherit",
+    borderRadius: "5px",
+  },
+
+  styledInput : {
+    "& .MuiInputBase-input": {
+      transition: theme.transitions.create("width"),
+      width: "100%",
+      marginLeft: "5px",
+      [theme.breakpoints.up("sm")]: {
+        width: "20ch",
+        "&:focus": {
+          width: "25ch",
+        },
+      },
+    },
   },
 
   boxIcon: {
@@ -175,18 +170,19 @@ const Home = () => {
 
           <Typography variant="h6"> {!typeSearch ? "Projetos" : "Usuários"} </Typography>
         
-          <SearchBox>
-              <SearchField>
+          <div className={classes.searchBox}>
+              <div className={classes.searchField}>
                 <Box className={classes.boxIcon}> 
                   <SearchIcon />
                 </Box>
-                <StyledInput 
+                <InputBase
+                  className={classes.styledInput} 
                   placeholder={!typeSearch ? "Buscar projetos..."  : "Buscar usuários..."} 
                   inputProps={{ 'aria-label': 'search' }} 
                   onKeyPress={(e) => fazerPesquisa(e)}
                 />
-              </SearchField>
-          </SearchBox>
+              </div>
+          </div>
 
           <Container>
             { typeSearch && 

@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Card,
-  Typography,
   Grid,
   TextField,
   Autocomplete,
   Chip,
   Button,
-  Box,
   useMediaQuery,
 } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";

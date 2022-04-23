@@ -43,14 +43,14 @@ const useStyles = makeStyles(theme => ({
     },
   },
   activeNav: {
-    borderBottom: "1px solid " + (theme.palette.mode === "dark"? theme.palette.primary.light : theme.palette.primary.contrastText),
+    borderBottom: "1px solid " + (theme.palette.mode === "dark" ? theme.palette.primary.light : theme.palette.primary.contrastText),
   },
 
   "@media (max-width: 900px)": {
     paddingLeft: 0,
   },
   drawer: {
-    backgroundColor: (theme.palette.mode === "dark"? theme.palette.background.paper : theme.palette.primary.main),
+    backgroundColor: (theme.palette.mode === "dark" ? theme.palette.background.paper : theme.palette.primary.main),
     width: "40%",
     maxWidth: "200px",
     display: "flex",
