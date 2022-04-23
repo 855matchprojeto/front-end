@@ -63,23 +63,23 @@ const ProfCard = ({ info }) => {
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
         <Card className={classes.card}>
-              <CardMedia
-                component={(info.url_imagem !== null) ? "img" : PersonIcon}
-                image={(info.url_imagem !== null) ? info.url_imagem : ""} 
-                className={classes.media}
-              />
+          <CardMedia
+            component={(info.imagem_perfil !== null) ? "img" : PersonIcon}
+            image={(info.imagem_perfil !== null) ? info.imagem_perfil.url : ""} 
+            className={classes.media}
+          />
           
           <CardContent sx={{width: "100%"}}>
             <Typography variant="subtitle1">{info.nome_exibicao}</Typography>
 
-            <Typography variant="body2" className={classes.desc}>
+            <Typography component="div" variant="body2" className={classes.desc}>
               {info.bio && limitString(info.bio, 150)} 
 
               { info.bio && info.bio.length > 150 && 
                 <BigTooltip title={info.bio} arrow>            
-                  <Typography variant="body2" className={classes.tooltip} display="inline">
+                  <div className={classes.tooltip} display="inline">
                     {" ..."}
-                  </Typography>
+                  </div>
                 </BigTooltip>
               }
             </Typography>

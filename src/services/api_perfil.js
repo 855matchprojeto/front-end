@@ -82,6 +82,7 @@ export const doGetAllInteresses = async () => {
         .catch(err => console.log(err))
 }
 
+// retorna todos os perfis
 export const getProfiles =  async (data,page_size) => {
 
     // lista de ids de interesses, filtro
@@ -95,6 +96,8 @@ export const getProfiles =  async (data,page_size) => {
     // pesquisa, nomes de usuarios
     let pesquisa = data[2];
 
+    
+
     let query_its = "";
     interests_in.forEach(element => query_its  += "interests_in=" + element + "&");
 
@@ -104,11 +107,17 @@ export const getProfiles =  async (data,page_size) => {
     let query = query_its + query_crs;
 
     if (pesquisa.length === 0)
-        query = query.slice(0,query.length-1);
+        query += `page_size=${page_size}`;
     else
         query += `display_name_ilike=${pesquisa}&page_size=${page_size}`;
+    
+    // cursor
+    if(data.length === 4)
+        query += `&cursor=${data[3]}`
 
-    return perf.get(`profiles?${query}`).then(res => res.data.items)
+    return perf.get(`profiles?${query}`)
+        .then(res => res.data)
+        .catch(err => console.log(err))
 }
 
 export const getProfilesGUID = async (guid) => {
