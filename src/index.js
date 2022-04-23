@@ -35,6 +35,7 @@ const RouteProtection = () => {
 
   const myTheme = createTheme({
     palette: {
+      //mode: 'light',
       mode: 'dark',
     },
   });

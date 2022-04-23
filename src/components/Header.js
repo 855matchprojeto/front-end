@@ -35,7 +35,6 @@ const useStyles = makeStyles(theme => ({
     textDecoration: "none",
     color: "inherit",
     fontSize: "1rem",
-    borderLeft: "1px solid " + theme.palette.primary.main,
     transition: "all 0.5s",
 
     "&:hover": {
@@ -44,14 +43,14 @@ const useStyles = makeStyles(theme => ({
     },
   },
   activeNav: {
-    borderBottom: "1px solid white",
+    borderBottom: "1px solid " + (theme.palette.mode === "dark"? theme.palette.primary.light : theme.palette.primary.contrastText),
   },
 
   "@media (max-width: 900px)": {
     paddingLeft: 0,
   },
   drawer: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: (theme.palette.mode === "dark"? theme.palette.background.paper : theme.palette.primary.main),
     width: "40%",
     maxWidth: "200px",
     display: "flex",
@@ -61,10 +60,10 @@ const useStyles = makeStyles(theme => ({
     margin: 8,
     padding: theme.spacing(1),
     textDecoration: "none",
-    color: "white",
+    color: theme.palette.common.white,
     fontSize: "1rem",
     fontWeight: "bold",
-    borderLeft: "1px solid " + theme.palette.primary.main,
+    borderLeft: "1px solid rgba(0,0,0,0)",
 
     "&:hover": {
       backgroundColor: "rgba(0,0,0,0.15)",
@@ -72,7 +71,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   activeMobile: {
-    borderLeft: "1px solid white",
+    borderLeft: "1px solid" + theme.palette.common.white,
   },
   btnMenu: {
     "&:hover": {
@@ -107,14 +106,11 @@ const Header = () => {
   const DisplayDesktop = () => {
     return (
       <Toolbar className={classes.toolbar}>
-        <Link
-          component={RouterLink}
-          className={classes.brand}
-          to="/"
-          sx={{ color: "inherit" }}
-        >
-          <Typography variant="h6">Match de Projetos</Typography>
-        </Link>
+        <Typography className={classes.brand} variant="h6">
+          {" "}
+          Match de Projetos{" "}
+        </Typography>
+
         <nav className={classes.nav}>
           <Link
             component={RouterLink}
