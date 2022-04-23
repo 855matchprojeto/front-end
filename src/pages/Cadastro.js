@@ -215,6 +215,7 @@ const Cadastro = () => {
                 className={classes.submit}
                 fullWidth 
                 loading={isLoading}
+                endIcon={<></>}
                 loadingPosition="end"
               >
                 Cadastrar

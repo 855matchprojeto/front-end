@@ -102,6 +102,7 @@ const Login = () => {
                 loadingPosition="end"
                 variant="contained"
                 color="primary"
+                endIcon={<></>}
                 sx={{ mt: 3, mb: 2 }}
                 fullWidth 
               >
