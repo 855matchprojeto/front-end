@@ -6,7 +6,8 @@ import {Formik} from 'formik'
 import * as Yup from "yup";
 import { Cadastrar, Email } from "../services/api_auth";
 
-import { Container, Typography, TextField, Button, Box, createTheme, Alert, Snackbar, Link } from "@mui/material";
+import { Container, Typography, TextField, Box, createTheme, Alert, Snackbar, Link } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
 import Copyright from "../components/Copyright";
 import { makeStyles } from "@mui/styles";
 import { delay } from "../services/util";
@@ -58,6 +59,7 @@ const Cadastro = () => {
   const [alert, setAlert] = useState(false);
   const [severity, setSeverity] = useState('success');
   const [alertContent, setAlertContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   function closeAlert(){
     setAlert(false)
@@ -86,28 +88,28 @@ const Cadastro = () => {
   });
 
   async function fazerCadastro(usuario) {
-    try 
-    {
-      const signup = await Cadastrar(usuario)
+    setIsLoading(true);
 
-      if(signup.status === 200)
-      {
-        setSeverity('success')
-        setAlertContent('Cadastrado com sucesso!')
-        await Email(signup.data.username)
-        
-        setAlert(true)
+    const signup = await Cadastrar(usuario);
 
-        await delay(5000)
-        history.push('/')
-      }
-    } 
-    catch (err) 
+    if(signup.status === 200)
     {
-      setSeverity('error')
-      setAlertContent(err.response.data.detail)
-      setAlert(true)
+      setSeverity('success');
+      setAlertContent('Cadastrado com sucesso!');
+      await Email(signup.data.username);
+      
+      setAlert(true);
+      await delay(5000);
+      history.push('/');
     }
+    else
+    {
+      setSeverity('error');
+      setAlertContent(signup.response.data.detail);
+      setAlert(true);
+    }
+
+    setIsLoading(false);
   }
 
   //---------------------------------------------
@@ -206,7 +208,18 @@ const Cadastro = () => {
                 autoComplete="off"
               />
 
-              <Button type="submit" variant="contained" fullWidth color="primary" className={classes.submit}> Cadastrar </Button>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                fullWidth 
+                loading={isLoading}
+                loadingPosition="end"
+              >
+                Cadastrar
+              </LoadingButton>
+
             </form>
           )}
         </Formik>

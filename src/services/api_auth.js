@@ -27,7 +27,9 @@ export const Logar = async (dados) => {
     frm.append('username', dados.username);
     frm.append('password', dados.password);
 
-    return auth.post(`/users/token`,frm, config).then(res => res)
+    return auth.post(`/users/token`,frm, config)
+        .then(res => res)
+        .catch(err => console.log(err))
 }
 
 export const Cadastrar = async (usuario) => {
@@ -38,9 +40,13 @@ export const Cadastrar = async (usuario) => {
         email: usuario.email
     }
 
-    return auth.post(`/users`, JSONuser).then(res => res)
+    return auth.post(`/users`, JSONuser)
+        .then(res => res)
+        .catch(err => console.log(err))
 }
 
 export const Email = async (user) => {
-    return auth.post(`/users/send-email-verification-link/${user}`).then(res => res)
+    return auth.post(`/users/send-email-verification-link/${user}`)
+        .then(res => res)
+        .catch(err => console.log(err))
 }

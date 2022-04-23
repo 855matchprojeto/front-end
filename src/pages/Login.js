@@ -16,23 +16,16 @@ const Login = () => {
   // initial values / validation / login
   const values = {username: '', password: ''}
 
-  async function fazerLogin(values){
+  async function fazerLogin(values) {
     setIsLoading(true);
-    try 
-    {
-      const Token = await Logar(values);
 
-      if(Token.status === 200)
-      {
-        login(Token.data.access_token);
-        setIsLoading(false);
-        
-      }
-    } 
-    catch (err) 
+    const Token = await Logar(values);
+
+    if(Token.status === 200)
+      login(Token.data.access_token);
+    else
     {
-      setIsLoading(false);
-      enqueueSnackbar(err.response.data.message, {
+      enqueueSnackbar(Token.response.data.message, {
         anchorOrigin: {
           horizontal: 'center',
           vertical: 'top'
@@ -40,7 +33,8 @@ const Login = () => {
         variant: 'error'
       });
     }
-  
+
+    setIsLoading(false);  
   }
 
   const validationSchema = Yup.object().shape({
