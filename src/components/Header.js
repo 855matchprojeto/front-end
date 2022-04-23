@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
-import { AppBar, Toolbar, Typography} from "@mui/material";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import { IconButton, Drawer, Link, createTheme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -133,8 +133,7 @@ const Header = () => {
             className={classes.navLink}
             activeClassName={classes.activeNav}
           >
-            {" "}
-            Criar Projeto{" "}
+            Projetos
           </Link>
           <Link
             component={RouterLink}
@@ -165,7 +164,7 @@ const Header = () => {
     const handleDrawerClose = () => {
       setView((previous) => ({ ...previous, drawerOpen: false }));
     };
-    
+
     return (
       <Toolbar>
         <IconButton
@@ -199,8 +198,7 @@ const Header = () => {
             className={classes.navLinkMobile}
             activeClassName={classes.activeMobile}
           >
-            {" "}
-            Criar Projeto{" "}
+            Projetos
           </Link>
           <Link
             component={RouterLink}
