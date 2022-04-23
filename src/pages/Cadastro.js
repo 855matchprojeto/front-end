@@ -12,7 +12,6 @@ import {
   Typography,
   TextField,
   Box,
-  createTheme,
   Link,
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -21,9 +20,7 @@ import { makeStyles } from "@mui/styles";
 import { delay } from "../services/util";
 
 //--estilo--
-const theme = createTheme();
-
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -57,7 +54,7 @@ const useStyles = makeStyles({
     alignItems: "center",
     marginTop: theme.spacing(2),
   },
-});
+}));
 //---------
 
 const Cadastro = () => {

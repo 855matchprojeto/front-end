@@ -1,19 +1,18 @@
 import React,{ useState, useEffect } from "react";
 import {Box, Typography, CardContent, Card } from "@mui/material";
-import {Grid, Chip, CardMedia, createTheme } from "@mui/material";
+import {Grid, Chip, CardMedia } from "@mui/material";
 import { useLocation } from "react-router";
 import LoadingBox from "../components/LoadingBox";
 import { makeStyles } from "@mui/styles";
 import { getProfilesGUID } from "../services/api_perfil";
 import PersonIcon from '@mui/icons-material/Person';
 
-const compTheme = createTheme();
-
+//--estilo--
 const useStyles = makeStyles((theme) => ({
   grid: {
     maxWidth: "800px",
     alignSelf: "center",
-    marginTop: compTheme.spacing(4),
+    marginTop: theme.spacing(4),
     //minHeight: "calc(100vh - 148px)"
   },
   
@@ -36,13 +35,13 @@ const useStyles = makeStyles((theme) => ({
 
   subtitle: {
     fontWeight: "bold",
-    color: compTheme.palette.text.secondary
+    color: theme.palette.text.secondary
   },
 
   bio: {
     textAlign: "justify",
-    color: compTheme.palette.text.secondary,
-    textIndent: compTheme.spacing(4)
+    color: theme.palette.text.secondary,
+    textIndent: theme.spacing(4)
   },
 
   mediaContainer: {
@@ -63,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
     background: "whitesmoke"
   }
 }));
+//---------
 
 const ProfileInfo = () => {
   const [profInfo, getProfileInfo] = useState([]);

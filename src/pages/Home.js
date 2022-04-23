@@ -1,6 +1,6 @@
 import React from "react";
 import Cards from "../components/Cards";
-import { Container, Grid, createTheme, Typography, useMediaQuery, IconButton } from "@mui/material";
+import { Container, Grid, Typography, useMediaQuery, IconButton } from "@mui/material";
 import { Autocomplete, Box, TextField, MenuItem, Stack, styled, alpha, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -13,8 +13,6 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 //--estilo--
-const theme = createTheme();
-
 const SearchBox = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -26,6 +24,7 @@ const SearchBox = styled("div")(({ theme }) => ({
     width: "auto",
   },
 }));
+//---------
 
 const SearchField = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 1),
@@ -55,7 +54,7 @@ const StyledInput = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   grid: {
     display: "flex",
     flexDirection: "column",
@@ -86,7 +85,7 @@ const useStyles = makeStyles({
     width: '2rem', 
     height: '2rem'
   }
-});
+}));
 //---------
 
 const Home = () => {

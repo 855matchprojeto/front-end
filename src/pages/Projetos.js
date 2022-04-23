@@ -6,6 +6,7 @@ import Interesses from "../components/tabsProjeto/Interesses";
 import MeusProjetos from "../components/tabsProjeto/MeusProjetos";
 import CriarProjeto from "../components/tabsProjeto/CriarProjeto";
 
+//--estilo--
 const useStyles = makeStyles({
   container: {
     padding: "0",
@@ -19,6 +20,7 @@ const useStyles = makeStyles({
     padding: "0",
   },
 });
+//---------
 
 const Projetos = () => {
   const [valueTab, setTabValue] = React.useState("projetos");

@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography } from "@mui/material";
-import { IconButton, Drawer, Link, createTheme } from "@mui/material";
+import { IconButton, Drawer, Link } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { logout } from "../services/auth";
 
 //--estilo--
-const theme = createTheme();
-
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   toolbar: {
     display: "flex",
     height: "64px",
@@ -82,7 +80,7 @@ const useStyles = makeStyles({
       transform: "rotate(360deg)",
     },
   },
-});
+}));
 //---------
 
 const Header = () => {
