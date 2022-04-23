@@ -59,7 +59,8 @@ const useStyles = makeStyles((theme) => ({
     height: "150px", 
     border: "1px solid black", 
     padding: "0",
-    borderRadius: "4px"
+    borderRadius: "4px",
+    background: "whitesmoke"
   }
 }));
 

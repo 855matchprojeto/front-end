@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   Typography,
   TextField,
@@ -13,6 +13,7 @@ import { makeStyles } from "@mui/styles";
 import LoadingBox from "./LoadingBox";
 import { useSnackbar } from "notistack";
 import PersonIcon from "@mui/icons-material/Person";
+import UploadIcon from '@mui/icons-material/Upload';
 
 import {
   doGetDataUser,
@@ -41,9 +42,18 @@ const useStyles = makeStyles((theme) => ({
     width: "150px",
     height: "150px",
     border: "1px solid black",
+    padding: "0"
+  },
+
+  mediaUpload: {
+    display: "flex",
+    width: "100%", 
+    height: "100%", 
+    justifyContent: "center",
+    alignItems: "center",
     "&:hover": {
-      opacity: "0.8",
-    },
+      backgroundColor: "rgba(200,200,200,0.6)"
+    }
   },
 
   actions: {
@@ -65,6 +75,7 @@ const MeusDados = () => {
   const [allInteresses, setAllInteresses] = React.useState([]);
   const [allCourses, setAllCourses] = React.useState([]);
   const imageUpload = useRef(null);
+  const [showUpload, setShowUpload] = useState(false);
 
   React.useEffect(() => {
     async function getDataUser() {
@@ -192,7 +203,7 @@ const MeusDados = () => {
 
   return (
     <>
-      {!componentLoading && user && (
+      { !componentLoading && user && (
         <Grid container>
           <Card className={classes.card}>
             <CardHeader title={<Typography variant="h6">Perfil</Typography>} />
@@ -210,7 +221,20 @@ const MeusDados = () => {
               image={user.url_imagem !== null ? user.url_imagem : ""}
               className={classes.media}
               onClick={() => imageUpload.current && imageUpload.current.click()}
-            />
+            >
+               <div 
+                  className={classes.mediaUpload} 
+                  onMouseEnter={() => setShowUpload(!showUpload)} 
+                  onMouseLeave={() => setShowUpload(!showUpload)}
+                >
+                  { showUpload && 
+                    <UploadIcon 
+                      color="primary"
+                      fontSize="large" 
+                      style={{border: "1px solid #1976d2", borderRadius: "100%"}}
+                    />}
+                </div>
+            </CardMedia>
 
             <CardContent className={classes.cardContent}>
               {/* email */}
@@ -350,7 +374,11 @@ const MeusDados = () => {
         </Grid>
       )}
 
-      {componentLoading && <LoadingBox />}
+      { componentLoading && 
+        <Grid container style={{display: "flex", minHeight: "calc(100vh - 264px)"}}>
+          <LoadingBox/>
+        </Grid>
+      }
     </>
   );
 };

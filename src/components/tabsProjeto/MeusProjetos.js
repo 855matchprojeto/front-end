@@ -5,6 +5,7 @@ import { getMeusProjetos } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
 import Cards from "../Cards";
 import { ReactComponent as AddIcon } from "../../icons/add-icon.svg";
+
 const useStyles = makeStyles((theme) => ({
   font: {
     margin: 16,
@@ -73,7 +74,11 @@ const MeusProjetos = ({ setTabValue }) => {
         </>
       )}
 
-      {componentLoading && <LoadingBox />}
+      { componentLoading && 
+        <div style={{margin: "auto"}}>
+          <LoadingBox/>
+        </div>
+      }
     </>
   );
 };
