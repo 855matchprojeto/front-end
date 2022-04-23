@@ -11,9 +11,10 @@ const compTheme = createTheme();
 
 const useStyles = makeStyles((theme) => ({
   grid: {
-    maxWidth: "1000px",
+    maxWidth: "800px",
     alignSelf: "center",
     marginTop: compTheme.spacing(4),
+    //minHeight: "calc(100vh - 148px)"
   },
   
   card: {
@@ -44,11 +45,21 @@ const useStyles = makeStyles((theme) => ({
     textIndent: compTheme.spacing(4)
   },
 
+  mediaContainer: {
+    width: "100%", 
+    display:"flex", 
+    justifyContent: "center",
+    alignItems: "center",
+    background: "linear-gradient( gray 50%, rgba(0,0,0,0) 50%)",
+    height: "200px",
+  },
+
   media: {
     width: "150px", 
     height: "150px", 
     border: "1px solid black", 
-    padding: "0"
+    padding: "0",
+    borderRadius: "4px"
   }
 }));
 
@@ -84,12 +95,14 @@ const ProfileInfo = () => {
           { profInfo &&
             <Card className={classes.card}>
 
-              <CardMedia
-                  alt="Not Found"
-                  component={(profInfo.imagem_perfil !== null) ? "img" : PersonIcon}
-                  image={(profInfo.imagem_perfil !== null) ? profInfo.imagem_perfil.url : ""} 
-                  className={classes.media}
-              />
+              <div className={classes.mediaContainer}>
+                <CardMedia
+                    alt="Not Found"
+                    component={(profInfo.imagem_perfil !== null) ? "img" : PersonIcon}
+                    image={(profInfo.imagem_perfil !== null) ? profInfo.imagem_perfil.url : ""} 
+                    className={classes.media}
+                />
+              </div>
         
               <CardContent className={classes.cardContent}>
                 <Grid container spacing={2}>
