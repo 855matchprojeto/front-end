@@ -38,7 +38,7 @@ const RouteProtection = () => {
       mode: 'dark',
     },
   });
-  
+
   return (
     <ThemeProvider theme={myTheme}>
       <StyledEngineProvider injectFirst>

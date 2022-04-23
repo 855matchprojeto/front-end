@@ -9,7 +9,7 @@ import { tooltipClasses } from '@mui/material/Tooltip';
 import PersonIcon from '@mui/icons-material/Person';
 
 //--estilo--
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   grid: {
     display: "flex",
     justifyContent: "center",
@@ -39,7 +39,7 @@ const useStyles = makeStyles({
     padding: "0",
     border: "1px solid black", 
     borderRadius: "4px",
-    background: "whitesmoke"
+    background: theme.palette.background.default
   },
 
   actions: {
@@ -57,7 +57,7 @@ const useStyles = makeStyles({
     color: "darkblue", 
     fontWeight: 600
   }
-});
+}));
 
 const BigTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />

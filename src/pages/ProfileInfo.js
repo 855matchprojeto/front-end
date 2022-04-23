@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid black", 
     padding: "0",
     borderRadius: "4px",
-    background: "whitesmoke"
+    background: theme.palette.background.default
   }
 }));
 //---------
