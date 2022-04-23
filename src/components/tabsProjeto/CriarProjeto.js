@@ -8,6 +8,7 @@ import {
   Chip,
   Button,
   Box,
+  useMediaQuery,
 } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useSnackbar } from "notistack";
@@ -17,6 +18,7 @@ import { useHistory } from "react-router";
 
 const CriarProjeto = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const matches = useMediaQuery("(max-width: 900px)");
 
   const imageRef = useRef();
   const history = useHistory();
@@ -151,7 +153,7 @@ const CriarProjeto = () => {
   }, []);
   return (
     <Card sx={{ width: "100%", p: 4, minHeight: "100vh" }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         <Grid item xs={12}>
           <Grid container rowGap={2}>
             <Grid item xs={12} display="flex" justifyContent="center">
@@ -184,30 +186,40 @@ const CriarProjeto = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={12} display="flex" justifyContent="center">
+        <Grid item xs={12}>
           <TextField
             type="text"
             name="titulo"
             value={fields.titulo}
-            margin="normal"
             fullWidth
-            sx={{
-              maxWidth: "600px",
+            margin="normal"
+            style={{
+              width: matches ? "100%" : "50%",
             }}
             label="Título do projeto"
             onChange={(e) => handleChangeFields(e, null)}
           />
         </Grid>
+        <Grid item xs={12}>
+          <TextField
+            type="text"
+            name="descricao"
+            margin="normal"
+            multiline
+            rows={3}
+            value={fields.descricao}
+            fullWidth
+            label="Descrição do projeto"
+            onChange={(e) => handleChangeFields(e, null)}
+          />
+        </Grid>
 
-        <Grid item xs={12} display="flex" justifyContent="center">
+        <Grid item xs={12} md={6}>
           <Autocomplete
             multiple
             options={allCourses && allCourses}
             getOptionLabel={(option) => option.nome_exibicao}
             fullWidth
-            sx={{
-              maxWidth: "600px",
-            }}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
                 <Chip
@@ -229,7 +241,7 @@ const CriarProjeto = () => {
             )}
           />
         </Grid>
-        <Grid item xs={12} display="flex" justifyContent="center">
+        <Grid item xs={12} md={6}>
           <Autocomplete
             multiple
             options={allInteresses && allInteresses}
@@ -237,9 +249,6 @@ const CriarProjeto = () => {
             name="areas"
             id="areas"
             fullWidth
-            sx={{
-              maxWidth: "600px",
-            }}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
                 <Chip
@@ -264,31 +273,26 @@ const CriarProjeto = () => {
             )}
           />
         </Grid>
-
-        <Grid item xs={12} display="flex" justifyContent="center">
-          <TextField
-            type="text"
-            name="descricao"
-            margin="normal"
-            multiline
-            rows={3}
-            value={fields.descricao}
-            sx={{
-              maxWidth: "600px",
-            }}
+        <Grid item xs={12} md={6}>
+          <Autocomplete
+            multiple
+            options={["Teste", "Teste1", "Teste2"]}
+            getOptionLabel={(option) => option}
+            name="participantes"
+            id="participantes"
             fullWidth
-            label="Descrição do projeto"
-            onChange={(e) => handleChangeFields(e, null)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Participantes"
+                placeholder="Adicionar Participantes"
+                margin="normal"
+                fullWidth
+              />
+            )}
           />
         </Grid>
-
-        <Grid
-          item
-          xs={12}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
+        <Grid item xs={12} mt={2}>
           <Button
             type="submit"
             variant="contained"

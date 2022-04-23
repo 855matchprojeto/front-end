@@ -37,7 +37,12 @@ const Interesses = () => {
         <>
           {interesses.length > 0 ? (
             <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
-              <Cards valores={interesses} cardsType="projetos" page="perfil" />
+              <Cards
+                valores={interesses}
+                setValores={setInteresses}
+                cardsType="projetos"
+                page="perfil"
+              />
             </Grid>
           ) : (
             <Box
