@@ -29,72 +29,83 @@ import EditProject from "./pages/EditProject";
 import { StyledEngineProvider } from "@mui/material/styles";
 import { estaLogado } from "./services/auth";
 
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
 const RouteProtection = () => {
+
+  const myTheme = createTheme({
+    palette: {
+      mode: 'light',
+    },
+  });
+  
   return (
-    <StyledEngineProvider injectFirst>
-      <CssBaseline />
-      <Router>
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={() => (!estaLogado ? <Login /> : <Redirect to="/home" />)}
-          />
-          <Route
-            exact
-            path="/signup"
-            render={() =>
-              !estaLogado ? <Cadastro /> : <Redirect to="/home" />
-            }
-          />
-
-          <Route exact path="/forgotpassword" render={() => <EsqueciSenha />} />
-
+    <ThemeProvider theme={myTheme}>
+      <StyledEngineProvider injectFirst>
+        <CssBaseline />
+        <Router>
+          <Switch>
             <Route
               exact
-              path="/home"
-              render={() => (estaLogado ? <Base> <Home/> </Base> : <Redirect to="/" />)}
+              path="/"
+              render={() => (!estaLogado ? <Login /> : <Redirect to="/home" />)}
             />
             <Route
               exact
-              path="/projetos"
-              render={() => (estaLogado ? <Base> <Projetos/> </Base> : <Redirect to="/" />)}
-            />
-            <Route
-              exact
-              path="/perfil"
-              render={() => (estaLogado ? <Base> <Perfil/> </Base> : <Redirect to="/" />)}
-            />
-
-            <Route
-              exact
-              path="/projeto"
+              path="/signup"
               render={() =>
-                estaLogado ? <Base> <ProjetoInfo/> </Base> : <Redirect to="/" />
+                !estaLogado ? <Cadastro /> : <Redirect to="/home" />
               }
             />
 
-            <Route
-              exact
-              path="/profile"
-              render={() =>
-                estaLogado ? <Base> <ProfileInfo/> </Base> : <Redirect to="/" />
-              }
-            />
+            <Route exact path="/forgotpassword" render={() => <EsqueciSenha />} />
 
-            <Route
-              exact
-              path="/editproject"
-              render={() =>
-                estaLogado ? <Base> <EditProject/> </Base> : <Redirect to="/" />
-              }
-            />
+              <Route
+                exact
+                path="/home"
+                render={() => (estaLogado ? <Base> <Home/> </Base> : <Redirect to="/" />)}
+              />
+              <Route
+                exact
+                path="/projetos"
+                render={() => (estaLogado ? <Base> <Projetos/> </Base> : <Redirect to="/" />)}
+              />
+              <Route
+                exact
+                path="/perfil"
+                render={() => (estaLogado ? <Base> <Perfil/> </Base> : <Redirect to="/" />)}
+              />
 
-          <Route exact path='/404' render={() => <Base> <Error/> </Base>}/>
-          <Redirect from='*' to='/404' />
-        </Switch>
-      </Router>
-    </StyledEngineProvider>
+              <Route
+                exact
+                path="/projeto"
+                render={() =>
+                  estaLogado ? <Base> <ProjetoInfo/> </Base> : <Redirect to="/" />
+                }
+              />
+
+              <Route
+                exact
+                path="/profile"
+                render={() =>
+                  estaLogado ? <Base> <ProfileInfo/> </Base> : <Redirect to="/" />
+                }
+              />
+
+              <Route
+                exact
+                path="/editproject"
+                render={() =>
+                  estaLogado ? <Base> <EditProject/> </Base> : <Redirect to="/" />
+                }
+              />
+
+            <Route exact path='/404' render={() => <Base> <Error/> </Base>}/>
+            <Redirect from='*' to='/404' />
+          </Switch>
+        </Router>
+      </StyledEngineProvider>
+    </ThemeProvider>
   );
 };
 
