@@ -21,14 +21,15 @@ const useStyles = makeStyles({
     flexDirection: "column", 
     width: "100%",
     maxWidth: 380, 
-    height: 450
+    height: 450,
   },
   
   media: {
     width: "100%",
     bgcolor: "#dedede",
     backgroundSize: "cover",
-    height: "200px"
+    height: "200px",
+    boxShadow: "0 0 1px #000"
   },
 
   actions: {
