@@ -3,7 +3,8 @@ import { Link as RouterLink } from "react-router-dom";
 import Copyright from "../components/Copyright";
 import { useSnackbar } from "notistack";
 import {Formik} from 'formik'
-import {Container, Button, TextField, Grid, Box, Typography, Link, CircularProgress } from "@mui/material";
+import {Container, TextField, Grid, Box, Typography, Link } from "@mui/material";
+import LoadingButton from '@mui/lab/LoadingButton';
 import * as Yup from "yup";
 import {Logar} from "../services/api_auth";
 import {login} from "../services/auth";
@@ -75,12 +76,6 @@ const Login = () => {
         >
           {props => (
             <Box component="form" onSubmit={props.handleSubmit} sx={{ mt: 2, position: 'relative'}}>
-               
-               {isLoading && (
-                <Box sx={{position: 'absolute', right: '50%', top: '50%', zIndex: 200, transform: 'translate(50%,-50%)'}}>
-                  <CircularProgress size={100} color="secondary" />
-                </Box>
-               )}
 
               <TextField 
                 id="username" 
@@ -107,18 +102,17 @@ const Login = () => {
                 value={props.values.password} onChange={props.handleChange}
               />
 
-              <Button 
-                type="submit" 
-                disabled={isLoading}
-                variant="contained" 
+              <LoadingButton
+                type="submit"
+                loading={isLoading}
+                loadingPosition="end"
+                variant="contained"
+                color="primary"
+                sx={{ mt: 3, mb: 2 }}
                 fullWidth 
-                color="primary"  
-                sx={{ 
-                  mt: 3, mb: 2 
-                }}
-              > 
-                Logar 
-              </Button>
+              >
+                Logar
+              </LoadingButton>
 
 
               <Grid container>
