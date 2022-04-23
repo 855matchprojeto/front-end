@@ -122,7 +122,7 @@ const Header = () => {
             component={RouterLink}
             to="/home"
             className={classes.navLink}
-            activeClassname={classes.activeNav}
+            activeClassName={classes.activeNav}
           >
             {" "}
             Home{" "}
@@ -131,7 +131,7 @@ const Header = () => {
             component={RouterLink}
             to="/projetos"
             className={classes.navLink}
-            activeClassname={classes.activeNav}
+            activeClassName={classes.activeNav}
           >
             {" "}
             Criar Projeto{" "}
@@ -140,7 +140,7 @@ const Header = () => {
             component={RouterLink}
             to="/perfil"
             className={classes.navLink}
-            activeClassname={classes.activeNav}
+            activeClassName={classes.activeNav}
           >
             {" "}
             Perfil{" "}
@@ -188,7 +188,7 @@ const Header = () => {
             component={RouterLink}
             to="/home"
             className={classes.navLinkMobile}
-            activeClassname={classes.activeMobile}
+            activeClassName={classes.activeMobile}
           >
             {" "}
             Home{" "}
@@ -197,7 +197,7 @@ const Header = () => {
             component={RouterLink}
             to="/projetos"
             className={classes.navLinkMobile}
-            activeClassname={classes.activeMobile}
+            activeClassName={classes.activeMobile}
           >
             {" "}
             Criar Projeto{" "}
@@ -206,7 +206,7 @@ const Header = () => {
             component={RouterLink}
             to="/perfil"
             className={classes.navLinkMobile}
-            activeClassname={classes.activeMobile}
+            activeClassName={classes.activeMobile}
           >
             {" "}
             Perfil{" "}
@@ -215,7 +215,6 @@ const Header = () => {
             role="button"
             onClick={() => logout()}
             className={classes.navLinkMobile}
-            activeClassname={classes.activeMobile}
           >
             {" "}
             Sair{" "}
