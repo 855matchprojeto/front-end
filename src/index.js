@@ -50,28 +50,27 @@ const RouteProtection = () => {
 
           <Route exact path="/forgotpassword" render={() => <EsqueciSenha />} />
 
-          <Base>
             <Route
               exact
               path="/home"
-              render={() => (estaLogado ? <Home /> : <Redirect to="/" />)}
+              render={() => (estaLogado ? <Base> <Home/> </Base> : <Redirect to="/" />)}
             />
             <Route
               exact
               path="/projetos"
-              render={() => (estaLogado ? <Projetos /> : <Redirect to="/" />)}
+              render={() => (estaLogado ? <Base> <Projetos/> </Base> : <Redirect to="/" />)}
             />
             <Route
               exact
               path="/perfil"
-              render={() => (estaLogado ? <Perfil /> : <Redirect to="/" />)}
+              render={() => (estaLogado ? <Base> <Perfil/> </Base> : <Redirect to="/" />)}
             />
 
             <Route
               exact
               path="/projeto"
               render={() =>
-                estaLogado ? <ProjetoInfo /> : <Redirect to="/" />
+                estaLogado ? <Base> <ProjetoInfo/> </Base> : <Redirect to="/" />
               }
             />
 
@@ -79,7 +78,7 @@ const RouteProtection = () => {
               exact
               path="/profile"
               render={() =>
-                estaLogado ? <ProfileInfo /> : <Redirect to="/" />
+                estaLogado ? <Base> <ProfileInfo/> </Base> : <Redirect to="/" />
               }
             />
 
@@ -87,12 +86,12 @@ const RouteProtection = () => {
               exact
               path="/editproject"
               render={() =>
-                estaLogado ? <EditProject /> : <Redirect to="/" />
+                estaLogado ? <Base> <EditProject/> </Base> : <Redirect to="/" />
               }
             />
-          </Base>
 
-          <Route path="*" component={Error} />
+          <Route exact path='/404' render={() => <Base> <Error/> </Base>}/>
+          <Redirect from='*' to='/404' />
         </Switch>
       </Router>
     </StyledEngineProvider>
