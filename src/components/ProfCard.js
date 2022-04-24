@@ -54,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
 
   tooltip: {
     display: "inline",
-    color: "darkblue", 
     fontWeight: 600
   }
 }));
