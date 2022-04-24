@@ -7,9 +7,13 @@ import MeusProjetos from "../components/tabsProjeto/MeusProjetos";
 import CriarProjeto from "../components/tabsProjeto/CriarProjeto";
 
 //--estilo--
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   container: {
     padding: "0",
+  },
+  
+  paper: {
+    backgroundColor: (theme.palette.mode === "dark" ? theme.palette.grey[900] : theme.palette.background.paper)
   },
 
   tabBox: {
@@ -19,7 +23,7 @@ const useStyles = makeStyles({
     flexDirection: "column",
     padding: "0",
   },
-});
+}));
 //---------
 
 const Projetos = () => {
@@ -36,7 +40,7 @@ const Projetos = () => {
   return (
     <>
       <Container maxWidth="xl" className={classes.container}>
-        <Paper sx={{ minHeight: "calc(100vh - 148px)", mt: 1 }}>
+        <Paper className={classes.paper} sx={{ minHeight: "calc(100vh - 148px)", mt: 1 }}>
           <TabContext value={valueTab} color="primary">
             {/* CONTROLE DE ABAS */}
             <TabList

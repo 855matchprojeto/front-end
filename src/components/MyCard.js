@@ -9,7 +9,7 @@ import { deleteInteresseProjeto } from "../services/api_projetos";
 import { limitString } from "../services/util";
 
 //--estilo--
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
 
   grid: {
     display: "flex",
@@ -45,7 +45,7 @@ const useStyles = makeStyles({
     color: "darkblue", 
     fontWeight: 600
   }
-});
+}));
 
 const BigTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />

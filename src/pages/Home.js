@@ -1,7 +1,7 @@
 import React from "react";
 import Cards from "../components/Cards";
 import { Container, Grid, Typography, useMediaQuery, IconButton } from "@mui/material";
-import { Autocomplete, Box, TextField, MenuItem, Stack, alpha, InputBase } from "@mui/material";
+import { Autocomplete, Box, TextField, MenuItem, Stack, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { getProjetos } from "../services/api_projetos";
@@ -278,7 +278,7 @@ const Home = () => {
           {!typeSearch && cardsProjetos && <Cards valores={cardsProjetos} cardsType="projetos"/>}
           {typeSearch && cardsProfiles && <Cards valores={cardsProfiles.items} cardsType="usuarios"/>}
 
-          { cardsProfiles && (cardsProfiles.previous_cursor || cardsProfiles.next_cursor) &&
+          { cardsProfiles &&
             <>
               <Container className={classes.pagination}>
                 <IconButton aria-label="prev" disabled={!cardsProfiles.previous_cursor} onClick={() => changePage(cardsProfiles.previous_cursor)}>
