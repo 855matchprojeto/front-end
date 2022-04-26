@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Container, Grid, Box, Typography, Button } from "@mui/material";
 import { useLocation } from "react-router";
-import {TextField, Card, Autocomplete } from "@mui/material";
+import {TextField, Card, CardHeader, Autocomplete, useMediaQuery } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useSnackbar } from "notistack";
 import LoadingBox from "../components/LoadingBox";
@@ -15,6 +15,7 @@ const EditProject = () => {
   const pid = location.state?.data[0];
   const guid = location.state?.data[1];
   const imageRef = React.useRef();
+  const matches = useMediaQuery("(max-width: 900px)");
 
   const [fields, setFields] = React.useState(null);
 
@@ -160,144 +161,120 @@ const EditProject = () => {
   return (
     <>
       { !pageLoading &&
-        <Container maxWidth="lg" sx={{ mb: 5 }}>
-          <Card sx={{ width: "100%", p: 4, mt: 1 }}>
-            <Typography variant="h5" color="textSecondary" sx={{ mb: 3 }}>
-              Projeto Teste
-            </Typography>
-
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <Box>
-                    <Box
-                      sx={{
-                        width: "80%",
-                        height: "300px",
-                        bgcolor: "text.secondary",
-                        mb: 2,
-                      }}
-                    >
-                      <img
+          <Card sx={{ width: "100%", p: 4, mt: 1, minHeight: '100vh' }}>
+            <CardHeader title="Editar Projeto" />
+            <Grid container spacing={1} rowGap={1} >
+              <Grid item xs={12}>
+                <Grid container rowGap={2}>
+                  <Grid item xs={12} display="flex" justifyContent="center">
+                  <img
                         src={image ? image : "https://bit.ly/37W5LLQ"}
                         alt="Not Found"
-                        style={{ width: "100%", height: "100%" }}
+                        style={{ maxWidth: "300px", maxHeight: "300px" }}
                       />
-                    </Box>
-
-                    <Box>
-                      <input
-                        type="file"
-                        style={{ display: "none" }}
-                        ref={imageRef}
-                        onChange={(e) => handleImageFile(e)}
-                      />
-
-                      <Button
-                        variant="outlined"
-                        onClick={() => imageRef.current.click()}
-                        size="small"
-                        sx={{ mb: 4 }}
-                      >
-                          Upload
-                          <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
-                      </Button>
-                    </Box>
-                  </Box>
-                </Box>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <Grid container spacing={3}> 
-
-                  <Grid item xs={12}>
-                    <TextField
-                      type="input"
-                      name="titulo"
-                      value={fields ? fields.titulo : ''}
-                      fullWidth
-                      label="Título do projeto"
-                      onChange={(e) => handleChangeFields(e, null)}
-                    />
                   </Grid>
-
-                    <Grid item xs={12}>
-                    <Autocomplete
-                          options={allCourses}
-                          getOptionLabel={(option) => option.nome_exibicao}
-                          value={cursosSelecionados}
-                          isOptionEqualToValue={(o, v) => o.id === v.id}
-                          name="cursos"
-                          id="cursos"
-                          multiple
-                          freeSolo
-
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Cursos"
-                              placeholder="Cursos"
-                              fullWidth
-                            />
-                          )}
-
-                          onChange={(e,v) => updateCourses(v)}
-                        />
-                    </Grid>
-
-                    <Grid item xs={12}>
-                      <Autocomplete
-                        options={allInteresses}
-                        getOptionLabel={(option) => option.nome_exibicao}
-                        value={areasSelecionadas}
-                        isOptionEqualToValue={(o, v) => o.id === v.id}
-                        name="interesses"
-                        id="interesses"
-                        multiple
-                        freeSolo
-
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Áreas"
-                            placeholder="Áreas"
-                            fullWidth
-                          />
-                        )}
-
-                        onChange={(e, v) => updateAreas(v)}
-                      />  
-                    </Grid>
-
-                  <Grid item xs={12}>
-                    <TextField
-                      type="input"
-                      name="descricao"
-                      multiline
-                      rows={3}
-                      value={fields ? fields.descricao : ''}
-                      fullWidth
-                      label="Descrição do projeto"
-                      onChange={(e) => handleChangeFields(e, null)}
+                  <Grid item xs={12} display="flex" justifyContent="center">
+                    <input
+                      type="file"
+                      style={{ display: "none" }}
+                      ref={imageRef}
+                      onChange={(e) => handleImageFile(e)}
                     />
-                  </Grid>
 
-                  <Grid item xs={12} sx={{ mt: 1 }}>
                     <Button
-                      variant="contained"
-                      onClick={handleEditProject}
-                      disabled={isLoading}
+                      variant="outlined"
+                      onClick={() => imageRef.current.click()}
+                      size="small"
+                      sx={{ mb: 4 }}
                     >
-                      Salvar
+                        Upload
+                        <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
                     </Button>
-                  </Grid>
 
-                </Grid>
+                  </Grid>
+                </Grid>        
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  type="input"
+                  name="titulo"
+                  value={fields ? fields.titulo : ''}
+                  style={{
+                    width: matches ? "100%" : "50%",
+                  }}
+                  fullWidth
+                  label="Título do projeto"
+                  onChange={(e) => handleChangeFields(e, null)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  type="input"
+                  name="descricao"
+                  multiline
+                  rows={3}
+                  value={fields ? fields.descricao : ''}
+                  fullWidth
+                  label="Descrição do projeto"
+                  onChange={(e) => handleChangeFields(e, null)}
+                />
               </Grid>
 
+              <Grid item xs={12} md={6}>
+                <Autocomplete
+                  options={allCourses}
+                  getOptionLabel={(option) => option.nome_exibicao}
+                  value={cursosSelecionados}
+                  isOptionEqualToValue={(o, v) => o.id === v.id}
+                  name="cursos"
+                  id="cursos"
+                  multiple
+                  freeSolo
+                  onChange={(e,v) => updateCourses(v)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Cursos"
+                      placeholder="Cursos"
+                      fullWidth
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Autocomplete
+                  options={allInteresses}
+                  getOptionLabel={(option) => option.nome_exibicao}
+                  value={areasSelecionadas}
+                  isOptionEqualToValue={(o, v) => o.id === v.id}
+                  name="interesses"
+                  id="interesses"
+                  multiple
+                  freeSolo
+                  onChange={(e, v) => updateAreas(v)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Áreas"
+                      placeholder="Áreas"
+                      fullWidth
+                    />
+                  )}
+                />  
+              </Grid>
+
+              <Grid item xs={12} sx={{ mt: 1 }}>
+                <Button
+                  variant="contained"
+                  onClick={handleEditProject}
+                  disabled={isLoading}
+                >
+                  Salvar
+                </Button>
+              </Grid>              
             </Grid>
           </Card>
-        </Container>
       }
 
       { pageLoading && <LoadingBox/> }
