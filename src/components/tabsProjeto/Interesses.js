@@ -3,7 +3,7 @@ import { Grid, Typography, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { getUserProjRel } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
-import Cards from "../Cards";
+import CardGroup from "../CardGroup";
 
 const useStyles = makeStyles((theme) => ({
   font: {
@@ -36,7 +36,7 @@ const Interesses = () => {
         <>
           {marcados.length > 0 ? (
             <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
-              <Cards
+              <CardGroup
                 valores={marcados}
                 setValores={setMarcados}
                 cardsType="projetos"

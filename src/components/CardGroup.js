@@ -1,8 +1,8 @@
 import React from "react";
 import { Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import MyCard from "./MyCard";
-import ProfCard from "./ProfCard";
+import CardProjeto from "./CardProjeto";
+import CardPerfil from "./CardPerfil";
 
 //--estilo--
 const useStyles = makeStyles(theme => ({
@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
 }));
 //---------
 
-const Cards = (props) => {
+const CardGroup = (props) => {
   const classes = useStyles();
   const cards = props.valores;
   const cardsType = props.cardsType;
@@ -26,9 +26,9 @@ const Cards = (props) => {
       {cards && (
         <>
           {cardsType === "usuarios"
-            ? cards.map((card, index) => <ProfCard key={index} info={card} />)
+            ? cards.map((card, index) => <CardPerfil key={index} info={card} />)
             : cards.map((card, index) => (
-                <MyCard
+                <CardProjeto
                   key={index}
                   info={card}
                   type={cardsType}
@@ -43,4 +43,4 @@ const Cards = (props) => {
   );
 };
 
-export default Cards;
+export default CardGroup;

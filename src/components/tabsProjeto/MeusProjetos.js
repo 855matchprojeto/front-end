@@ -3,7 +3,7 @@ import { Grid, Typography, Box, IconButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { getMeusProjetos } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
-import Cards from "../Cards";
+import CardGroup from "../CardGroup";
 import { ReactComponent as AddIcon } from "../../icons/add-icon.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +38,7 @@ const MeusProjetos = ({ setTabValue }) => {
         <>
           {meusProjetos.length > 0 ? (
             <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
-              <Cards valores={meusProjetos} cardsType="meusprojetos" />
+              <CardGroup valores={meusProjetos} cardsType="meusprojetos" />
             </Grid>
           ) : (
             <Box

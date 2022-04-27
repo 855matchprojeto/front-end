@@ -1,5 +1,4 @@
 import React from "react";
-import Cards from "../components/Cards";
 import { Container, Grid, Typography, useMediaQuery, IconButton } from "@mui/material";
 import { Autocomplete, Box, TextField, MenuItem, Stack, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -11,6 +10,7 @@ import {doGetAllCourses,doGetAllInteresses,doGetDataUser} from "../services/api_
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import CardGroup from "../components/CardGroup";
 
 //--estilo--
 const useStyles = makeStyles(theme => ({
@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginTop: theme.spacing(4)
   },
 
   stack: {
@@ -41,7 +42,6 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
 
     [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(1),
@@ -64,10 +64,12 @@ const useStyles = makeStyles(theme => ({
       transition: theme.transitions.create("width"),
       width: "100%",
       marginLeft: "5px",
+      fontSize: theme.typography.body1.fontSize,
+
       [theme.breakpoints.up("sm")]: {
-        width: "20ch",
+        width: "30ch",
         "&:focus": {
-          width: "25ch",
+          width: "35ch",
         },
       },
     },
@@ -283,8 +285,8 @@ const Home = () => {
             </Stack>
           </Grid>
 
-          {!typeSearch && cardsProjetos && <Cards valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
-          {typeSearch && cardsProfiles && <Cards valores={cardsProfiles.items} cardsType="usuarios"/>}
+          {!typeSearch && cardsProjetos && <CardGroup valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
+          {typeSearch && cardsProfiles && <CardGroup valores={cardsProfiles.items} cardsType="usuarios"/>}
 
           { cardsProfiles &&
             <>

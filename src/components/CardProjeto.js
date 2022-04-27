@@ -55,7 +55,7 @@ const BigTooltip = styled(({ className, ...props }) => (
 });
 //---------
 
-const MyCard = ({ info, type, valores, userGuid, setValores }) => {
+const CardProjeto = ({ info, type, valores, userGuid, setValores }) => {
   const [btnInteresse, setBtnInteresse] = useState(false);
   const [componentLoading, setComponentLoading] = useState(true);
 
@@ -170,4 +170,4 @@ const MyCard = ({ info, type, valores, userGuid, setValores }) => {
   );
 };
 
-export default MyCard;
+export default CardProjeto;
