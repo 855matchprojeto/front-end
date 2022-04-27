@@ -52,8 +52,7 @@ const ProjetoInfo = () => {
     {
       setPageLoading(true);
       let aux = await getProjUserRel(guid, true, null);
-      
-      (aux.length === 0) ? setBtnInteresse(false) : setBtnInteresse(true);
+      //(aux.length === 0) ? setBtnInteresse(false) : setBtnInteresse(true);
 
       if(aux.length === 0) 
         setBtnInteresse(false);

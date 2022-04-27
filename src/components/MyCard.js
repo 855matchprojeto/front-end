@@ -84,6 +84,7 @@ const MyCard = ({ info, type, valores, userGuid, setValores }) => {
     {
       setComponentLoading(true);
       let aux = await getProjUserRel(valores.guid, true, null);
+      //(aux.length === 0) ? setBtnInteresse(false) : setBtnInteresse(true);
       
       if(aux.length === 0) 
         setBtnInteresse(false);
