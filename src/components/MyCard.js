@@ -3,13 +3,12 @@ import { Card, Grid, CardMedia, Typography, Tooltip } from "@mui/material";
 import { CardContent, CardActions, Button, tooltipClasses } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
 import { useHistory } from "react-router-dom";
-import { getProjetosInteresses } from "../services/api_projetos";
-import { postInteresseProjeto } from "../services/api_projetos";
-import { deleteInteresseProjeto } from "../services/api_projetos";
+import { getProjUserRel } from "../services/api_projetos";
+import { putRel } from "../services/api_projetos";
 import { limitString } from "../services/util";
 
 //--estilo--
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
 
   grid: {
     display: "flex",
@@ -21,14 +20,14 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column", 
     width: "100%",
     maxWidth: 380, 
-    height: 400,
+    height: 450
   },
   
   media: {
     width: "100%",
+    bgcolor: "#dedede",
     backgroundSize: "cover",
-    height: "200px",
-    boxShadow: "0 0 1px #000"
+    height: "200px"
   },
 
   actions: {
@@ -42,9 +41,10 @@ const useStyles = makeStyles((theme) => ({
 
   tooltip: {
     display: "inline",
+    color: "darkblue", 
     fontWeight: 600
   }
-}));
+});
 
 const BigTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -55,23 +55,25 @@ const BigTooltip = styled(({ className, ...props }) => (
 });
 //---------
 
-const MyCard = ({ info, type, valores, setValores, page }) => {
+const MyCard = ({ info, type, valores, userGuid, setValores }) => {
   const [btnInteresse, setBtnInteresse] = useState(false);
   const [componentLoading, setComponentLoading] = useState(true);
 
-  const pid = info.id;
   const classes = useStyles();
   let history = useHistory();
 
   async function updateInteresse() 
   {
-    if (btnInteresse)
+    if(!btnInteresse)
     {
-      await deleteInteresseProjeto(info.guid);
-      if (page === 'perfil') 
-        setValores(valores.filter((valor) => valor.guid !== info.guid));
-    } 
-    else await postInteresseProjeto(info.guid);
+      let body = {"fl_usuario_interesse": true};
+      await putRel(userGuid, valores.guid, body);
+    }
+    else 
+    {
+      let body = {"fl_usuario_interesse": false};
+      await putRel(userGuid, valores.guid, body);
+    }
 
     setBtnInteresse(!btnInteresse);
   }
@@ -81,18 +83,21 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
     async function getStatusInteresse() 
     {
       setComponentLoading(true);
-      let aux = (await getProjetosInteresses()).data;
-  
-      if (aux.length === 0) // usuario nao tem interesse em nenhum projeto
+      let aux = await getProjUserRel(valores.guid, true, null);
+      //(aux.length === 0) ? setBtnInteresse(false) : setBtnInteresse(true);
+      
+      if(aux.length === 0) 
         setBtnInteresse(false);
-      else 
-      {// usuario tem interesse em algum projeto, verificar se o atual é um deles
+      else
+      {
         aux.forEach(function (item, index) {
-          if (item.id === pid) {
+          if (item.id === valores.pid) {
             setBtnInteresse(true);
             return;
           }
         });
+
+        setBtnInteresse(true);
       }
 
       setComponentLoading(false);
@@ -102,7 +107,7 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
       getStatusInteresse();
     else
       setComponentLoading(false);
-  }, [pid,type]);
+  }, [type, valores.guid, valores.pid]);
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
@@ -153,7 +158,7 @@ const MyCard = ({ info, type, valores, setValores, page }) => {
                 variant="outlined" 
                 size="small"
                 sx={{textTransform: 'none'}}
-                onClick={() => history.push("/projeto", { data: [info.id, info.guid] })}
+                onClick={() => history.push("/projeto", { data: [info.id, info.guid, userGuid] })}
               >
                 Detalhes
               </Button>

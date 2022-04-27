@@ -19,6 +19,7 @@ const Cards = (props) => {
   const classes = useStyles();
   const cards = props.valores;
   const cardsType = props.cardsType;
+  const guid = props.userGuid;
 
   return (
     <Grid className={classes.grid} container>
@@ -32,8 +33,8 @@ const Cards = (props) => {
                   info={card}
                   type={cardsType}
                   setValores={props.setValores}
-                  valores={cards}
-                  page={props.page}
+                  valores={card}
+                  userGuid={guid}
                 />
               ))}
         </>

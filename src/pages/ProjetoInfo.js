@@ -7,15 +7,12 @@ import {
   Card,
   Tabs,
   Tab,
-  Avatar,
   Divider,
 } from "@mui/material";
 import { Grid, CardMedia, CardActions, Button, Chip } from "@mui/material";
 import { useLocation } from "react-router";
 import { getProjetos } from "../services/api_projetos";
-import { postInteresseProjeto } from "../services/api_projetos";
-import { deleteInteresseProjeto } from "../services/api_projetos";
-import { getProjetosInteresses } from "../services/api_projetos";
+import { getProjUserRel, putRel } from "../services/api_projetos";
 import LoadingBox from "../components/LoadingBox";
 import ParticipanteCard from "../components/ParticipanteCard";
 
@@ -23,10 +20,7 @@ const ProjetoInfo = () => {
   const [currentTab, setCurrentTab] = useState("sobre");
   const [projectInfo, getProjectInfo] = useState(false);
 
-  //const [projectCursos, getProjectCursos] = useState(false);
-  //const [projectAreas, getProjectAreas] = useState(false);
-  const defaultImageUrl =
-    "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
+  const defaultImageUrl = "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
@@ -34,53 +28,57 @@ const ProjetoInfo = () => {
   const location = useLocation();
   const pid = location.state?.data[0];
   const guid = location.state?.data[1];
+  const userGuid = location.state?.data[2];
   const [btnInteresse, setBtnInteresse] = React.useState(false);
 
-  async function updateInteresse() {
-    if (btnInteresse) await deleteInteresseProjeto(guid);
-    else await postInteresseProjeto(guid);
+  async function updateRel() 
+  {
+    if(!btnInteresse)
+    {
+      let body = {"fl_usuario_interesse": true};
+      await putRel(userGuid, guid, body);
+    }
+    else 
+    {
+      let body = {"fl_usuario_interesse": false};
+      await putRel(userGuid, guid, body);
+    }
 
     setBtnInteresse(!btnInteresse);
   }
 
   useEffect(() => {
-    async function getStatusInteresse() {
+    async function getStatusRel() 
+    {
       setPageLoading(true);
-      let aux = await getProjetosInteresses();
-      aux = aux.data;
+      let aux = await getProjUserRel(guid, true, null);
+      //(aux.length === 0) ? setBtnInteresse(false) : setBtnInteresse(true);
 
-      if (aux.length === 0) {
-        // usuario nao tem interesse em nenhum projeto
+      if(aux.length === 0) 
         setBtnInteresse(false);
-      } // usuario tem interesse em algum projeto, verificar se o atual é um deles
-      else {
+      else
+      {
         aux.forEach(function (item, index) {
-          if (item.id === pid) setBtnInteresse(true);
+          if (item.id === pid) {
+            setBtnInteresse(true);
+            return;
+          }
         });
+
+        setBtnInteresse(true);
       }
     }
 
-    async function getInfos() {
-      // faz uma chamada de api com o pid (project id) e seta dados basicos
+    async function getInfos() 
+    {
       const info = await getProjetos(pid, true);
       getProjectInfo(info.data[0]);
-
-      //  // PUXAR CURSOS
-      //  //const cr = await getProjetos(dados);
-      //  //getProjectCursos(cr.data[0]);
-      //  getProjectCursos([]);
-
-      //  // PUXAR AREAS
-      //  //const ar = await getProjetos(dados);
-      //  //getProjectAreas(ar.data[0]);
-      //  getProjectAreas([]);
-
       setPageLoading(false);
     }
 
-    getStatusInteresse();
+    getStatusRel();
     getInfos();
-  }, [pid]);
+  }, [guid, pid]);
 
   return (
     <>
@@ -153,13 +151,8 @@ const ProjetoInfo = () => {
                       <Grid item xs={12}>
                         <Box sx={{ display: "flex" }}>
                           {projectInfo &&
-                            projectInfo.cursos.map((curso) => (
-                              <>
-                                <Chip
-                                  label={curso.nome_exibicao}
-                                  sx={{ mr: 1 }}
-                                />
-                              </>
+                            projectInfo.cursos.map((curso, index) => (
+                              <Chip key={index} label={curso.nome_exibicao} sx={{ mr: 1 }}/>
                             ))}
                         </Box>
                       </Grid>
@@ -179,13 +172,8 @@ const ProjetoInfo = () => {
                       <Grid item xs={12}>
                         <Box sx={{ display: "flex" }}>
                           {projectInfo &&
-                            projectInfo.interesses.map((area) => (
-                              <>
-                                <Chip
-                                  label={area.nome_exibicao}
-                                  sx={{ mr: 1 }}
-                                />
-                              </>
+                            projectInfo.interesses.map((area, index) => (
+                                <Chip key={index} label={area.nome_exibicao} sx={{ mr: 1 }}/>
                             ))}
                         </Box>
                       </Grid>
@@ -220,7 +208,7 @@ const ProjetoInfo = () => {
                     variant="contained"
                     size="small"
                     color={btnInteresse ? "error" : "success"}
-                    onClick={() => updateInteresse()}
+                    onClick={() => updateRel()}
                   >
                     {btnInteresse ? "Remover interesse" : "Marcar interesse"}
                   </Button>
