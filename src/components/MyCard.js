@@ -85,7 +85,20 @@ const MyCard = ({ info, type, valores, userGuid, setValores }) => {
       setComponentLoading(true);
       let aux = await getProjUserRel(valores.guid, true, null);
       
-      (aux.length === 0) ? setBtnInteresse(false) : setBtnInteresse(true);
+      if(aux.length === 0) 
+        setBtnInteresse(false);
+      else
+      {
+        aux.forEach(function (item, index) {
+          if (item.id === valores.pid) {
+            setBtnInteresse(true);
+            return;
+          }
+        });
+
+        setBtnInteresse(true);
+      }
+
       setComponentLoading(false);
     }
 
@@ -93,7 +106,7 @@ const MyCard = ({ info, type, valores, userGuid, setValores }) => {
       getStatusInteresse();
     else
       setComponentLoading(false);
-  }, [type, valores.guid]);
+  }, [type, valores.guid, valores.pid]);
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
