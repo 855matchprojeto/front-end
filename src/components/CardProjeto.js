@@ -55,7 +55,7 @@ const BigTooltip = styled(({ className, ...props }) => (
 });
 //---------
 
-const CardProjeto = ({ info, type, valores, userGuid, setValores }) => {
+const CardProjeto = ({ info, type, valores, userGuid }) => {
   const [btnInteresse, setBtnInteresse] = useState(false);
   const [componentLoading, setComponentLoading] = useState(true);
 
@@ -64,6 +64,8 @@ const CardProjeto = ({ info, type, valores, userGuid, setValores }) => {
 
   async function updateInteresse() 
   {
+    console.log("a");
+
     if(!btnInteresse)
     {
       let body = {"fl_usuario_interesse": true};
