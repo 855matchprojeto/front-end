@@ -155,7 +155,7 @@ const Home = () => {
       async function getUserGuid() 
       { 
         let res = await doGetDataUser();
-        setGuid(res.data.guid);
+        setGuid(res.data.guid_usuario);
       }
 
       loadFiltros();
