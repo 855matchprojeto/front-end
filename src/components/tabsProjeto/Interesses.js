@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Grid, Typography, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { getUserProjRel } from "../../services/api_projetos";
+import { doGetDataUser } from "../../services/api_perfil";
 import LoadingBox from "../LoadingBox";
 import CardGroup from "../CardGroup";
 
@@ -17,6 +18,7 @@ const Interesses = () => {
   const classes = useStyles();
   const [marcados, setMarcados] = useState([]);
   const [componentLoading, setComponentLoading] = useState(true);
+  const [guid, setGuid] = React.useState("");
 
   useEffect(() => {
     async function doGetUserProjRel() 
@@ -24,10 +26,17 @@ const Interesses = () => {
       setComponentLoading(true);
       let aux = await getUserProjRel(true, null, null);
       setMarcados(aux.data);
+    }
+
+    async function getUserGuid() 
+    { 
+      let res = await doGetDataUser();
+      setGuid(res.data.guid_usuario);
       setComponentLoading(false);
     }
 
     doGetUserProjRel();
+    getUserGuid();
   }, []);
 
   return (
@@ -38,9 +47,8 @@ const Interesses = () => {
             <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
               <CardGroup
                 valores={marcados}
-                setValores={setMarcados}
                 cardsType="projetos"
-                page="perfil"
+                userGuid={guid}
               />
             </Grid>
           ) : (

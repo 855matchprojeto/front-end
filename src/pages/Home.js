@@ -103,7 +103,7 @@ const Home = () => {
   const  [selectedInteresses, setSelectedInteresses] = React.useState([]);
   const  [selectedCourses, setSelectedCourses] = React.useState([]);
 
-  const [guid, setGuid] = React.useState("");
+  const [guid, setGuid] = React.useState(false);
   const [allInteresses, setAllInteresses] = React.useState({});
   const [allCourses, setAllCourses] = React.useState({});
 
@@ -285,8 +285,8 @@ const Home = () => {
             </Stack>
           </Grid>
 
-          {!typeSearch && cardsProjetos && <CardGroup valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
-          {typeSearch && cardsProfiles && <CardGroup valores={cardsProfiles.items} cardsType="usuarios"/>}
+          {!typeSearch && guid && cardsProjetos && <CardGroup valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
+          {typeSearch && guid && cardsProfiles && <CardGroup valores={cardsProfiles.items} cardsType="usuarios"/>}
 
           { cardsProfiles &&
             <>

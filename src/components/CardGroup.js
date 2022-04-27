@@ -32,7 +32,6 @@ const CardGroup = (props) => {
                   key={index}
                   info={card}
                   type={cardsType}
-                  setValores={props.setValores}
                   valores={card}
                   userGuid={guid}
                 />

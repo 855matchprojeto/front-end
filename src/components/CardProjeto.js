@@ -64,8 +64,6 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
 
   async function updateInteresse() 
   {
-    console.log("a");
-
     if(!btnInteresse)
     {
       let body = {"fl_usuario_interesse": true};
@@ -86,21 +84,10 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
     {
       setComponentLoading(true);
       let aux = await getProjUserRel(valores.guid, true, null);
-      //(aux.length === 0) ? setBtnInteresse(false) : setBtnInteresse(true);
+      aux = aux.filter(item => item.guid_usuario === userGuid);
       
-      if(aux.length === 0) 
-        setBtnInteresse(false);
-      else
-      {
-        aux.forEach(function (item, index) {
-          if (item.id === valores.pid) {
-            setBtnInteresse(true);
-            return;
-          }
-        });
-
+      if(aux.length === 1)
         setBtnInteresse(true);
-      }
 
       setComponentLoading(false);
     }
@@ -109,7 +96,7 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
       getStatusInteresse();
     else
       setComponentLoading(false);
-  }, [type, valores.guid, valores.pid]);
+  }, [type, userGuid, valores.guid]);
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>

@@ -50,35 +50,24 @@ const ProjetoInfo = () => {
   useEffect(() => {
     async function getStatusRel() 
     {
-      setPageLoading(true);
       let aux = await getProjUserRel(guid, true, null);
-      //(aux.length === 0) ? setBtnInteresse(false) : setBtnInteresse(true);
+      aux = aux.filter(item => item.guid_usuario === userGuid);
 
-      if(aux.length === 0) 
-        setBtnInteresse(false);
-      else
-      {
-        aux.forEach(function (item, index) {
-          if (item.id === pid) {
-            setBtnInteresse(true);
-            return;
-          }
-        });
-
+      if(aux.length === 1)
         setBtnInteresse(true);
-      }
+        setPageLoading(false);
     }
 
     async function getInfos() 
     {
+      setPageLoading(true);
       const info = await getProjetos(pid, true);
       getProjectInfo(info.data[0]);
-      setPageLoading(false);
     }
 
-    getStatusRel();
     getInfos();
-  }, [guid, pid]);
+    getStatusRel();
+  }, [guid, pid, userGuid]);
 
   return (
     <>
