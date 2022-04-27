@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Typography, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { getProjetosInteresses } from "../../services/api_projetos";
+import { getUserProjRel } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
 import Cards from "../Cards";
 
@@ -15,31 +15,30 @@ const useStyles = makeStyles((theme) => ({
 
 const Interesses = () => {
   const classes = useStyles();
-  const [interesses, setInteresses] = useState([]);
+  const [marcados, setMarcados] = useState([]);
   const [componentLoading, setComponentLoading] = useState(true);
 
   useEffect(() => {
-    async function doGetProjInteresses() {
+    async function doGetUserProjRel() 
+    {
       setComponentLoading(true);
-
-      const res = await getProjetosInteresses();
-      if (res.status === 200) setInteresses(res.data);
-
+      let aux = await getUserProjRel(true, null, null);
+      setMarcados(aux.data);
       setComponentLoading(false);
     }
 
-    doGetProjInteresses();
+    doGetUserProjRel();
   }, []);
 
   return (
     <>
       {!componentLoading && (
         <>
-          {interesses.length > 0 ? (
+          {marcados.length > 0 ? (
             <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
               <Cards
-                valores={interesses}
-                setValores={setInteresses}
+                valores={marcados}
+                setValores={setMarcados}
                 cardsType="projetos"
                 page="perfil"
               />

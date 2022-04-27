@@ -7,7 +7,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { getProjetos } from "../services/api_projetos";
 import { getProfiles } from "../services/api_perfil";
 import LoadingBox from "../components/LoadingBox";
-import {doGetAllCourses,doGetAllInteresses} from "../services/api_perfil";
+import {doGetAllCourses,doGetAllInteresses,doGetDataUser} from "../services/api_perfil";
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -101,6 +101,7 @@ const Home = () => {
   const  [selectedInteresses, setSelectedInteresses] = React.useState([]);
   const  [selectedCourses, setSelectedCourses] = React.useState([]);
 
+  const [guid, setGuid] = React.useState("");
   const [allInteresses, setAllInteresses] = React.useState({});
   const [allCourses, setAllCourses] = React.useState({});
 
@@ -151,7 +152,14 @@ const Home = () => {
           setAllCourses(res.data); 
       }
 
+      async function getUserGuid() 
+      { 
+        let res = await doGetDataUser();
+        setGuid(res.data.guid);
+      }
+
       loadFiltros();
+      getUserGuid();
   }, [])
 
   async function changePage(v)
@@ -275,7 +283,7 @@ const Home = () => {
             </Stack>
           </Grid>
 
-          {!typeSearch && cardsProjetos && <Cards valores={cardsProjetos} cardsType="projetos"/>}
+          {!typeSearch && cardsProjetos && <Cards valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
           {typeSearch && cardsProfiles && <Cards valores={cardsProfiles.items} cardsType="usuarios"/>}
 
           { cardsProfiles &&
