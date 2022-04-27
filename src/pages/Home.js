@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginTop: theme.spacing(4)
   },
 
   stack: {
