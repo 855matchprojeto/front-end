@@ -67,7 +67,7 @@ const BigTooltip = styled(({ className, ...props }) => (
 });
 //---------
 
-const ProfCard = ({ info }) => {
+const CardPerfil = ({ info }) => {
   const classes = useStyles();
   let history = useHistory();
 
@@ -116,4 +116,4 @@ const ProfCard = ({ info }) => {
   
 };
 
-export default ProfCard;
+export default CardPerfil;

@@ -1,5 +1,4 @@
 import React from "react";
-import Cards from "../components/Cards";
 import { Container, Grid, Typography, useMediaQuery, IconButton } from "@mui/material";
 import { Autocomplete, Box, TextField, MenuItem, Stack, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -11,6 +10,7 @@ import {doGetAllCourses,doGetAllInteresses,doGetDataUser} from "../services/api_
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import CardGroup from "../components/CardGroup";
 
 //--estilo--
 const useStyles = makeStyles(theme => ({
@@ -283,8 +283,8 @@ const Home = () => {
             </Stack>
           </Grid>
 
-          {!typeSearch && cardsProjetos && <Cards valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
-          {typeSearch && cardsProfiles && <Cards valores={cardsProfiles.items} cardsType="usuarios"/>}
+          {!typeSearch && cardsProjetos && <CardGroup valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
+          {typeSearch && cardsProfiles && <CardGroup valores={cardsProfiles.items} cardsType="usuarios"/>}
 
           { cardsProfiles &&
             <>
