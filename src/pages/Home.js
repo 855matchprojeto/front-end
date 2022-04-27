@@ -42,7 +42,6 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
 
     [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(1),
@@ -65,10 +64,12 @@ const useStyles = makeStyles(theme => ({
       transition: theme.transitions.create("width"),
       width: "100%",
       marginLeft: "5px",
+      fontSize: theme.typography.body1.fontSize,
+
       [theme.breakpoints.up("sm")]: {
-        width: "20ch",
+        width: "30ch",
         "&:focus": {
-          width: "25ch",
+          width: "35ch",
         },
       },
     },
