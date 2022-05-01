@@ -401,6 +401,7 @@ const MeusDados = () => {
                     isOptionEqualToValue={(o, v) => o.id === v.id}
                     name="cursos"
                     id="cursos"
+                    disableClearable={true}
                     multiple
                     renderInput={(params) => (
                       <TextField
@@ -425,6 +426,7 @@ const MeusDados = () => {
                     isOptionEqualToValue={(o, v) => o.id === v.id}
                     name="interesses"
                     id="interesses"
+                    disableClearable={true}
                     multiple
                     renderInput={(params) => (
                       <TextField
