@@ -13,7 +13,7 @@ import { makeStyles } from "@mui/styles";
 import LoadingBox from "./LoadingBox";
 import { useSnackbar } from "notistack";
 import PersonIcon from "@mui/icons-material/Person";
-import UploadIcon from '@mui/icons-material/Upload';
+import UploadIcon from "@mui/icons-material/Upload";
 
 import {
   doGetDataUser,
@@ -43,18 +43,18 @@ const useStyles = makeStyles((theme) => ({
     width: "150px",
     height: "150px",
     border: "1px solid black",
-    padding: "0"
+    padding: "0",
   },
 
   mediaUpload: {
     display: "flex",
-    width: "100%", 
-    height: "100%", 
+    width: "100%",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
     "&:hover": {
-      backgroundColor: "rgba(200,200,200,0.6)"
-    }
+      backgroundColor: "rgba(200,200,200,0.6)",
+    },
   },
 
   actions: {
@@ -133,8 +133,46 @@ const MeusDados = () => {
       flag = true;
     }
 
-    await doUpdateCourses(aux[0].id, flag);
-    setUser({ ...user, cursos: v });
+    const res = await doUpdateCourses(aux[0].id, flag);
+    if (flag) {
+      if (res.status === 201) {
+        enqueueSnackbar("Curso adicionado com sucesso!", {
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+          variant: "success",
+        });
+        setUser({ ...user, cursos: v });
+      } else {
+        enqueueSnackbar("Houve um erro ao adicionar o curso!", {
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+          variant: "error",
+        });
+      }
+    } else {
+      if (res.status === 204) {
+        enqueueSnackbar("Curso removido com sucesso!", {
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+          variant: "success",
+        });
+        setUser({ ...user, cursos: v });
+      } else {
+        enqueueSnackbar("Houve um erro ao remover o curso!", {
+          anchorOrigin: {
+            horizontal: "right",
+            vertical: "top",
+          },
+          variant: "error",
+        });
+      }
+    }
   }
 
   async function updateInteresses(v) {
@@ -151,8 +189,46 @@ const MeusDados = () => {
       flag = true;
     }
 
-    await doUpdateInteresse(aux[0].id, flag);
-    setUser({ ...user, interesses: v });
+    const res = await doUpdateInteresse(aux[0].id, flag);
+    if (flag) {
+      if (res.status === 201) {
+        enqueueSnackbar("Interesse adicionado com sucesso!", {
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+          variant: "success",
+        });
+        setUser({ ...user, interesses: v });
+      } else {
+        enqueueSnackbar("Houve um erro ao adicionar o interese!", {
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+          variant: "error",
+        });
+      }
+    } else {
+      if (res.status === 204) {
+        enqueueSnackbar("Interesse removido com sucesso!", {
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+          variant: "success",
+        });
+        setUser({ ...user, interesses: v });
+      } else {
+        enqueueSnackbar("Houve um erro ao remover o interesse!", {
+          anchorOrigin: {
+            horizontal: "right",
+            vertical: "top",
+          },
+          variant: "error",
+        });
+      }
+    }
   }
 
   async function handleSave() {
@@ -205,7 +281,7 @@ const MeusDados = () => {
 
   return (
     <>
-      { !componentLoading && user && (
+      {!componentLoading && user && (
         <Grid container>
           <Card className={classes.card}>
             <CardHeader title={<Typography variant="h6">Perfil</Typography>} />
@@ -224,18 +300,22 @@ const MeusDados = () => {
               className={classes.media}
               onClick={() => imageUpload.current && imageUpload.current.click()}
             >
-               <div 
-                  className={classes.mediaUpload} 
-                  onMouseEnter={() => setShowUpload(!showUpload)} 
-                  onMouseLeave={() => setShowUpload(!showUpload)}
-                >
-                  { showUpload && 
-                    <UploadIcon 
-                      color="primary"
-                      fontSize="large" 
-                      style={{border: "1px solid #1976d2", borderRadius: "100%"}}
-                    />}
-                </div>
+              <div
+                className={classes.mediaUpload}
+                onMouseEnter={() => setShowUpload(!showUpload)}
+                onMouseLeave={() => setShowUpload(!showUpload)}
+              >
+                {showUpload && (
+                  <UploadIcon
+                    color="primary"
+                    fontSize="large"
+                    style={{
+                      border: "1px solid #1976d2",
+                      borderRadius: "100%",
+                    }}
+                  />
+                )}
+              </div>
             </CardMedia>
 
             <CardContent className={classes.cardContent}>
@@ -376,11 +456,14 @@ const MeusDados = () => {
         </Grid>
       )}
 
-      { componentLoading && 
-        <Grid container style={{display: "flex", minHeight: "calc(100vh - 264px)"}}>
-          <LoadingBox/>
+      {componentLoading && (
+        <Grid
+          container
+          style={{ display: "flex", minHeight: "calc(100vh - 264px)" }}
+        >
+          <LoadingBox />
         </Grid>
-      }
+      )}
     </>
   );
 };
