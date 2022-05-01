@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
-import { AppBar, Toolbar, Typography } from "@mui/material";
-import { IconButton, Drawer, Link } from "@mui/material";
+import { AppBar, Toolbar, Typography, useTheme } from "@mui/material";
+import { IconButton, Drawer, Link, Button } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { logout } from "../services/auth";
+import { ColorModeContext } from "../index";
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 
 //--estilo--
 const useStyles = makeStyles(theme => ({
@@ -104,12 +107,39 @@ const Header = () => {
   }, []);
 
   const DisplayDesktop = () => {
+    const theme = useTheme();
+    const colorMode = useContext(ColorModeContext);
     return (
       <Toolbar className={classes.toolbar}>
         <Typography className={classes.brand} variant="h6">
           {" "}
           Match de Projetos{" "}
         </Typography>
+        <IconButton 
+          title={theme.palette.mode === 'light' ? 'Tema escuro' : 'Tema claro'} variant="outlined" 
+          onClick={colorMode.toggleColorMode}
+          sx={{
+            border: '1px solid #ffffff',
+            borderRadius: '8px',
+            padding: '5px !important',
+            marginLeft: -5
+          }}
+        >
+            {theme.palette.mode === 'light' ? (
+            <DarkModeOutlinedIcon 
+              fontSize="small"
+              sx={{
+                color: '#ffffff'
+              }} 
+              />
+            )  : (
+            <LightModeOutlinedIcon
+              fontSize="small"
+              sx={{
+                color: '#f4f4f4'
+              }}
+            />)}
+        </IconButton>
 
         <nav className={classes.nav}>
           <Link
@@ -152,6 +182,9 @@ const Header = () => {
   };
 
   const DisplayMobile = () => {
+    const theme = useTheme();
+    const colorMode = useContext(ColorModeContext);
+    
     const handleDrawerOpen = () => {
       setView((previous) => ({ ...previous, drawerOpen: true }));
     };
@@ -217,6 +250,31 @@ const Header = () => {
           {" "}
           Match de Projetos{" "}
         </Typography>
+        <IconButton 
+          
+          title={theme.palette.mode === 'light' ? 'Tema escuro' : 'Tema claro'} variant="outlined" 
+          onClick={colorMode.toggleColorMode}
+          sx={{
+            border: '1px solid #ffffff',
+            borderRadius: '8px',
+            padding: '5px !important',
+          }}
+        >
+          {theme.palette.mode === 'light' ? (
+            <DarkModeOutlinedIcon 
+              fontSize="small"
+              sx={{
+                color: '#ffffff'
+              }} 
+              />
+            )  : (
+            <LightModeOutlinedIcon
+              fontSize="small"
+              sx={{
+                color: '#f4f4f4'
+              }}
+            />)}
+        </IconButton>
       </Toolbar>
     );
   };

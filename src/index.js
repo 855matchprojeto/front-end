@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext } from "react";
 import ReactDOM from "react-dom";
 import { SnackbarProvider } from "notistack";
 import {
@@ -31,82 +31,98 @@ import { estaLogado } from "./services/auth";
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
+
 const RouteProtection = () => {
+  const [mode, setMode] = React.useState('light');
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      },
+    }),
+    [],
+  );
+  const myTheme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+        },
+      }),
+    [mode],
+  );
 
-  const myTheme = createTheme({
-    palette: {
-      //mode: 'light',
-      mode: 'dark',
-    },
-  });
-
+ 
   return (
-    <ThemeProvider theme={myTheme}>
-      <StyledEngineProvider injectFirst>
-        <CssBaseline />
-        <Router>
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => (!estaLogado ? <Login /> : <Redirect to="/home" />)}
-            />
-            <Route
-              exact
-              path="/signup"
-              render={() =>
-                !estaLogado ? <Cadastro /> : <Redirect to="/home" />
-              }
-            />
-
-            <Route exact path="/forgotpassword" render={() => <EsqueciSenha />} />
-
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={myTheme}>
+        <StyledEngineProvider injectFirst>
+          <CssBaseline />
+          <Router>
+            <Switch>
               <Route
                 exact
-                path="/home"
-                render={() => (estaLogado ? <Base> <Home/> </Base> : <Redirect to="/" />)}
+                path="/"
+                render={() => (!estaLogado ? <Login /> : <Redirect to="/home" />)}
               />
               <Route
                 exact
-                path="/projetos"
-                render={() => (estaLogado ? <Base> <Projetos/> </Base> : <Redirect to="/" />)}
-              />
-              <Route
-                exact
-                path="/perfil"
-                render={() => (estaLogado ? <Base> <Perfil/> </Base> : <Redirect to="/" />)}
-              />
-
-              <Route
-                exact
-                path="/projeto"
+                path="/signup"
                 render={() =>
-                  estaLogado ? <Base> <ProjetoInfo/> </Base> : <Redirect to="/" />
+                  !estaLogado ? <Cadastro /> : <Redirect to="/home" />
                 }
               />
 
-              <Route
-                exact
-                path="/profile"
-                render={() =>
-                  estaLogado ? <Base> <ProfileInfo/> </Base> : <Redirect to="/" />
-                }
-              />
+              <Route exact path="/forgotpassword" render={() => <EsqueciSenha />} />
 
-              <Route
-                exact
-                path="/editproject"
-                render={() =>
-                  estaLogado ? <Base> <EditProject/> </Base> : <Redirect to="/" />
-                }
-              />
+                <Route
+                  exact
+                  path="/home"
+                  render={() => (estaLogado ? <Base> <Home/> </Base> : <Redirect to="/" />)}
+                />
+                <Route
+                  exact
+                  path="/projetos"
+                  render={() => (estaLogado ? <Base> <Projetos/> </Base> : <Redirect to="/" />)}
+                />
+                <Route
+                  exact
+                  path="/perfil"
+                  render={() => (estaLogado ? <Base> <Perfil/> </Base> : <Redirect to="/" />)}
+                />
 
-            <Route exact path='/404' render={() => <Base> <Error/> </Base>}/>
-            <Redirect from='*' to='/404' />
-          </Switch>
-        </Router>
-      </StyledEngineProvider>
-    </ThemeProvider>
+                <Route
+                  exact
+                  path="/projeto"
+                  render={() =>
+                    estaLogado ? <Base> <ProjetoInfo/> </Base> : <Redirect to="/" />
+                  }
+                />
+
+                <Route
+                  exact
+                  path="/profile"
+                  render={() =>
+                    estaLogado ? <Base> <ProfileInfo/> </Base> : <Redirect to="/" />
+                  }
+                />
+
+                <Route
+                  exact
+                  path="/editproject"
+                  render={() =>
+                    estaLogado ? <Base> <EditProject/> </Base> : <Redirect to="/" />
+                  }
+                />
+
+              <Route exact path='/404' render={() => <Base> <Error/> </Base>}/>
+              <Redirect from='*' to='/404' />
+            </Switch>
+          </Router>
+        </StyledEngineProvider>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 };
 
