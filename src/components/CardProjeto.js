@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { getProjUserRel } from "../services/api_projetos";
 import { putRel } from "../services/api_projetos";
 import { limitString } from "../services/util";
+import ProjectDefault from "../icons/project.svg";
 
 //--estilo--
 const useStyles = makeStyles({
@@ -104,7 +105,7 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
         <Card className={classes.card}>
             <CardMedia
               component="img"
-              image={(info.url_imagem !== null) ? info.url_imagem : "https://bit.ly/37W5LLQ"} 
+              image={(info.url_imagem !== null) ? info.url_imagem : ProjectDefault} 
               className={classes.media}
             />
 

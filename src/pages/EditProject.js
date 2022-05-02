@@ -16,6 +16,7 @@ import { doGetAllCourses, doGetAllInteresses } from "../services/api_projetos";
 import { getProjetos, updateProjetos } from "../services/api_projetos";
 import { doUpdateAreas, doUpdateCourses } from "../services/api_projetos";
 import { enqueueMySnackBar,Base64 } from "../services/util";
+import ProjectDefault from "../icons/project.svg";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -129,7 +130,6 @@ const EditProject = () => {
       const msg = "Projeto atualizado com sucesso!";
       const type = "success";  
       enqueueMySnackBar(enqueueSnackbar, msg, type);
-
     } 
     else 
     {
@@ -183,7 +183,7 @@ const EditProject = () => {
                 <Grid container rowGap={2}>
                   <Grid item xs={12} display="flex" justifyContent="center">
                     <img
-                      src={image ? image : "https://bit.ly/37W5LLQ"}
+                      src={image ? image : ProjectDefault}
                       alt="Not Found"
                       style={{ maxWidth: "300px", maxHeight: "300px" }}
                     />

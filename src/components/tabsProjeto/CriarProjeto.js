@@ -12,6 +12,7 @@ import { doGetAllCourses,doGetAllInteresses } from "../../services/api_projetos"
 import { postProjetos } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
 import { enqueueMySnackBar,Base64 } from "../../services/util";
+import ProjectDefault from "../../icons/project.svg";                           
 
 const CriarProjeto = () => {
   const values = {
@@ -46,7 +47,6 @@ const CriarProjeto = () => {
       descricao: values.descricao,
       entidades: [],
       tags: [],
-      url_imagem: "https://picsum.photos/200/500?random=50",
       interesses: values.areas.map((area) => area.id),
       cursos: values.cursos.map((curso) => curso.id),
     };
@@ -134,7 +134,7 @@ const CriarProjeto = () => {
                 <Grid container rowGap={2}>
                   <Grid item xs={12} display="flex" justifyContent="center">
                     <img
-                      src={image ? image : "https://bit.ly/37W5LLQ"}
+                      src={image ? image : ProjectDefault}
                       alt="Not Found"
                       style={{
                         maxWidth: "300px",
