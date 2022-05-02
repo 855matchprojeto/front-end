@@ -30,19 +30,23 @@ import { StyledEngineProvider } from "@mui/material/styles";
 import { estaLogado } from "./services/auth";
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-
+import { getPrefMode,setPrefMode } from "./services/util";
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
+
 const RouteProtection = () => {
-  const [mode, setMode] = React.useState('light');
+  const [mode, setMode] = React.useState(getPrefMode);
+
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        (mode === 'dark') ? setPrefMode('light') : setPrefMode('dark');
       },
     }),
-    [],
+    [mode],
   );
+
   const myTheme = React.useMemo(
     () =>
       createTheme({

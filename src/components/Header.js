@@ -115,33 +115,33 @@ const Header = () => {
           {" "}
           Match de Projetos{" "}
         </Typography>
-        <IconButton 
-          title={theme.palette.mode === 'light' ? 'Tema escuro' : 'Tema claro'} variant="outlined" 
-          onClick={colorMode.toggleColorMode}
-          sx={{
-            border: '1px solid #ffffff',
-            borderRadius: '8px',
-            padding: '5px !important',
-            marginLeft: -5
-          }}
-        >
-            {theme.palette.mode === 'light' ? (
-            <DarkModeOutlinedIcon 
-              fontSize="small"
-              sx={{
-                color: '#ffffff'
-              }} 
-              />
-            )  : (
-            <LightModeOutlinedIcon
-              fontSize="small"
-              sx={{
-                color: '#f4f4f4'
-              }}
-            />)}
-        </IconButton>
 
         <nav className={classes.nav}>
+          <IconButton 
+            title={theme.palette.mode === 'light' ? 'Tema escuro' : 'Tema claro'} variant="outlined" 
+            onClick={colorMode.toggleColorMode}
+            sx={{
+              border: '1px solid #ffffff',
+              borderRadius: '8px',
+              padding: '5px !important',
+              marginLeft: -5
+            }}
+          >
+              {theme.palette.mode === 'light' ? (
+              <DarkModeOutlinedIcon 
+                fontSize="small"
+                sx={{
+                  color: '#ffffff'
+                }} 
+                />
+              )  : (
+              <LightModeOutlinedIcon
+                fontSize="small"
+                sx={{
+                  color: '#f4f4f4'
+                }}
+              />)}
+          </IconButton>
           <Link
             component={RouterLink}
             to="/home"

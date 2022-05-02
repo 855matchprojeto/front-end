@@ -8,6 +8,7 @@ export const limitString  = (str, size) => {
     return str;
 }
 
+// simplifica snackbar 
 export const enqueueMySnackBar = (snack, msg, type) => {
     snack(msg, {
         anchorOrigin: {
@@ -16,4 +17,19 @@ export const enqueueMySnackBar = (snack, msg, type) => {
         },
         variant: type,
       });
+};
+
+//
+export function setPrefMode(newMode)
+{
+  localStorage.setItem("COLOR_MODE", newMode);
+};
+
+export function getPrefMode()
+{
+    let mode = localStorage.getItem("COLOR_MODE");
+    if(mode !== "light" && mode !== "dark")
+      localStorage.setItem("COLOR_MODE", "light");
+
+    return localStorage.getItem("COLOR_MODE");
 };
