@@ -22,6 +22,7 @@ import {
 } from "../services/api_perfil";
 import { doUpdateCourses, doUpdateInteresse } from "../services/api_perfil";
 import { doSaveProfile } from "../services/api_perfil";
+import { enqueueMySnackBar } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -134,43 +135,36 @@ const MeusDados = () => {
     }
 
     const res = await doUpdateCourses(aux[0].id, flag);
-    if (flag) {
-      if (res.status === 201) {
-        enqueueSnackbar("Curso adicionado com sucesso!", {
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          variant: "success",
-        });
+    if (flag) 
+    {
+      if (res.status === 201) 
+      {
+        const msg = "Curso adicionado com sucesso!";
+        const type = "success";
+        enqueueMySnackBar(enqueueSnackbar, msg, type);
         setUser({ ...user, cursos: v });
-      } else {
-        enqueueSnackbar("Houve um erro ao adicionar o curso!", {
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          variant: "error",
-        });
+      } 
+      else 
+      {
+        const msg = "Houve um erro ao adicionar o curso!";
+        const type = "error";
+        enqueueMySnackBar(enqueueSnackbar, msg, type);
       }
-    } else {
-      if (res.status === 204) {
-        enqueueSnackbar("Curso removido com sucesso!", {
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          variant: "success",
-        });
+    } 
+    else 
+    {
+      if (res.status === 204) 
+      {
+        const msg = "Curso removido com sucesso!";
+        const type = "success";
+        enqueueMySnackBar(enqueueSnackbar, msg, type);
         setUser({ ...user, cursos: v });
-      } else {
-        enqueueSnackbar("Houve um erro ao remover o curso!", {
-          anchorOrigin: {
-            horizontal: "right",
-            vertical: "top",
-          },
-          variant: "error",
-        });
+      } 
+      else 
+      {
+        const msg = "Houve um erro ao remover o curso!";
+        const type = "error";
+        enqueueMySnackBar(enqueueSnackbar, msg, type);
       }
     }
   }
@@ -190,43 +184,36 @@ const MeusDados = () => {
     }
 
     const res = await doUpdateInteresse(aux[0].id, flag);
-    if (flag) {
-      if (res.status === 201) {
-        enqueueSnackbar("Interesse adicionado com sucesso!", {
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          variant: "success",
-        });
+    if (flag) 
+    {
+      if (res.status === 201) 
+      {
+        const msg = "Interesse adicionado com sucesso!";
+        const type = "success";
+        enqueueMySnackBar(enqueueSnackbar, msg, type);
         setUser({ ...user, interesses: v });
-      } else {
-        enqueueSnackbar("Houve um erro ao adicionar o interese!", {
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          variant: "error",
-        });
+      } 
+      else 
+      {
+        const msg = "Houve um erro ao adicionar o interese!";
+        const type = "error";
+        enqueueMySnackBar(enqueueSnackbar, msg, type);
       }
-    } else {
-      if (res.status === 204) {
-        enqueueSnackbar("Interesse removido com sucesso!", {
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          variant: "success",
-        });
+    } 
+    else 
+    {
+      if (res.status === 204) 
+      {
+        const msg = "Interesse removido com sucesso!";
+        const type = "success";
+        enqueueMySnackBar(enqueueSnackbar, msg, type);
         setUser({ ...user, interesses: v });
-      } else {
-        enqueueSnackbar("Houve um erro ao remover o interesse!", {
-          anchorOrigin: {
-            horizontal: "right",
-            vertical: "top",
-          },
-          variant: "error",
-        });
+      } 
+      else 
+      {
+        const msg = "Houve um erro ao remover o interesse!";
+        const type = "error";
+        enqueueMySnackBar(enqueueSnackbar, msg, type);
       }
     }
   }
@@ -240,14 +227,11 @@ const MeusDados = () => {
     };
 
     const res = await doSaveProfile(aux);
-    if (res.status === 200) {
-      enqueueSnackbar("Dados atualizados com sucesso!", {
-        anchorOrigin: {
-          horizontal: "right",
-          vertical: "top",
-        },
-        variant: "success",
-      });
+    if (res.status === 200) 
+    {
+      const msg = "Dados atualizados com sucesso!";
+      const type = "success";
+      enqueueMySnackBar(enqueueSnackbar, msg, type);
     }
     setIsLoading(false);
   }

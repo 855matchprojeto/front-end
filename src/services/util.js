@@ -7,3 +7,13 @@ export const limitString  = (str, size) => {
         return `${str.slice(0, size)}`;
     return str;
 }
+
+export const enqueueMySnackBar = (snack, msg, type) => {
+    snack(msg, {
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "center",
+        },
+        variant: type,
+      });
+};

@@ -15,6 +15,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import * as Yup from "yup";
 import { Logar } from "../services/api_auth";
 import { login } from "../services/auth";
+import { enqueueMySnackBar } from "../services/util";
 
 const Login = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -28,16 +29,10 @@ const Login = () => {
 
     const Token = await Logar(values);
 
-    if (Token.status === 200) login(Token.data.access_token);
-    else {
-      enqueueSnackbar(Token.response.data.message, {
-        anchorOrigin: {
-          horizontal: "center",
-          vertical: "top",
-        },
-        variant: "error",
-      });
-    }
+    if (Token.status === 200) 
+      login(Token.data.access_token);
+    else 
+      enqueueMySnackBar(enqueueSnackbar, Token.response.data.message, "error");
 
     setIsLoading(false);
   }

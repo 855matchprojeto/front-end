@@ -17,7 +17,7 @@ import {
 import LoadingButton from "@mui/lab/LoadingButton";
 import Copyright from "../components/Copyright";
 import { makeStyles } from "@mui/styles";
-import { delay } from "../services/util";
+import { delay, enqueueMySnackBar } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles(theme => ({
@@ -97,23 +97,17 @@ const Cadastro = () => {
 
     if (signup.status === 200) {
       await Email(signup.data.username);
-      enqueueSnackbar("Cadastrado realizado com sucesso!", {
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "right",
-        },
-        variant: "success",
-      });
+      const msg = "Cadastrado realizado com sucesso!";
+      const type = "success";
+      enqueueMySnackBar(enqueueSnackbar,msg,type);
       await delay(2000);
       history.push("/");
-    } else {
-      enqueueSnackbar(signup.response.data.detail, {
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "right",
-        },
-        variant: "error",
-      });
+    } 
+    else 
+    {
+      const msg = signup.response.data.detail;
+      const type = "error";
+      enqueueMySnackBar(enqueueSnackbar,msg,type);
     }
 
     setIsLoading(false);

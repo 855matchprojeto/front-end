@@ -11,6 +11,7 @@ import { useSnackbar } from "notistack";
 import { doGetAllCourses,doGetAllInteresses } from "../../services/api_projetos";
 import { postProjetos } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
+import { enqueueMySnackBar } from "../../services/util";
 
 const CriarProjeto = () => {
   const values = {
@@ -53,24 +54,16 @@ const CriarProjeto = () => {
 
     if (res.status === 200) 
     {
-      enqueueSnackbar("Projeto criado com sucesso!", {
-        anchorOrigin: {
-          horizontal: "right",
-          vertical: "top",
-        },
-        variant: "success",
-      });
+      const msg = "Projeto criado com sucesso!";
+      const type = "success";  
+      enqueueMySnackBar(enqueueSnackbar, msg, type);
       history.push("/projeto", { data: [res.data.id, res.data.guid] });
     } 
     else 
     {
-      enqueueSnackbar("Erro ao criar o projeto!", {
-        anchorOrigin: {
-          horizontal: "right",
-          vertical: "top",
-        },
-        variant: "error",
-      });
+      const msg = "Erro ao criar o projeto!";
+      const type = "error";
+      enqueueMySnackBar(enqueueSnackbar, msg, type);
     }
 
     setIsLoading(false);

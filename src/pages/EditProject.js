@@ -15,6 +15,7 @@ import LoadingBox from "../components/LoadingBox";
 import { doGetAllCourses, doGetAllInteresses } from "../services/api_projetos";
 import { getProjetos, updateProjetos } from "../services/api_projetos";
 import { doUpdateAreas, doUpdateCourses } from "../services/api_projetos";
+import { enqueueMySnackBar } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -113,22 +114,18 @@ const EditProject = () => {
 
     const res = await updateProjetos(guid, form);
 
-    if (res.status === 200) {
-      enqueueSnackbar("Projeto atualizado com sucesso!", {
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-        variant: "success",
-      });
-    } else {
-      enqueueSnackbar("Erro ao atualizar o projeto!", {
-        anchorOrigin: {
-          vertical: "top",
-          horizontal: "center",
-        },
-        variant: "error",
-      });
+    if (res.status === 200) 
+    {
+      const msg = "Projeto atualizado com sucesso!";
+      const type = "success";  
+      enqueueMySnackBar(enqueueSnackbar, msg, type);
+
+    } 
+    else 
+    {
+      const msg = "Erro ao atualizar o projeto!";
+      const type = "error";  
+      enqueueMySnackBar(enqueueSnackbar, msg, type);
     }
 
     setIsLoading(false);
