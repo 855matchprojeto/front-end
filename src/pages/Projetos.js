@@ -1,6 +1,6 @@
 import React from "react";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
-import { Tab, Box, Container, Paper } from "@mui/material";
+import { Tab, Box, Paper, Container } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Interesses from "../components/tabsProjeto/Interesses";
 import MeusProjetos from "../components/tabsProjeto/MeusProjetos";
@@ -13,7 +13,12 @@ const useStyles = makeStyles((theme) => ({
   },
   
   paper: {
-    backgroundColor: (theme.palette.mode === "dark" ? theme.palette.grey[900] : theme.palette.background.paper)
+    backgroundColor: (theme.palette.mode === "dark" ? theme.palette.grey[900] : theme.palette.background.paper),
+    minHeight: "calc(100vh - 148px)",
+    maxWidth: "1400px",
+    marginTop: theme.spacing(4),
+    display: "flex",
+    flexDirection: "column",
   },
 
   tabBox: {
@@ -38,9 +43,8 @@ const Projetos = () => {
   };
 
   return (
-    <>
-      <Container maxWidth="xl" className={classes.container}>
-        <Paper className={classes.paper} sx={{ minHeight: "calc(100vh - 148px)", mt: 1 }}>
+    <Container maxWidth="lg" className={classes.container}>
+        <Paper className={classes.paper}>
           <TabContext value={valueTab} color="primary">
             {/* CONTROLE DE ABAS */}
             <TabList
@@ -75,8 +79,7 @@ const Projetos = () => {
             </TabPanel>
           </TabContext>
         </Paper>
-      </Container>
-    </>
+    </Container>
   );
 };
 

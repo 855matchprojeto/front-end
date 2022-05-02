@@ -1,20 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Card,
-  Grid,
-  TextField,
-  Autocomplete,
-  Chip,
-  Button,
-  useMediaQuery,
-} from "@mui/material";
-import UploadIcon from "@mui/icons-material/Upload";
-import { useSnackbar } from "notistack";
-import { getToken } from "../../services/auth";
-import axios from "axios";
 import { useHistory } from "react-router";
-import { Formik, Form, setFieldValue } from "formik";
+import { Grid, TextField, Autocomplete } from "@mui/material";
+import { Button, useMediaQuery } from "@mui/material";
+import UploadIcon from "@mui/icons-material/Upload";
+
 import * as Yup from "yup";
+import { Formik, Form } from "formik";
+import { useSnackbar } from "notistack";
+
+import { doGetAllCourses,doGetAllInteresses } from "../../services/api_projetos";
+import { postProjetos } from "../../services/api_projetos";
+import LoadingBox from "../LoadingBox";
+import { enqueueMySnackBar,Base64 } from "../../services/util";
 
 const CriarProjeto = () => {
   const values = {
@@ -33,16 +30,14 @@ const CriarProjeto = () => {
   const { enqueueSnackbar } = useSnackbar();
   const matches = useMediaQuery("(max-width: 900px)");
 
-  const imageRef = useRef();
+  const imageRef = useRef(null);
   const history = useHistory();
-  const [fields, setFields] = useState({ titulo: "", descricao: "" });
-  const defaultImageUrl =
-    "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
   const [imageFile, setImageFile] = useState(null);
 
   const [image, setImage] = useState(null);
 
-  async function handleCreateProject(values) {
+  async function handleCreateProject(values) 
+  {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
@@ -55,55 +50,41 @@ const CriarProjeto = () => {
       interesses: values.areas.map((area) => area.id),
       cursos: values.cursos.map((curso) => curso.id),
     };
-    try {
-      const res = await axios.post(
-        "https://projetos-match-projetos.herokuapp.com/projetos",
-        form,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken}`,
-          },
-        }
-      );
 
-      if (res.status === 200) {
-        enqueueSnackbar("Projeto criado com sucesso!", {
-          anchorOrigin: {
-            horizontal: "right",
-            vertical: "top",
-          },
-          variant: "success",
-        });
-        history.push("/projeto", { data: [res.data.id, res.data.guid] });
-      } else {
-        enqueueSnackbar("Erro ao criar o projeto!", {
-          anchorOrigin: {
-            horizontal: "right",
-            vertical: "top",
-          },
-          variant: "error",
-        });
-      }
-    } catch (err) {
-      console.log(err);
-      enqueueSnackbar("Erro ao criar o projeto!", {
-        anchorOrigin: {
-          horizontal: "right",
-          vertical: "top",
-        },
-        variant: "error",
-      });
+    const res = await postProjetos(form);
+    if (res.status === 200) 
+    {
+      const msg = "Projeto criado com sucesso!";
+      const type = "success";  
+      enqueueMySnackBar(enqueueSnackbar, msg, type);
+      history.push("/projeto", { data: [res.data.id, res.data.guid] });
+    } 
+    else 
+    {
+      const msg = "Erro ao criar o projeto!";
+      const type = "error";
+      enqueueMySnackBar(enqueueSnackbar, msg, type);
     }
 
     setIsLoading(false);
   }
 
-  const handleImageFile = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(URL.createObjectURL(e.target.files[0]));
-      setImageFile(e.target.files[0]);
-    }
-  };
+  async function updateImage(e) 
+  {
+    let img = e.target.files[0];
+    let aux = await Base64(img);
+    let url = aux;
+    aux = aux.split(",").pop();
+
+    img = {
+      file_name: img.name,
+      file_type: `.${img.type.split("/")[1]}`,
+      b64_content: aux,
+    };
+
+    setImage(url);
+    setImageFile(img);
+  }
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
@@ -113,223 +94,193 @@ const CriarProjeto = () => {
   const [allCourses, setAllCourses] = useState([]);
 
   useEffect(() => {
-    async function getInteresses() {
+    async function getSelects() 
+    {
       setPageLoading(true);
-      try {
-        const res = await axios.get(
-          "https://projetos-match-projetos.herokuapp.com/interesse",
-          {
-            headers: {
-              Authorization: `Bearer ${getToken}`,
-            },
-          }
-        );
-        if (res.statusText === "OK") setAllInteresses(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
 
-    async function getAllCourses() {
-      try {
-        const res = await axios.get(
-          "https://projetos-match-projetos.herokuapp.com/curso",
-          {
-            headers: {
-              Authorization: `Bearer ${getToken}`,
-            },
-          }
-        );
-        if (res.status === 200 && res.statusText === "OK")
-          setAllCourses(res.data);
-      } catch (err) {
-        console.log(err);
-      }
+      let res = await doGetAllInteresses();
+      if (res.status === 200 && res.statusText === "OK") 
+        setAllInteresses(res.data);
+  
+      res = await doGetAllCourses();
+      if (res.status === 200 && res.statusText === "OK") 
+        setAllCourses(res.data); 
+
       setPageLoading(false);
     }
 
-    getInteresses();
-    getAllCourses();
+    getSelects();
   }, []);
+
   return (
-    <Card sx={{ width: "100%", p: 4, minHeight: "100vh" }}>
-      <Formik
-        initialValues={values}
-        validationSchema={validationScheme}
-        onSubmit={(values) => {
-          handleCreateProject(values);
-        }}
-      >
-        {({
-          handleChange,
-          values,
-          setFieldValue,
-          errors,
-          touched,
-          handleBlur,
-        }) => (
-          <Form>
-            <Grid item xs={12}>
-              <Grid container rowGap={2}>
-                <Grid item xs={12} display="flex" justifyContent="center">
-                  <img
-                    src={image ? image : defaultImageUrl}
-                    alt="Not Found"
-                    style={{
-                      maxWidth: "300px",
-                      maxHeight: "300px",
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} display="flex" justifyContent="center">
-                  <input
-                    type="file"
-                    style={{ display: "none" }}
-                    ref={imageRef}
-                    onChange={(e) => handleImageFile(e)}
-                    accept=".png, .jpg, .jpeg"
-                  />
-                  <Button
-                    variant="outlined"
-                    onClick={() => imageRef.current.click()}
-                    size="small"
-                  >
-                    Upload
-                    <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid container spacing={1}>
+    <>
+      { !pageLoading &&
+      <Grid container spacing={1} p={4}>
+        <Formik
+          initialValues={values}
+          validationSchema={validationScheme}
+          onSubmit={(values) => {handleCreateProject(values);}}
+        >
+          {({
+            handleChange,
+            values,
+            setFieldValue,
+            errors,
+            touched,
+            handleBlur,
+          }) => (
+            <Form style={{width : "100%", margin : "auto"}}>
               <Grid item xs={12}>
-                <TextField
-                  type="text"
-                  name="titulo"
-                  error={Boolean(touched.titulo && errors.titulo)}
-                  helperText={touched.titulo ? errors.titulo : ""}
-                  value={values.titulo}
-                  fullWidth
-                  margin="normal"
-                  style={{
-                    width: matches ? "100%" : "50%",
-                  }}
-                  label="Título do projeto"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  type="text"
-                  name="descricao"
-                  margin="normal"
-                  error={Boolean(touched.descricao && errors.descricao)}
-                  helperText={touched.descricao ? errors.descricao : ""}
-                  multiline
-                  rows={3}
-                  value={values.descricao}
-                  fullWidth
-                  label="Descrição do projeto"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
+                <Grid container rowGap={2}>
+                  <Grid item xs={12} display="flex" justifyContent="center">
+                    <img
+                      src={image ? image : "https://bit.ly/37W5LLQ"}
+                      alt="Not Found"
+                      style={{
+                        maxWidth: "300px",
+                        maxHeight: "300px",
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} display="flex" justifyContent="center">
+                    <input
+                      ref={imageRef}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => updateImage(e)}
+                    />
+                    <Button
+                      variant="outlined"
+                      onClick={() => imageRef.current.click()}
+                      size="small"
+                    >
+                      Upload
+                      <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
+                    </Button>
+                  </Grid>
+                </Grid>
               </Grid>
 
-              <Grid item xs={12} md={6}>
-                <Autocomplete
-                  name="cursos"
-                  id="cursos"
-                  multiple
-                  options={allCourses && allCourses}
-                  getOptionLabel={(option) => option.nome_exibicao}
-                  fullWidth
-                  renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                      <Chip
-                        variant="outlined"
-                        label={option.nome_exibicao}
-                        {...getTagProps({ index })}
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <TextField
+                    type="text"
+                    name="titulo"
+                    error={Boolean(touched.titulo && errors.titulo)}
+                    helperText={touched.titulo ? errors.titulo : ""}
+                    value={values.titulo}
+                    fullWidth
+                    margin="normal"
+                    size="small"
+                    style={{
+                      width: matches ? "100%" : "50%",
+                    }}
+                    label="Título do projeto"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    type="text"
+                    name="descricao"
+                    margin="normal"
+                    error={Boolean(touched.descricao && errors.descricao)}
+                    helperText={touched.descricao ? errors.descricao : ""}
+                    multiline
+                    rows={3}
+                    value={values.descricao}
+                    fullWidth
+                    label="Descrição do projeto"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <Autocomplete
+                    name="cursos"
+                    id="cursos"
+                    multiple
+                    options={allCourses}
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    fullWidth
+                    onBlur={handleBlur}
+                    onChange={(e, value) => {setFieldValue("cursos", value);}}
+                    
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Cursos Envolvidos"
+                        placeholder="Cursos"
+                        margin="normal"
+                        error={Boolean(touched.cursos && errors.cursos)}
+                        helperText={
+                          touched.cursos &&
+                          errors.cursos &&
+                          "Escolha pelo menos um curso"
+                        }
+                        fullWidth
                       />
-                    ))
-                  }
-                  onChange={(e, value) => {
-                    setFieldValue("cursos", value);
-                  }}
-                  onBlur={handleBlur}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Cursos Envolvidos"
-                      placeholder="Cursos"
-                      margin="normal"
-                      error={Boolean(touched.cursos && errors.cursos)}
-                      helperText={
-                        touched.cursos &&
-                        errors.cursos &&
-                        "Escolha pelo menos um curso"
-                      }
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Autocomplete
-                  multiple
-                  options={allInteresses && allInteresses}
-                  getOptionLabel={(option) => option.nome_exibicao}
-                  name="areas"
-                  id="areas"
-                  fullWidth
-                  renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                      <Chip
-                        variant="outlined"
-                        label={option.nome_exibicao}
-                        {...getTagProps({ index })}
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <Autocomplete
+                    options={allInteresses}
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    name="areas"
+                    id="areas"
+                    multiple
+                    fullWidth
+                    onBlur={handleBlur}
+                    onChange={(e, value) => {setFieldValue("areas", value);}}
+
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Áreas Envolvidas"
+                        placeholder="Áreas"
+                        margin="normal"
+                        error={Boolean(touched.areas && errors.areas)}
+                        helperText={
+                          touched.areas &&
+                          errors.areas &&
+                          "Escolha pelo menos uma área"
+                        }
+                        fullWidth
                       />
-                    ))
-                  }
-                  onChange={(e, value) => {
-                    setFieldValue("areas", value);
-                  }}
-                  onBlur={handleBlur}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Áreas Envolvidas"
-                      placeholder="Áreas"
-                      margin="normal"
-                      error={Boolean(touched.areas && errors.areas)}
-                      helperText={
-                        touched.areas &&
-                        errors.areas &&
-                        "Escolha pelo menos uma área"
-                      }
-                      fullWidth
-                    />
-                  )}
-                />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <Autocomplete
+                    multiple
+                    options={["Teste", "Teste1", "Teste2"]}
+                    getOptionLabel={(option) => option}
+                    name="participantes"
+                    id="participantes"
+                    fullWidth
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Participantes"
+                        placeholder="Adicionar Participantes"
+                        margin="normal"
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <Autocomplete
-                  multiple
-                  options={["Teste", "Teste1", "Teste2"]}
-                  getOptionLabel={(option) => option}
-                  name="participantes"
-                  id="participantes"
-                  fullWidth
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Participantes"
-                      placeholder="Adicionar Participantes"
-                      margin="normal"
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
+
               <Grid item xs={12} mt={2}>
                 <Button
                   type="submit"
@@ -345,11 +296,18 @@ const CriarProjeto = () => {
                   Criar projeto
                 </Button>
               </Grid>
-            </Grid>
-          </Form>
-        )}
-      </Formik>
-    </Card>
+            </Form>
+          )}
+        </Formik>
+      </Grid>
+      }
+
+      { pageLoading && 
+        <div style={{margin: "auto"}}>
+          <LoadingBox/>
+        </div>
+      }
+    </>
   );
 };
 
