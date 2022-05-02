@@ -167,7 +167,13 @@ const Home = () => {
   async function changePage(v)
   {
     setPageLoading(true);
-    let dados = [selectedInteresses,selectedCourses,pesquisa,v];
+    let dados = [];
+
+    if(v === null && cardsProfiles.current_cursor !== null)
+      dados = [selectedInteresses,selectedCourses,pesquisa];
+    else
+      dados = [selectedInteresses,selectedCourses,pesquisa,v];
+
     let aux = await getProfiles(dados,n_cards);
     setCardsProfiles(aux);
     setPageLoading(false);
@@ -291,7 +297,7 @@ const Home = () => {
           { cardsProfiles &&
             <>
               <Container className={classes.pagination}>
-                <IconButton aria-label="prev" disabled={!cardsProfiles.previous_cursor} onClick={() => changePage(cardsProfiles.previous_cursor)}>
+                <IconButton aria-label="prev" disabled={!cardsProfiles.previous_cursor && !cardsProfiles.current_cursor} onClick={() => changePage(cardsProfiles.previous_cursor)}>
                   <NavigateBeforeIcon />
                 </IconButton>
 

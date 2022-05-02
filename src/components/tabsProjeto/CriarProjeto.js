@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router";
-import { Grid, TextField, Autocomplete, Chip } from "@mui/material";
+import { Grid, TextField, Autocomplete } from "@mui/material";
 import { Button, useMediaQuery } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 

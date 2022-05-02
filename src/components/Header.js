@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography, useTheme } from "@mui/material";
-import { IconButton, Drawer, Link, Button } from "@mui/material";
+import { IconButton, Drawer, Link } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { logout } from "../services/auth";
