@@ -44,8 +44,9 @@ export const getProjetos = async (dados,isID) => {
 }
 
 export const postProjetos = async (dados) => {
-    return proj.post(`/projetos`,dados)
+    return proj.post(`/projetos`, dados)
         .then(res => res)
+        .catch(err => console.log(err))
 }
 
 export const updateProjetos = async (guid,form) => {

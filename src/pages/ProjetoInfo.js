@@ -20,8 +20,6 @@ const ProjetoInfo = () => {
   const [currentTab, setCurrentTab] = useState("sobre");
   const [projectInfo, getProjectInfo] = useState(false);
 
-  const defaultImageUrl = "https://rockcontent.com/br/wp-content/uploads/sites/2/2020/04/modelo-de-projeto.png";
-
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
 
@@ -82,7 +80,7 @@ const ProjetoInfo = () => {
                     src={
                       projectInfo.url_imagem
                         ? projectInfo.url_imagem
-                        : defaultImageUrl
+                        : "https://bit.ly/37W5LLQ"
                     }
                     height="300"
                     sx={{
