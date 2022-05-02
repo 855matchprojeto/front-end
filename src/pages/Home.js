@@ -202,8 +202,35 @@ const Home = () => {
 
           <Container>
             { typeSearch && 
-              <Grid container style={{marginTop: "5px"}} spacing={1}>
-              
+              <Grid container style={{marginTop: "5px"}} spacing={1} rowGap={1}>
+                
+                {/*
+                <Grid item xs={12}>
+                  <Autocomplete
+                    options={allInteresses}
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    value={selectedInteresses}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    name="interesses"
+                    id="interesses"
+                    size="small"
+                    multiple
+                    freeSolo
+
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Filtrar Interesses"
+                        placeholder="Filtrar Interesses"
+                        fullWidth
+                      />
+                    )}
+
+                    onChange={(e,v) => setSelectedInteresses(v)}
+                  />  
+                </Grid>
+                */}
+
                 <Grid item xs={6}>
                   <Autocomplete
                     options={allInteresses}
@@ -294,7 +321,7 @@ const Home = () => {
           {!typeSearch && guid && cardsProjetos && <CardGroup valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
           {typeSearch && guid && cardsProfiles && <CardGroup valores={cardsProfiles.items} cardsType="usuarios"/>}
 
-          { cardsProfiles &&
+          { cardsProfiles && typeSearch &&
             <>
               <Container className={classes.pagination}>
                 <IconButton aria-label="prev" disabled={!cardsProfiles.previous_cursor && !cardsProfiles.current_cursor} onClick={() => changePage(cardsProfiles.previous_cursor)}>

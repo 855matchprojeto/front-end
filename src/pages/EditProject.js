@@ -6,7 +6,10 @@ import {
   Card,
   CardHeader,
   Autocomplete,
-  useMediaQuery,
+  Typography,
+  CardMedia,
+  CardContent,
+  CardActions
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import UploadIcon from "@mui/icons-material/Upload";
@@ -16,14 +19,40 @@ import { doGetAllCourses, doGetAllInteresses } from "../services/api_projetos";
 import { getProjetos, updateProjetos } from "../services/api_projetos";
 import { doUpdateAreas, doUpdateCourses } from "../services/api_projetos";
 import { enqueueMySnackBar,Base64 } from "../services/util";
+import ProjectDefault from "../icons/project.svg";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
   grid: {
-    maxWidth: "1400px",
     alignSelf: "center",
     marginTop: theme.spacing(4),
-  }
+  },
+
+  card: {
+    width: "100%",
+    minHeight: "calc(100vh - 148px)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",    
+  },
+
+  cardContent: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+  },
+
+  media: {
+    maxWidth: "300px", 
+    maxHeight: "200px" 
+  }, 
+
+  actions: {
+    display: "flex",
+    justifyContent: "start",
+    padding: "16px",
+    width: "100%",
+  },
 }));
 //---------
 
@@ -34,7 +63,6 @@ const EditProject = () => {
   const guid = location.state?.data[1];
   const classes = useStyles();
   const imageRef = React.useRef();
-  const matches = useMediaQuery("(max-width: 900px)");
 
   const [fields, setFields] = React.useState(null);
 
@@ -129,7 +157,6 @@ const EditProject = () => {
       const msg = "Projeto atualizado com sucesso!";
       const type = "success";  
       enqueueMySnackBar(enqueueSnackbar, msg, type);
-
     } 
     else 
     {
@@ -175,119 +202,124 @@ const EditProject = () => {
   return (
     <>
       {!pageLoading && (
-        <Grid container className={classes.grid}>
-          <Card sx={{ width: "100%", p: 4, mt: 1, minHeight: "calc(100vh - 148px)" }}>
-            <CardHeader title="Editar Projeto" />
-            <Grid container spacing={1} rowGap={1}>
-              <Grid item xs={12}>
-                <Grid container rowGap={2}>
-                  <Grid item xs={12} display="flex" justifyContent="center">
-                    <img
-                      src={image ? image : "https://bit.ly/37W5LLQ"}
-                      alt="Not Found"
-                      style={{ maxWidth: "300px", maxHeight: "300px" }}
+        <Grid container maxWidth="lg" className={classes.grid}>
+          <Card className={classes.card}>
+            <CardHeader title={<Typography variant="h6">Editar Projeto</Typography>} />
+            <input
+              ref={imageRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => updateImage(e)}
+            />
+
+            <CardMedia
+              alt="Not Found"
+              component="img"
+              image={image ? image : ProjectDefault}
+              className={classes.media}
+            >
+
+            </CardMedia>
+
+            <Button
+              variant="outlined"
+              onClick={() => imageRef.current.click()}
+              size="small"
+              sx={{ mt: 1, mb: 1 }}
+            >
+              Upload
+              <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
+            </Button>
+
+            <CardContent className={classes.cardContent}>
+                <Grid container spacing={1} rowGap={1}>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      type="input"
+                      label="Título do projeto"
+                      placeholder="Título do projeto"
+                      name="titulo"
+                      value={fields ? fields.titulo : ""}
+                      size="small"
+                      fullWidth
+                      onChange={(e) => handleChangeFields(e, null)}
                     />
                   </Grid>
-                  <Grid item xs={12} display="flex" justifyContent="center">
-                    <input
-                      ref={imageRef}
-                      type="file"
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      onChange={(e) => updateImage(e)}
-                    />
 
-                    <Button
-                      variant="outlined"
-                      onClick={() => imageRef.current.click()}
+                  <Grid item xs={12}>
+                    <TextField
+                      type="input"
+                      label="Descrição do projeto"
+                      name="descricao"
+                      value={fields ? fields.descricao : ""}
+                      onChange={(e) => handleChangeFields(e, null)}
                       size="small"
-                      sx={{ mb: 4 }}
-                    >
-                      Upload
-                      <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
-                    </Button>
+                      multiline
+                      fullWidth
+                    />
+                  </Grid>
+
+
+                  <Grid item xs={12} md={6}>
+                    <Autocomplete
+                      options={allCourses}
+                      getOptionLabel={(option) => option.nome_exibicao}
+                      value={cursosSelecionados}
+                      isOptionEqualToValue={(o, v) => o.id === v.id}
+                      name="cursos"
+                      id="cursos"
+                      multiple
+                      freeSolo
+                      onChange={(e, v) => updateCourses(v)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Cursos"
+                          placeholder="Cursos"
+                          size="small"
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <Autocomplete
+                      options={allInteresses}
+                      getOptionLabel={(option) => option.nome_exibicao}
+                      value={areasSelecionadas}
+                      isOptionEqualToValue={(o, v) => o.id === v.id}
+                      name="interesses"
+                      id="interesses"
+                      multiple
+                      freeSolo
+                      onChange={(e, v) => updateAreas(v)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Áreas"
+                          placeholder="Áreas"
+                          size="small"
+                          fullWidth
+                        />
+                      )}
+                    />
                   </Grid>
                 </Grid>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  type="input"
-                  name="titulo"
-                  value={fields ? fields.titulo : ""}
-                  style={{
-                    width: matches ? "100%" : "50%",
-                  }}
-                  fullWidth
-                  label="Título do projeto"
-                  onChange={(e) => handleChangeFields(e, null)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  type="input"
-                  name="descricao"
-                  multiline
-                  value={fields ? fields.descricao : ""}
-                  fullWidth
-                  label="Descrição do projeto"
-                  onChange={(e) => handleChangeFields(e, null)}
-                />
-              </Grid>
+            </CardContent>
 
-              <Grid item xs={12} md={6}>
-                <Autocomplete
-                  options={allCourses}
-                  getOptionLabel={(option) => option.nome_exibicao}
-                  value={cursosSelecionados}
-                  isOptionEqualToValue={(o, v) => o.id === v.id}
-                  name="cursos"
-                  id="cursos"
-                  multiple
-                  freeSolo
-                  onChange={(e, v) => updateCourses(v)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Cursos"
-                      placeholder="Cursos"
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
+            <CardActions className={classes.actions}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleEditProject}
+                disabled={isLoading}
+              >
+                Salvar
+              </Button>
+            </CardActions>
 
-              <Grid item xs={12} md={6}>
-                <Autocomplete
-                  options={allInteresses}
-                  getOptionLabel={(option) => option.nome_exibicao}
-                  value={areasSelecionadas}
-                  isOptionEqualToValue={(o, v) => o.id === v.id}
-                  name="interesses"
-                  id="interesses"
-                  multiple
-                  freeSolo
-                  onChange={(e, v) => updateAreas(v)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Áreas"
-                      placeholder="Áreas"
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} sx={{ mt: 1 }}>
-                <Button
-                  variant="contained"
-                  onClick={handleEditProject}
-                  disabled={isLoading}
-                >
-                  Salvar
-                </Button>
-              </Grid>
-            </Grid>
           </Card>
         </Grid>
       )}

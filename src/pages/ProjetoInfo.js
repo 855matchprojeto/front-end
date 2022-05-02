@@ -15,6 +15,7 @@ import { getProjetos } from "../services/api_projetos";
 import { getProjUserRel, putRel } from "../services/api_projetos";
 import LoadingBox from "../components/LoadingBox";
 import ParticipanteCard from "../components/ParticipanteCard";
+import ProjectDefault from "../icons/project.svg";                              
 
 const ProjetoInfo = () => {
   const [currentTab, setCurrentTab] = useState("sobre");
@@ -80,7 +81,7 @@ const ProjetoInfo = () => {
                     src={
                       projectInfo.url_imagem
                         ? projectInfo.url_imagem
-                        : "https://bit.ly/37W5LLQ"
+                        : ProjectDefault
                     }
                     height="300"
                     sx={{

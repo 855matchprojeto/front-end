@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { getProjUserRel } from "../services/api_projetos";
 import { putRel } from "../services/api_projetos";
 import { limitString } from "../services/util";
+import ProjectDefault from "../icons/project.svg";
 
 //--estilo--
 const useStyles = makeStyles({
@@ -21,6 +22,15 @@ const useStyles = makeStyles({
     width: "100%",
     maxWidth: 380, 
     height: 450
+  },
+
+  mediaContainer: {
+    width: "100%", 
+    display:"flex", 
+    justifyContent: "center",
+    alignItems: "center",
+    height: "200px",
+    boxShadow: "0 0 1px #000"
   },
   
   media: {
@@ -41,7 +51,6 @@ const useStyles = makeStyles({
 
   tooltip: {
     display: "inline",
-    color: "darkblue", 
     fontWeight: 600
   }
 });
@@ -102,11 +111,14 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
       {!componentLoading && (
         <Card className={classes.card}>
+
+          <div className={classes.mediaContainer}>
             <CardMedia
               component="img"
-              image={(info.url_imagem !== null) ? info.url_imagem : "https://bit.ly/37W5LLQ"} 
+              image={(info.url_imagem !== null) ? info.url_imagem : ProjectDefault} 
               className={classes.media}
             />
+          </div>
 
           <CardContent sx={{width: "100%"}}>
             <Typography variant="h6">{info.titulo}</Typography>
