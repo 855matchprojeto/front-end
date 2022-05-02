@@ -15,7 +15,7 @@ import LoadingBox from "../components/LoadingBox";
 import { doGetAllCourses, doGetAllInteresses } from "../services/api_projetos";
 import { getProjetos, updateProjetos } from "../services/api_projetos";
 import { doUpdateAreas, doUpdateCourses } from "../services/api_projetos";
-import { enqueueMySnackBar } from "../services/util";
+import { enqueueMySnackBar,Base64 } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -45,12 +45,22 @@ const EditProject = () => {
   const [allInteresses, setAllInteresses] = React.useState([]);
   const [allCourses, setAllCourses] = React.useState([]);
 
-  const handleImageFile = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(URL.createObjectURL(e.target.files[0]));
-      setImageFile(e.target.files[0]);
-    }
-  };
+  async function updateImage(e) 
+  {
+    let img = e.target.files[0];
+    let aux = await Base64(img);
+    let url = aux;
+    aux = aux.split(",").pop();
+
+    img = {
+      file_name: img.name,
+      file_type: `.${img.type.split("/")[1]}`,
+      b64_content: aux,
+    };
+
+    setImage(url);
+    setImageFile(img);
+  }
 
   // enquanto estiver criando um projeto, nao deixa clicar no botao
   const [isLoading, setIsLoading] = React.useState(false);
@@ -180,10 +190,11 @@ const EditProject = () => {
                   </Grid>
                   <Grid item xs={12} display="flex" justifyContent="center">
                     <input
-                      type="file"
-                      style={{ display: "none" }}
                       ref={imageRef}
-                      onChange={(e) => handleImageFile(e)}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => updateImage(e)}
                     />
 
                     <Button
@@ -216,7 +227,6 @@ const EditProject = () => {
                   type="input"
                   name="descricao"
                   multiline
-                  rows={3}
                   value={fields ? fields.descricao : ""}
                   fullWidth
                   label="Descrição do projeto"

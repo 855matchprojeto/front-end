@@ -11,7 +11,7 @@ import { useSnackbar } from "notistack";
 import { doGetAllCourses,doGetAllInteresses } from "../../services/api_projetos";
 import { postProjetos } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
-import { enqueueMySnackBar } from "../../services/util";
+import { enqueueMySnackBar,Base64 } from "../../services/util";
 
 const CriarProjeto = () => {
   const values = {
@@ -36,7 +36,8 @@ const CriarProjeto = () => {
 
   const [image, setImage] = useState(null);
 
-  async function handleCreateProject(values) {
+  async function handleCreateProject(values) 
+  {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
     setIsLoading(true);
 
@@ -51,7 +52,6 @@ const CriarProjeto = () => {
     };
 
     const res = await postProjetos(form);
-
     if (res.status === 200) 
     {
       const msg = "Projeto criado com sucesso!";
@@ -69,12 +69,22 @@ const CriarProjeto = () => {
     setIsLoading(false);
   }
 
-  const handleImageFile = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(URL.createObjectURL(e.target.files[0]));
-      setImageFile(e.target.files[0]);
-    }
-  };
+  async function updateImage(e) 
+  {
+    let img = e.target.files[0];
+    let aux = await Base64(img);
+    let url = aux;
+    aux = aux.split(",").pop();
+
+    img = {
+      file_name: img.name,
+      file_type: `.${img.type.split("/")[1]}`,
+      b64_content: aux,
+    };
+
+    setImage(url);
+    setImageFile(img);
+  }
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
@@ -135,11 +145,11 @@ const CriarProjeto = () => {
 
                   <Grid item xs={12} display="flex" justifyContent="center">
                     <input
-                      type="file"
-                      style={{ display: "none" }}
                       ref={imageRef}
-                      onChange={(e) => handleImageFile(e)}
+                      type="file"
                       accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => updateImage(e)}
                     />
                     <Button
                       variant="outlined"
@@ -195,22 +205,13 @@ const CriarProjeto = () => {
                     name="cursos"
                     id="cursos"
                     multiple
-                    options={allCourses && allCourses}
+                    options={allCourses}
                     getOptionLabel={(option) => option.nome_exibicao}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
                     fullWidth
-                    renderTags={(value, getTagProps) =>
-                      value.map((option, index) => (
-                        <Chip
-                          variant="outlined"
-                          label={option.nome_exibicao}
-                          {...getTagProps({ index })}
-                        />
-                      ))
-                    }
-                    onChange={(e, value) => {
-                      setFieldValue("cursos", value);
-                    }}
                     onBlur={handleBlur}
+                    onChange={(e, value) => {setFieldValue("cursos", value);}}
+                    
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -231,25 +232,16 @@ const CriarProjeto = () => {
 
                 <Grid item xs={12} md={6}>
                   <Autocomplete
-                    multiple
-                    options={allInteresses && allInteresses}
+                    options={allInteresses}
                     getOptionLabel={(option) => option.nome_exibicao}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
                     name="areas"
                     id="areas"
+                    multiple
                     fullWidth
-                    renderTags={(value, getTagProps) =>
-                      value.map((option, index) => (
-                        <Chip
-                          variant="outlined"
-                          label={option.nome_exibicao}
-                          {...getTagProps({ index })}
-                        />
-                      ))
-                    }
-                    onChange={(e, value) => {
-                      setFieldValue("areas", value);
-                    }}
                     onBlur={handleBlur}
+                    onChange={(e, value) => {setFieldValue("areas", value);}}
+
                     renderInput={(params) => (
                       <TextField
                         {...params}

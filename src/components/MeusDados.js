@@ -23,6 +23,7 @@ import {
 import { doUpdateCourses, doUpdateInteresse } from "../services/api_perfil";
 import { doSaveProfile } from "../services/api_perfil";
 import { enqueueMySnackBar } from "../services/util";
+import { Base64 } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -234,18 +235,6 @@ const MeusDados = () => {
       enqueueMySnackBar(enqueueSnackbar, msg, type);
     }
     setIsLoading(false);
-  }
-
-  async function Base64(img) {
-    return new Promise((resolve) => {
-      let reader = new FileReader();
-      reader.readAsDataURL(img);
-
-      reader.onload = () => {
-        const res = reader.result;
-        resolve(res);
-      };
-    });
   }
 
   async function updateImage(e) {
