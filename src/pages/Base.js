@@ -1,8 +1,9 @@
 import React from "react";
 import Header from "../components/Header";
 import Copyright from "../components/Copyright";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { getPrefMode } from "../services/util";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 //--estilo--
 
@@ -20,12 +21,14 @@ const useStyles = makeStyles((theme) => ({
 
 const Base = (props) => {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width: 900px)");
 
   return (
     <>
       <Header />
       <OverlayScrollbarsComponent
-        options={{ scrollbars: { autoHide: "scroll" } }}
+        className={(getPrefMode() === 'dark') ? "os-theme-light" : "os-theme-dark"}
+        options={{ scrollbars: { autoHide: matches ? "scroll" : "never"} }}
       >
         <div className={classes.container}>
           {props.children}
