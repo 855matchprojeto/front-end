@@ -1,6 +1,6 @@
 import React from "react";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
-import { Tab, Box, Paper } from "@mui/material";
+import { Tab, Box, Paper, Container } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Interesses from "../components/tabsProjeto/Interesses";
 import MeusProjetos from "../components/tabsProjeto/MeusProjetos";
@@ -10,7 +10,6 @@ import CriarProjeto from "../components/tabsProjeto/CriarProjeto";
 const useStyles = makeStyles((theme) => ({
   container: {
     padding: "0",
-    display: "flex"
   },
   
   paper: {
@@ -44,7 +43,7 @@ const Projetos = () => {
   };
 
   return (
-    <>
+    <Container maxWidth="lg" className={classes.container}>
         <Paper className={classes.paper}>
           <TabContext value={valueTab} color="primary">
             {/* CONTROLE DE ABAS */}
@@ -80,7 +79,7 @@ const Projetos = () => {
             </TabPanel>
           </TabContext>
         </Paper>
-    </>
+    </Container>
   );
 };
 
