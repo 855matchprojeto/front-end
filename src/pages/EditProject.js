@@ -233,7 +233,6 @@ const EditProject = () => {
             </Button>
 
             <CardContent className={classes.cardContent}>
-              
                 <Grid container spacing={1} rowGap={1}>
                   <Grid item xs={12} md={6}>
                     <TextField

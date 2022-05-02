@@ -23,6 +23,15 @@ const useStyles = makeStyles({
     maxWidth: 380, 
     height: 450
   },
+
+  mediaContainer: {
+    width: "100%", 
+    display:"flex", 
+    justifyContent: "center",
+    alignItems: "center",
+    height: "200px",
+    boxShadow: "0 0 1px #000"
+  },
   
   media: {
     width: "100%",
@@ -103,11 +112,14 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
       {!componentLoading && (
         <Card className={classes.card}>
+
+          <div className={classes.mediaContainer}>
             <CardMedia
               component="img"
               image={(info.url_imagem !== null) ? info.url_imagem : ProjectDefault} 
               className={classes.media}
             />
+          </div>
 
           <CardContent sx={{width: "100%"}}>
             <Typography variant="h6">{info.titulo}</Typography>

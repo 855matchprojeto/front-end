@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router";
 import { Grid, TextField, Autocomplete } from "@mui/material";
-import { Button, useMediaQuery } from "@mui/material";
+import { Button, useMediaQuery,  Card,
+  CardMedia,
+  CardContent,
+  CardActions } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import UploadIcon from "@mui/icons-material/Upload";
 
 import * as Yup from "yup";
@@ -13,6 +17,47 @@ import { postProjetos } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
 import { enqueueMySnackBar,Base64 } from "../../services/util";
 import ProjectDefault from "../../icons/project.svg";                           
+
+//--estilo--
+const useStyles = makeStyles((theme) => ({
+  grid: {
+    alignSelf: "center",
+    marginTop: theme.spacing(4),
+  },
+
+  form: {
+    width: "100%",
+    margin: "0",
+    display: "flex"
+  },
+
+  card: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",    
+    boxShadow: "none",
+  },
+
+  cardContent: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+  },
+
+  media: {
+    maxWidth: "300px", 
+    maxHeight: "200px" 
+  }, 
+
+  actions: {
+    display: "flex",
+    justifyContent: "start",
+    padding: "16px",
+    width: "100%",
+  },
+}));
+//---------
 
 const CriarProjeto = () => {
   const values = {
@@ -28,6 +73,8 @@ const CriarProjeto = () => {
     cursos: Yup.array().required("Escolha pelo menos um curso").min(1),
     areas: Yup.array().required("Escolha pelo menos uma área").min(1),
   });
+
+  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const matches = useMediaQuery("(max-width: 900px)");
 
@@ -115,7 +162,7 @@ const CriarProjeto = () => {
   return (
     <>
       { !pageLoading &&
-      <Grid container spacing={1} p={4}>
+      <Grid container maxWidth="lg" className={classes.grid}>
         <Formik
           initialValues={values}
           validationSchema={validationScheme}
@@ -129,169 +176,165 @@ const CriarProjeto = () => {
             touched,
             handleBlur,
           }) => (
-            <Form style={{width : "100%", margin : "auto"}}>
-              <Grid item xs={12}>
-                <Grid container rowGap={2}>
-                  <Grid item xs={12} display="flex" justifyContent="center">
-                    <img
-                      src={image ? image : ProjectDefault}
-                      alt="Not Found"
-                      style={{
-                        maxWidth: "300px",
-                        maxHeight: "200px",
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} display="flex" justifyContent="center">
-                    <input
-                      ref={imageRef}
-                      type="file"
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      onChange={(e) => updateImage(e)}
-                    />
-                    <Button
-                      variant="outlined"
-                      onClick={() => imageRef.current.click()}
-                      size="small"
-                    >
-                      Upload
-                      <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <TextField
-                    type="text"
-                    name="titulo"
-                    error={Boolean(touched.titulo && errors.titulo)}
-                    helperText={touched.titulo ? errors.titulo : ""}
-                    value={values.titulo}
-                    fullWidth
-                    margin="normal"
-                    size="small"
-                    label="Título do projeto"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+            <Form className={classes.form}>
+              <Card className={classes.card}>
+                  <input
+                    ref={imageRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => updateImage(e)}
                   />
-                </Grid>
 
-                <Grid item xs={12}>
-                  <TextField
-                    type="text"
-                    name="descricao"
-                    margin="normal"
-                    error={Boolean(touched.descricao && errors.descricao)}
-                    helperText={touched.descricao ? errors.descricao : ""}
-                    multiline
-                    rows={3}
-                    value={values.descricao}
-                    fullWidth
-                    label="Descrição do projeto"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <Autocomplete
-                    name="cursos"
-                    id="cursos"
-                    multiple
-                    options={allCourses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    fullWidth
-                    onBlur={handleBlur}
-                    onChange={(e, value) => {setFieldValue("cursos", value);}}
-                    
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Cursos Envolvidos"
-                        placeholder="Cursos"
-                        margin="normal"
-                        error={Boolean(touched.cursos && errors.cursos)}
-                        helperText={
-                          touched.cursos &&
-                          errors.cursos &&
-                          "Escolha pelo menos um curso"
-                        }
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <Autocomplete
-                    options={allInteresses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="areas"
-                    id="areas"
-                    multiple
-                    fullWidth
-                    onBlur={handleBlur}
-                    onChange={(e, value) => {setFieldValue("areas", value);}}
-
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Áreas Envolvidas"
-                        placeholder="Áreas"
-                        margin="normal"
-                        error={Boolean(touched.areas && errors.areas)}
-                        helperText={
-                          touched.areas &&
-                          errors.areas &&
-                          "Escolha pelo menos uma área"
-                        }
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <Autocomplete
-                    multiple
-                    options={["Teste", "Teste1", "Teste2"]}
-                    getOptionLabel={(option) => option}
-                    name="participantes"
-                    id="participantes"
-                    fullWidth
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Participantes"
-                        placeholder="Adicionar Participantes"
-                        margin="normal"
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Grid>
-              </Grid>
-
-              <Grid item xs={12} mt={2}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  size="small"
-                  disabled={isLoading}
-                  sx={{
-                    width: "250px",
-                    p: 1,
-                  }}
+                  <CardMedia
+                  alt="Not Found"
+                  component="img"
+                  image={image ? image : ProjectDefault}
+                  className={classes.media}
                 >
-                  Criar projeto
+                </CardMedia>
+
+                <Button
+                  variant="outlined"
+                  onClick={() => imageRef.current.click()}
+                  size="small"
+                  sx={{ mt: 1, mb: 1 }}
+                >
+                  Upload
+                  <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
                 </Button>
-              </Grid>
+
+                <CardContent className={classes.cardContent}>
+                  <Grid container spacing={1} rowGap={1}>
+                    <Grid item xs={12}>
+                      <TextField
+                        type="text"
+                        name="titulo"
+                        error={Boolean(touched.titulo && errors.titulo)}
+                        helperText={touched.titulo ? errors.titulo : ""}
+                        value={values.titulo}
+                        fullWidth
+                        size="small"
+                        label="Título do projeto"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <TextField
+                        type="text"
+                        name="descricao"
+                        size="small"
+                        error={Boolean(touched.descricao && errors.descricao)}
+                        helperText={touched.descricao ? errors.descricao : ""}
+                        multiline
+                        rows={3}
+                        value={values.descricao}
+                        fullWidth
+                        label="Descrição do projeto"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <Autocomplete
+                        name="cursos"
+                        id="cursos"
+                        size="small"
+                        multiple
+                        options={allCourses}
+                        getOptionLabel={(option) => option.nome_exibicao}
+                        isOptionEqualToValue={(o, v) => o.id === v.id}
+                        fullWidth
+                        onBlur={handleBlur}
+                        onChange={(e, value) => {setFieldValue("cursos", value);}}
+                        
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Cursos Envolvidos"
+                            placeholder="Cursos"
+                            error={Boolean(touched.cursos && errors.cursos)}
+                            helperText={
+                              touched.cursos &&
+                              errors.cursos &&
+                              "Escolha pelo menos um curso"
+                            }
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <Autocomplete
+                        options={allInteresses}
+                        getOptionLabel={(option) => option.nome_exibicao}
+                        isOptionEqualToValue={(o, v) => o.id === v.id}
+                        name="areas"
+                        id="areas"
+                        multiple
+                        fullWidth
+                        size="small"
+                        onBlur={handleBlur}
+                        onChange={(e, value) => {setFieldValue("areas", value);}}
+
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Áreas Envolvidas"
+                            placeholder="Áreas"
+                            error={Boolean(touched.areas && errors.areas)}
+                            helperText={
+                              touched.areas &&
+                              errors.areas &&
+                              "Escolha pelo menos uma área"
+                            }
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <Autocomplete
+                        multiple
+                        options={["Teste", "Teste1", "Teste2"]}
+                        getOptionLabel={(option) => option}
+                        name="participantes"
+                        id="participantes"
+                        fullWidth
+                        size="small"
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Participantes"
+                            placeholder="Adicionar Participantes"
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+
+                <CardActions className={classes.actions}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    size="small"
+                    disabled={isLoading}
+                    sx={{
+                      width: "250px",
+                      p: 1,
+                    }}
+                  >
+                    Criar projeto
+                  </Button>
+                </CardActions>
+              </Card>
             </Form>
           )}
         </Formik>
