@@ -7,6 +7,7 @@ import {
   CardContent,
   Card,
   CardActions,
+  useMediaQuery,
 } from "@mui/material";
 import { CardMedia, Button, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -70,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MeusDados = () => {
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width: 900px)");
   const { enqueueSnackbar } = useSnackbar();
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -292,129 +294,116 @@ const MeusDados = () => {
             </CardMedia>
 
             <CardContent className={classes.cardContent}>
-              {/* email */}
-              <Grid container spacing={1} sx={{ mt: 1 }}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    type="email"
-                    label="Email"
-                    name="email"
-                    variant="outlined"
-                    placeholder="Email"
-                    value={user ? user.email : ""}
-                    size="small"
-                    fullWidth
-                    disabled
-                  />
-                </Grid>
+            <Grid container spacing={1} rowGap={1}>
+
+              <Grid item xs={12}>
+                <TextField
+                  type="email"
+                  label="Email"
+                  name="email"
+                  placeholder="Email"
+                  value={user ? user.email : ""}
+                  size="small"
+                  style={{width: (matches) ? "100%" : "calc(50% - 4px)"}}
+                  disabled
+                />
               </Grid>
 
-              {/* nome,sobrenome */}
-              <Grid container spacing={1} sx={{ mt: 1 }}>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    type="text"
-                    label="Nome"
-                    name="name"
-                    variant="outlined"
-                    placeholder="Nome"
-                    value={user ? user.name : ""}
-                    onChange={(e) =>
-                      setUser({ ...user, [e.target.name]: e.target.value })
-                    }
-                    size="small"
-                    fullWidth
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    type="input"
-                    label="Sobrenome"
-                    name="sobrenome"
-                    variant="outlined"
-                    placeholder="Sobrenome"
-                    value={user ? user.sobrenome : ""}
-                    onChange={(e) =>
-                      setUser({ ...user, [e.target.name]: e.target.value })
-                    }
-                    size="small"
-                    fullWidth
-                  />
-                </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  type="text"
+                  label="Nome"
+                  name="name"
+                  placeholder="Nome"
+                  value={user ? user.name : ""}
+                  onChange={(e) =>
+                    setUser({ ...user, [e.target.name]: e.target.value })
+                  }
+                  size="small"
+                  fullWidth
+                />
               </Grid>
 
-              {/* bio */}
-              <Grid container spacing={1} sx={{ mt: 1 }}>
-                <Grid item xs={12}>
-                  <TextField
-                    type="text"
-                    label="Bio"
-                    name="bio"
-                    variant="outlined"
-                    placeholder="Bio"
-                    value={user ? user.bio : ""}
-                    onChange={(e) =>
-                      setUser({ ...user, [e.target.name]: e.target.value })
-                    }
-                    size="small"
-                    multiline
-                    fullWidth
-                  />
-                </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  type="input"
+                  label="Sobrenome"
+                  name="sobrenome"
+                  placeholder="Sobrenome"
+                  value={user ? user.sobrenome : ""}
+                  onChange={(e) =>
+                    setUser({ ...user, [e.target.name]: e.target.value })
+                  }
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+              
+              <Grid item xs={12}>
+                <TextField
+                  type="text"
+                  label="Bio"
+                  name="bio"
+                  placeholder="Bio"
+                  value={user ? user.bio : ""}
+                  onChange={(e) =>
+                    setUser({ ...user, [e.target.name]: e.target.value })
+                  }
+                  size="small"
+                  multiline
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Autocomplete
+                  options={allCourses}
+                  getOptionLabel={(option) => option.nome_exibicao}
+                  value={user.cursos}
+                  isOptionEqualToValue={(o, v) => o.id === v.id}
+                  name="cursos"
+                  id="cursos"
+                  disableClearable={true}
+                  multiple
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Cursos"
+                      placeholder="Cursos"
+                      autoComplete="off"
+                      size="small"
+                      fullWidth
+                    />
+                  )}
+                  onChange={(e, v) => updateCourses(v)}
+                />
               </Grid>
 
-              <Grid container spacing={1} columns={12} sx={{ mt: 1 }}>
-                {/* caixa de cursos */}
-                <Grid item xs={12} md={6} sx={{ mt: 1 }}>
-                  <Autocomplete
-                    options={allCourses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    value={user.cursos}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="cursos"
-                    id="cursos"
-                    disableClearable={true}
-                    multiple
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Cursos"
-                        placeholder="Cursos"
-                        autoComplete="off"
-                        size="small"
-                        fullWidth
-                      />
-                    )}
-                    onChange={(e, v) => updateCourses(v)}
-                  />
-                </Grid>
-
-                {/* caixa de interesses */}
-                <Grid item xs={12} md={6} sx={{ mt: 1 }}>
-                  <Autocomplete
-                    options={allInteresses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    value={user.interesses}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="interesses"
-                    id="interesses"
-                    disableClearable={true}
-                    multiple
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Áreas de Interesse"
-                        placeholder="Interesses"
-                        autoComplete="off"
-                        size="small"
-                        fullWidth
-                      />
-                    )}
-                    onChange={(e, v) => updateInteresses(v)}
-                  />
-                </Grid>
+              <Grid item xs={12} md={6}>
+                <Autocomplete
+                  options={allInteresses}
+                  getOptionLabel={(option) => option.nome_exibicao}
+                  value={user.interesses}
+                  isOptionEqualToValue={(o, v) => o.id === v.id}
+                  name="interesses"
+                  id="interesses"
+                  disableClearable={true}
+                  multiple
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Áreas de Interesse"
+                      placeholder="Interesses"
+                      autoComplete="off"
+                      size="small"
+                      fullWidth
+                    />
+                  )}
+                  onChange={(e, v) => updateInteresses(v)}
+                />
               </Grid>
+            </Grid>
+
+
             </CardContent>
 
             <CardActions className={classes.actions}>

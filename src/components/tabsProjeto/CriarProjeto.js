@@ -138,7 +138,7 @@ const CriarProjeto = () => {
                       alt="Not Found"
                       style={{
                         maxWidth: "300px",
-                        maxHeight: "300px",
+                        maxHeight: "200px",
                       }}
                     />
                   </Grid>
@@ -174,9 +174,6 @@ const CriarProjeto = () => {
                     fullWidth
                     margin="normal"
                     size="small"
-                    style={{
-                      width: matches ? "100%" : "50%",
-                    }}
                     label="Título do projeto"
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -285,7 +282,6 @@ const CriarProjeto = () => {
                 <Button
                   type="submit"
                   variant="contained"
-                  color="primary"
                   size="small"
                   disabled={isLoading}
                   sx={{
