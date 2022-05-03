@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   Typography,
   TextField,
@@ -49,17 +49,6 @@ const useStyles = makeStyles((theme) => ({
     padding: "0",
   },
 
-  mediaUpload: {
-    display: "flex",
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    "&:hover": {
-      backgroundColor: "rgba(200,200,200,0.6)",
-    },
-  },
-
   actions: {
     display: "flex",
     justifyContent: "start",
@@ -81,7 +70,7 @@ const MeusDados = () => {
   const [allInteresses, setAllInteresses] = React.useState([]);
   const [allCourses, setAllCourses] = React.useState([]);
   const imageUpload = useRef(null);
-  const [showUpload, setShowUpload] = useState(false);
+
 
   React.useEffect(() => {
     async function getDataUser() {
@@ -273,25 +262,18 @@ const MeusDados = () => {
               component={user.url_imagem !== null ? Button : PersonIcon}
               image={user.url_imagem !== null ? user.url_imagem : ""}
               className={classes.media}
-              onClick={() => imageUpload.current && imageUpload.current.click()}
             >
-              <div
-                className={classes.mediaUpload}
-                onMouseEnter={() => setShowUpload(!showUpload)}
-                onMouseLeave={() => setShowUpload(!showUpload)}
-              >
-                {showUpload && (
-                  <UploadIcon
-                    color="primary"
-                    fontSize="large"
-                    style={{
-                      border: "1px solid #1976d2",
-                      borderRadius: "100%",
-                    }}
-                  />
-                )}
-              </div>
             </CardMedia>
+
+            <Button
+              variant="outlined"
+              onClick={() => imageUpload.current && imageUpload.current.click()}
+              size="small"
+              sx={{ mt: 1, mb: 1 }}
+            >
+              Upload
+              <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
+            </Button>
 
             <CardContent className={classes.cardContent}>
               <Grid container spacing={1} rowGap={1}>

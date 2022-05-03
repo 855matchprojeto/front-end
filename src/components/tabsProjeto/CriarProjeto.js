@@ -46,8 +46,9 @@ const useStyles = makeStyles((theme) => ({
   },
 
   media: {
-    maxWidth: "300px", 
-    maxHeight: "200px" 
+    width: "300px",
+    height: "200px",
+    boxShadow: "0 0 3px" + (theme.palette.mode === "dark" ? theme.palette.grey[100] : theme.palette.common.black),
   }, 
 
   actions: {
@@ -188,7 +189,7 @@ const CriarProjeto = () => {
 
                   <CardMedia
                   alt="Not Found"
-                  component="img"
+                  component={Button}
                   image={image ? image : ProjectDefault}
                   className={classes.media}
                 >
