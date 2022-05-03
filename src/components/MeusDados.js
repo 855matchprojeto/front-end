@@ -301,7 +301,6 @@ const MeusDados = () => {
                     type="email"
                     label="Email"
                     name="email"
-                    placeholder="Email"
                     value={user ? user.email : ""}
                     size="small"
                     style={{width: (matches) ? "100%" : "calc(50% - 4px)"}}
@@ -314,7 +313,6 @@ const MeusDados = () => {
                     type="text"
                     label="Nome"
                     name="name"
-                    placeholder="Nome"
                     value={user ? user.name : ""}
                     onChange={(e) =>
                       setUser({ ...user, [e.target.name]: e.target.value })
@@ -329,7 +327,6 @@ const MeusDados = () => {
                     type="input"
                     label="Sobrenome"
                     name="sobrenome"
-                    placeholder="Sobrenome"
                     value={user ? user.sobrenome : ""}
                     onChange={(e) =>
                       setUser({ ...user, [e.target.name]: e.target.value })
@@ -344,7 +341,6 @@ const MeusDados = () => {
                     type="text"
                     label="Bio"
                     name="bio"
-                    placeholder="Bio"
                     value={user ? user.bio : ""}
                     onChange={(e) =>
                       setUser({ ...user, [e.target.name]: e.target.value })
@@ -368,7 +364,6 @@ const MeusDados = () => {
                       <TextField
                         {...params}
                         label="Cursos"
-                        placeholder="Cursos"
                         autoComplete="off"
                         size="small"
                         fullWidth
@@ -392,7 +387,6 @@ const MeusDados = () => {
                       <TextField
                         {...params}
                         label="Áreas de Interesse"
-                        placeholder="Interesses"
                         autoComplete="off"
                         size="small"
                         fullWidth

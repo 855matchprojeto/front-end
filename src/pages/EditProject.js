@@ -238,7 +238,6 @@ const EditProject = () => {
                     <TextField
                       type="input"
                       label="Título do projeto"
-                      placeholder="Título do projeto"
                       name="titulo"
                       value={fields ? fields.titulo : ""}
                       size="small"
@@ -276,7 +275,6 @@ const EditProject = () => {
                         <TextField
                           {...params}
                           label="Cursos"
-                          placeholder="Cursos"
                           size="small"
                           fullWidth
                         />
@@ -299,7 +297,6 @@ const EditProject = () => {
                         <TextField
                           {...params}
                           label="Áreas"
-                          placeholder="Áreas"
                           size="small"
                           fullWidth
                         />

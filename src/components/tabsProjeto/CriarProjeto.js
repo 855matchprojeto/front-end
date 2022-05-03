@@ -255,7 +255,6 @@ const CriarProjeto = () => {
                           <TextField
                             {...params}
                             label="Cursos Envolvidos"
-                            placeholder="Cursos"
                             error={Boolean(touched.cursos && errors.cursos)}
                             helperText={
                               touched.cursos &&
@@ -285,7 +284,6 @@ const CriarProjeto = () => {
                           <TextField
                             {...params}
                             label="Áreas Envolvidas"
-                            placeholder="Áreas"
                             error={Boolean(touched.areas && errors.areas)}
                             helperText={
                               touched.areas &&
@@ -311,7 +309,6 @@ const CriarProjeto = () => {
                           <TextField
                             {...params}
                             label="Participantes"
-                            placeholder="Adicionar Participantes"
                             fullWidth
                           />
                         )}

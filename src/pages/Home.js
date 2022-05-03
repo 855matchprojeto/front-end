@@ -221,7 +221,6 @@ const Home = () => {
                       <TextField
                         {...params}
                         label="Filtrar Interesses"
-                        placeholder="Filtrar Interesses"
                         fullWidth
                       />
                     )}
@@ -247,7 +246,6 @@ const Home = () => {
                       <TextField
                         {...params}
                         label="Filtrar Interesses"
-                        placeholder="Filtrar Interesses"
                         fullWidth
                       />
                     )}
@@ -272,7 +270,6 @@ const Home = () => {
                       <TextField
                         {...params}
                         label="Filtrar Cursos"
-                        placeholder="Filtrar Cursos"
                         fullWidth
                       />
                     )}
