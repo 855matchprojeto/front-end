@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tooltipClasses } from '@mui/material/Tooltip';
 import PersonIcon from '@mui/icons-material/Person';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { putRel,getProjUserRel } from "../services/api_projetos";
 
 //--estilo--
@@ -76,6 +77,7 @@ const CardPerfil = (props) => {
 
   const [btnInteresse, setBtnInteresse] = React.useState(false);
   const [componentLoading, setComponentLoading] = React.useState(true);
+  const [hasMatch, setHasMatch] = React.useState(false);
 
   React.useEffect(() => 
   {
@@ -85,10 +87,13 @@ const CardPerfil = (props) => {
         if(projGuid)
         {
           let aux = await getProjUserRel(projGuid, null, true);
-          aux = aux.filter(item => item.guid_usuario === info.guid);
-          
+          aux = aux.filter(item => item.guid_usuario === info.guid_usuario);
+
           if(aux.length === 1)
+          {
+            setHasMatch(aux[0].fl_match);
             setBtnInteresse(true);
+          }
           else
             setBtnInteresse(false);
         }
@@ -97,19 +102,20 @@ const CardPerfil = (props) => {
       
       getStatusInteresse();
 
-  }, [info.guid, projGuid])
+  }, [info.guid_usuario, projGuid])
 
   async function changeInteresseNoUsuario()
   {    
     if(!btnInteresse)
     {
       let body = {"fl_projeto_interesse": true};
-      await putRel(info.guid, projGuid, body);
+      await putRel(info.guid_usuario, projGuid, body);
     }
     else 
     {
       let body = {"fl_projeto_interesse": false};
-      await putRel(info.guid, projGuid, body);
+      await putRel(info.guid_usuario, projGuid, body);
+      setHasMatch(false);
     }
 
     setBtnInteresse(!btnInteresse);
@@ -168,6 +174,10 @@ const CardPerfil = (props) => {
             >
               Ver Perfil
             </Button>
+
+            { hasMatch &&
+              <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
+            }
           </CardActions>
         </Card>
         }

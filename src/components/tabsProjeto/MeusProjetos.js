@@ -32,47 +32,40 @@ const MeusProjetos = ({ setTabValue }) => {
     doGetMeusProjetos();
   }, []);
 
+  const boxSx = {mt: 4, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"};
+
   return (
     <>
-      {!componentLoading && (
-        <>
-          {meusProjetos.length > 0 ? (
-            <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
-              <CardGroup valores={meusProjetos} cardsType="meusprojetos" />
-            </Grid>
-          ) : (
-            <Box
-              sx={{
-                mt: 4,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
+      { !componentLoading && meusProjetos.length > 0 &&
+        <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
+          <CardGroup valores={meusProjetos} cardsType="meusprojetos" />
+        </Grid>
+      }
+
+      { !componentLoading && meusProjetos.length === 0 &&
+        <Box sx={boxSx}>
+          <Typography
+            variant="subtitle2"
+            color="textSecondary"
+            className={classes.font}
+          >
+            Você ainda não criou nenhum projeto.
+          </Typography>
+
+          <IconButton
+            title="Criar Projeto"
+            onClick={() => setTabValue("criarprojeto")}
+          >
+            <AddIcon
+              fill="rgba(0, 0, 0, 0.6)"
+              style={{
+                width: 50,
+                height: 50,
               }}
-            >
-              <Typography
-                variant="subtitle2"
-                color="textSecondary"
-                className={classes.font}
-              >
-                Você ainda não criou nenhum projeto.
-              </Typography>
-              <IconButton
-                title="Criar Projeto"
-                onClick={() => setTabValue("criarprojeto")}
-              >
-                <AddIcon
-                  fill="rgba(0, 0, 0, 0.6)"
-                  style={{
-                    width: 50,
-                    height: 50,
-                  }}
-                />
-              </IconButton>
-            </Box>
-          )}
-        </>
-      )}
+            />
+          </IconButton>
+      </Box>
+      }
 
       { componentLoading && 
         <div style={{margin: "auto"}}>
