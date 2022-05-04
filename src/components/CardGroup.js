@@ -19,22 +19,22 @@ const CardGroup = (props) => {
   const classes = useStyles();
   const cards = props.valores;
   const cardsType = props.cardsType;
-  const guid = props.userGuid;
-  const projeto = props.projeto;
+  const userGuid = props.userGuid;
+  const projGuid = props.projGuid;
 
   return (
     <Grid className={classes.grid} container>
       {cards && (
         <>
           {cardsType === "usuarios"
-            ? cards.map((card, index) => <CardPerfil key={index} info={card} projeto={projeto}/>)
+            ? cards.map((card, index) => <CardPerfil key={index} info={card} projGuid={projGuid}/>)
             : cards.map((card, index) => (
                 <CardProjeto
                   key={index}
                   info={card}
                   type={cardsType}
                   valores={card}
-                  userGuid={guid}
+                  userGuid={userGuid}
                 />
               ))}
         </>
