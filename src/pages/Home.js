@@ -7,6 +7,7 @@ import { getProjetos } from "../services/api_projetos";
 import { getProfiles } from "../services/api_perfil";
 import LoadingBox from "../components/LoadingBox";
 import {doGetAllCourses,doGetAllInteresses,doGetDataUser} from "../services/api_perfil";
+import { getMeusProjetos } from "../services/api_projetos";
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -103,6 +104,10 @@ const Home = () => {
   const  [selectedInteresses, setSelectedInteresses] = React.useState([]);
   const  [selectedCourses, setSelectedCourses] = React.useState([]);
 
+  // projetos do usuario
+  const [meusProjetos, setMeusProjetos] = React.useState([]);
+  const [selectedProjeto, setSelectedProjeto] = React.useState(false);
+
   const [guid, setGuid] = React.useState(false);
   const [allInteresses, setAllInteresses] = React.useState({});
   const [allCourses, setAllCourses] = React.useState({});
@@ -160,7 +165,15 @@ const Home = () => {
         setGuid(res.data.guid_usuario);
       }
 
+      async function doGetMeusProjetos()
+      {
+        const res = await getMeusProjetos();
+        if (res.status === 200) 
+          setMeusProjetos(res.data);
+      }
+
       loadFiltros();
+      doGetMeusProjetos();
       getUserGuid();
   }, [])
 
@@ -204,31 +217,28 @@ const Home = () => {
             { typeSearch && 
               <Grid container style={{marginTop: "5px"}} spacing={1} rowGap={1}>
                 
-                {/*
+              
                 <Grid item xs={12}>
                   <Autocomplete
-                    options={allInteresses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    value={selectedInteresses}
+                    options={meusProjetos}
+                    getOptionLabel={(o) => o.titulo}
                     isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="interesses"
-                    id="interesses"
+                    name="Projeto"
+                    id="projeto"
                     size="small"
-                    multiple
                     freeSolo
 
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Filtrar Interesses"
+                        label="Escolha um projeto"
                         fullWidth
                       />
                     )}
 
-                    onChange={(e,v) => setSelectedInteresses(v)}
+                    onChange={(e,v) => setSelectedProjeto(v)}
                   />  
                 </Grid>
-                */}
 
                 <Grid item xs={6}>
                   <Autocomplete
@@ -316,7 +326,7 @@ const Home = () => {
           </Grid>
 
           {!typeSearch && guid && cardsProjetos && <CardGroup valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
-          {typeSearch && guid && cardsProfiles && <CardGroup valores={cardsProfiles.items} cardsType="usuarios"/>}
+          {typeSearch && guid && cardsProfiles && <CardGroup valores={cardsProfiles.items} projeto={selectedProjeto} cardsType="usuarios"/>}
 
           { cardsProfiles && typeSearch &&
             <>

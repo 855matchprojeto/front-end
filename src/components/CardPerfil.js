@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tooltipClasses } from '@mui/material/Tooltip';
 import PersonIcon from '@mui/icons-material/Person';
+import { putRel,getProjUserRel } from "../services/api_projetos";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -67,14 +68,58 @@ const BigTooltip = styled(({ className, ...props }) => (
 });
 //---------
 
-const CardPerfil = ({ info }) => {
+const CardPerfil = (props) => {
   const classes = useStyles();
   let history = useHistory();
+  const info = props.info;
+  const projeto = props.projeto;
+
+  const [btnInteresse, setBtnInteresse] = React.useState(false);
+  const [componentLoading, setComponentLoading] = React.useState(true);
+
+  React.useEffect(() => 
+  {
+      async function getStatusInteresse()  
+      {
+        setComponentLoading(true);
+        if(projeto)
+        {
+          let aux = await getProjUserRel(projeto.guid, null, true);
+          aux = aux.filter(item => item.guid_usuario === info.guid);
+          
+          if(aux.length === 1)
+            setBtnInteresse(true);
+          else
+            setBtnInteresse(false);
+        }
+        setComponentLoading(false);
+      }
+      
+      getStatusInteresse();
+
+  }, [info.guid, projeto.guid, projeto])
+
+  async function changeInteresseNoUsuario()
+  {    
+    if(!btnInteresse)
+    {
+      let body = {"fl_projeto_interesse": true};
+      await putRel(info.guid, projeto.guid, body);
+    }
+    else 
+    {
+      let body = {"fl_projeto_interesse": false};
+      await putRel(info.guid, projeto.guid, body);
+    }
+
+    setBtnInteresse(!btnInteresse);
+  }
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
-        <Card className={classes.card}>
+      { !componentLoading &&
 
+        <Card className={classes.card}>
           <div className={classes.mediaContainer}>
             <CardMedia
               component={(info.imagem_perfil !== null) ? "img" : PersonIcon}
@@ -102,15 +147,30 @@ const CardPerfil = ({ info }) => {
           </CardContent>
 
           <CardActions className={classes.actions}>
+            { projeto &&
+              <Button
+                variant="outlined"
+                color={btnInteresse ? "error" : "success" }
+                size="small"
+                sx={{textTransform: 'none'}}
+                onClick={() => changeInteresseNoUsuario()}
+              >
+                Marcar Interesse
+              </Button>
+            }
+
             <Button
               variant="outlined"
               color="secondary"
+              size="small"
+              sx={{textTransform: 'none'}}
               onClick={() => history.push("/profile", { data: [info.id, info.guid] })}
             >
               Ver Perfil
             </Button>
           </CardActions>
         </Card>
+        }
     </Grid>
   );
   

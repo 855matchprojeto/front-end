@@ -20,13 +20,14 @@ const CardGroup = (props) => {
   const cards = props.valores;
   const cardsType = props.cardsType;
   const guid = props.userGuid;
+  const projeto = props.projeto;
 
   return (
     <Grid className={classes.grid} container>
       {cards && (
         <>
           {cardsType === "usuarios"
-            ? cards.map((card, index) => <CardPerfil key={index} info={card} />)
+            ? cards.map((card, index) => <CardPerfil key={index} info={card} projeto={projeto}/>)
             : cards.map((card, index) => (
                 <CardProjeto
                   key={index}
