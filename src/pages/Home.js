@@ -326,7 +326,7 @@ const Home = () => {
           </Grid>
 
           {!typeSearch && guid && cardsProjetos && <CardGroup valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
-          {typeSearch && guid && cardsProfiles && <CardGroup valores={cardsProfiles.items} projeto={selectedProjeto} cardsType="usuarios"/>}
+          {typeSearch && guid && cardsProfiles && <CardGroup valores={cardsProfiles.items} projGuid={selectedProjeto.guid} cardsType="usuarios"/>}
 
           { cardsProfiles && typeSearch &&
             <>

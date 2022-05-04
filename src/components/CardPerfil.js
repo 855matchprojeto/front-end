@@ -72,7 +72,7 @@ const CardPerfil = (props) => {
   const classes = useStyles();
   let history = useHistory();
   const info = props.info;
-  const projeto = props.projeto;
+  const projGuid = props.projGuid;
 
   const [btnInteresse, setBtnInteresse] = React.useState(false);
   const [componentLoading, setComponentLoading] = React.useState(true);
@@ -82,9 +82,9 @@ const CardPerfil = (props) => {
       async function getStatusInteresse()  
       {
         setComponentLoading(true);
-        if(projeto)
+        if(projGuid)
         {
-          let aux = await getProjUserRel(projeto.guid, null, true);
+          let aux = await getProjUserRel(projGuid, null, true);
           aux = aux.filter(item => item.guid_usuario === info.guid);
           
           if(aux.length === 1)
@@ -97,19 +97,19 @@ const CardPerfil = (props) => {
       
       getStatusInteresse();
 
-  }, [info.guid, projeto.guid, projeto])
+  }, [info.guid, projGuid])
 
   async function changeInteresseNoUsuario()
   {    
     if(!btnInteresse)
     {
       let body = {"fl_projeto_interesse": true};
-      await putRel(info.guid, projeto.guid, body);
+      await putRel(info.guid, projGuid, body);
     }
     else 
     {
       let body = {"fl_projeto_interesse": false};
-      await putRel(info.guid, projeto.guid, body);
+      await putRel(info.guid, projGuid, body);
     }
 
     setBtnInteresse(!btnInteresse);
@@ -147,7 +147,7 @@ const CardPerfil = (props) => {
           </CardContent>
 
           <CardActions className={classes.actions}>
-            { projeto &&
+            { projGuid &&
               <Button
                 variant="outlined"
                 color={btnInteresse ? "error" : "success" }
@@ -155,7 +155,7 @@ const CardPerfil = (props) => {
                 sx={{textTransform: 'none'}}
                 onClick={() => changeInteresseNoUsuario()}
               >
-                Marcar Interesse
+                {btnInteresse ? "Remover interesse" : "Marcar interesse"}
               </Button>
             }
 
