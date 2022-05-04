@@ -107,7 +107,6 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
-      {!componentLoading && (
         <Card className={classes.card}>
 
           <div className={classes.mediaContainer}>
@@ -133,38 +132,38 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
                 }
             </Typography>
           </CardContent>
-
-          <CardActions className={classes.actions}>    
-            <Button
-              size="small"
-              variant="outlined"
-              color={type === "projetos" ? (btnInteresse ? "error" : "success" ) : "primary"}
-              onClick={() => {
-                if (type === "projetos") 
-                  updateInteresse();
-                else 
-                  history.push("/editproject", {data: [info.id, info.guid]});
-              }}
-              sx={{textTransform: 'none'}}
-            >
-              {type === "projetos" ? 
-              (btnInteresse ? "Remover interesse" : "Marcar interesse") :
-              "Editar"}
-            </Button>
-
-              <Button 
-                color="secondary" 
-                variant="outlined" 
+          
+          { !componentLoading && 
+            <CardActions className={classes.actions}>    
+              <Button
                 size="small"
+                variant="outlined"
+                color={type === "projetos" ? (btnInteresse ? "error" : "success" ) : "primary"}
+                onClick={() => {
+                  if (type === "projetos") 
+                    updateInteresse();
+                  else 
+                    history.push("/editproject", {data: [info.id, info.guid]});
+                }}
                 sx={{textTransform: 'none'}}
-                onClick={() => history.push("/projeto", { data: [info.id, info.guid, userGuid] })}
               >
-                Detalhes
+                {type === "projetos" ? 
+                (btnInteresse ? "Remover interesse" : "Marcar interesse") :
+                "Editar"}
               </Button>
-          </CardActions>
 
+                <Button 
+                  color="secondary" 
+                  variant="outlined" 
+                  size="small"
+                  sx={{textTransform: 'none'}}
+                  onClick={() => history.push("/projeto", { data: [info.id, info.guid, userGuid] })}
+                >
+                  Detalhes
+                </Button>
+            </CardActions>
+          }
         </Card>
-      )}
     </Grid>
   );
 };

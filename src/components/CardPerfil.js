@@ -123,7 +123,6 @@ const CardPerfil = (props) => {
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
-      { !componentLoading &&
 
         <Card className={classes.card}>
           <div className={classes.mediaContainer}>
@@ -151,36 +150,38 @@ const CardPerfil = (props) => {
 
 
           </CardContent>
+          
+          { !componentLoading &&
+            <CardActions className={classes.actions}>
+              { projGuid &&
+                <Button
+                  variant="outlined"
+                  color={btnInteresse ? "error" : "success" }
+                  size="small"
+                  sx={{textTransform: 'none'}}
+                  onClick={() => changeInteresseNoUsuario()}
+                >
+                  {btnInteresse ? "Remover interesse" : "Marcar interesse"}
+                </Button>
+              }
 
-          <CardActions className={classes.actions}>
-            { projGuid &&
               <Button
                 variant="outlined"
-                color={btnInteresse ? "error" : "success" }
+                color="secondary"
                 size="small"
                 sx={{textTransform: 'none'}}
-                onClick={() => changeInteresseNoUsuario()}
+                onClick={() => history.push("/profile", { data: [info.id, info.guid] })}
               >
-                {btnInteresse ? "Remover interesse" : "Marcar interesse"}
+                Ver Perfil
               </Button>
-            }
 
-            <Button
-              variant="outlined"
-              color="secondary"
-              size="small"
-              sx={{textTransform: 'none'}}
-              onClick={() => history.push("/profile", { data: [info.id, info.guid] })}
-            >
-              Ver Perfil
-            </Button>
-
-            { hasMatch &&
-              <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
-            }
-          </CardActions>
+              { hasMatch &&
+                <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
+              }
+            </CardActions>
+          }
         </Card>
-        }
+        
     </Grid>
   );
   
