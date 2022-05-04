@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   media: {
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(3),
     width: "300px",
     height: "200px",
     boxShadow: "0 0 3px" + (theme.palette.mode === "dark" ? theme.palette.grey[100] : theme.palette.common.black),
