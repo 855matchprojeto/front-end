@@ -115,6 +115,7 @@ const CardPerfil = (props) => {
     {
       let body = {"fl_projeto_interesse": false};
       await putRel(info.guid_usuario, projGuid, body);
+      setHasMatch(false);
     }
 
     setBtnInteresse(!btnInteresse);
