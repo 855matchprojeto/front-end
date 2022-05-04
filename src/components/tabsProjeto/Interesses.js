@@ -39,39 +39,31 @@ const Interesses = () => {
     getUserGuid();
   }, []);
 
+  const boxSx = {mt: 4, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"};
+  
   return (
     <>
-      {!componentLoading && (
-        <>
-          {marcados.length > 0 ? (
-            <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
-              <CardGroup
-                valores={marcados}
-                cardsType="projetos"
-                userGuid={guid}
-              />
-            </Grid>
-          ) : (
-            <Box
-              sx={{
-                mt: 4,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="subtitle2"
-                color="textSecondary"
-                className={classes.font}
-              >
-                Você ainda não tem nenhum projeto com interesse.
-              </Typography>
-            </Box>
-          )}
-        </>
-      )}
+      { !componentLoading && marcados.length > 0 &&
+        <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
+          <CardGroup
+            valores={marcados}
+            cardsType="projetos"
+            userGuid={guid}
+          />
+        </Grid>
+      }
+
+      { !componentLoading && marcados.length === 0 &&
+        <Box sx={boxSx}>
+          <Typography
+            variant="subtitle2"
+            color="textSecondary"
+            className={classes.font}
+          >
+            Você ainda não tem nenhum projeto com interesse.
+          </Typography>
+        </Box>
+      }
 
       { componentLoading && 
         <div style={{margin: "auto"}}>

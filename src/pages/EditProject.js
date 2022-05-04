@@ -9,7 +9,9 @@ import {
   Typography,
   CardMedia,
   CardContent,
-  CardActions
+  CardActions,
+  DialogContent, 
+  Dialog
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import UploadIcon from "@mui/icons-material/Upload";
@@ -56,6 +58,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 //---------
+
+function ImageDialog(props) 
+{
+  const [open, setOpen] = React.useState(false);
+  const classRef = props.classRef;
+  const urlImg = props.urlImg;
+  
+  function handleOpen()
+  {
+    if(urlImg !== null)
+      setOpen(true);
+  }
+
+  return (
+    <>
+      <CardMedia
+        alt="Not Found"
+        component={Button}
+        image={urlImg ? urlImg : ProjectDefault}
+        className={classRef}
+        onClick={() => handleOpen()}
+      >
+      </CardMedia>
+
+      <Dialog
+        PaperProps={{style:{maxWidth:"1000px", margin:"16px"}}}
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+        <DialogContent style={{display:"flex", justifyContent:"center", padding:"15px 18px"}}>
+          <img alt="" src={urlImg} style={{maxHeight:"100%", maxWidth:"100%"}}>
+
+          </img>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
 
 const EditProject = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -203,7 +243,7 @@ const EditProject = () => {
   return (
     <>
       {!pageLoading && (
-        <Grid container maxWidth="lg" className={classes.grid}>
+        <Grid container maxWidth="md" className={classes.grid}>
           <Card className={classes.card}>
             <CardHeader title={<Typography variant="h6">Editar Projeto</Typography>} />
             <input
@@ -214,13 +254,7 @@ const EditProject = () => {
               onChange={(e) => updateImage(e)}
             />
 
-            <CardMedia
-              alt="Not Found"
-              component={Button}
-              image={image ? image : ProjectDefault}
-              className={classes.media}
-            >
-            </CardMedia>
+            <ImageDialog urlImg={image} classRef={classes.media}/>
 
             <Button
               variant="outlined"
