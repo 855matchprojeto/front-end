@@ -85,7 +85,7 @@ const CardPerfil = (props) => {
         if(projGuid)
         {
           let aux = await getProjUserRel(projGuid, null, true);
-          aux = aux.filter(item => item.guid_usuario === info.guid);
+          aux = aux.filter(item => item.guid_usuario === info.guid_usuario);
           
           if(aux.length === 1)
             setBtnInteresse(true);
@@ -97,19 +97,19 @@ const CardPerfil = (props) => {
       
       getStatusInteresse();
 
-  }, [info.guid, projGuid])
+  }, [info.guid_usuario, projGuid])
 
   async function changeInteresseNoUsuario()
   {    
     if(!btnInteresse)
     {
       let body = {"fl_projeto_interesse": true};
-      await putRel(info.guid, projGuid, body);
+      await putRel(info.guid_usuario, projGuid, body);
     }
     else 
     {
       let body = {"fl_projeto_interesse": false};
-      await putRel(info.guid, projGuid, body);
+      await putRel(info.guid_usuario, projGuid, body);
     }
 
     setBtnInteresse(!btnInteresse);
