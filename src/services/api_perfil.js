@@ -124,3 +124,31 @@ export const getProfiles = async (data, page_size) => {
 export const getProfilesGUID = async (guid) => {
   return perf.get(`profiles/${guid}`).then((res) => res.data);
 };
+
+// chamada para adicionar um telefone de contato
+export const postPhones = async (body) => {
+  return perf.post(`profiles/user/me/perfil-phone`, body)
+    .then(res => res)
+    .catch(err => console.log(err));
+};
+
+// chamada para remover um telefone de contato
+export const deletePhones = async (guid_perfil_phone) => {
+  return perf.delete(`/profiles/user/me/perfil-phone/${guid_perfil_phone}`)
+  .then(res => res)
+  .catch(err => console.log(err));
+}
+
+// chamada para adicionar um email de contato
+export const postEmail = async (body) => {
+  return perf.post(`profiles/user/me/perfil-email`, body)
+    .then(res => res)
+    .catch(err => console.log(err));
+};
+
+// chamada para remover um email de contato
+export const deleteEmail = async (guid_perfil_email) => {
+  return perf.delete(`/profiles/user/me/perfil-email/${guid_perfil_email}`)
+  .then(res => res)
+  .catch(err => console.log(err));
+}

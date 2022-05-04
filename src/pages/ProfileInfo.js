@@ -1,6 +1,6 @@
 import React,{ useState, useEffect } from "react";
 import {Box, Typography, CardContent, Card } from "@mui/material";
-import {Grid, Chip, CardMedia } from "@mui/material";
+import {Grid, Chip, CardMedia, ListItem, ListItemText, List } from "@mui/material";
 import { useLocation } from "react-router";
 import LoadingBox from "../components/LoadingBox";
 import { makeStyles } from "@mui/styles";
@@ -112,42 +112,87 @@ const ProfileInfo = () => {
                       {profInfo.nome_exibicao}
                     </Typography>
                   </Grid>
+                  
+                  { profInfo.bio &&
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1" className={classes.subtitle}>
+                        Bio:
+                      </Typography>
 
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Bio:
-                    </Typography>
+                      <Typography component="div" variant="body2" className={classes.bio}>
+                        {profInfo.bio}
+                      </Typography>
+                    </Grid>
+                  }
 
-                    <Typography component="div" variant="body2" className={classes.bio}>
-                      {profInfo.bio}
-                    </Typography>
+                  { profInfo.cursos.length > 0 &&
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1" className={classes.subtitle}>
+                        Cursos:
+                      </Typography>
+                      <Box sx={{ display: "flex", flexWrap: "wrap"}}>
+                        { 
+                          profInfo.cursos.map((crs, index) => (
+                            <Chip key={index} label={crs.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />                            
+                        ))}
+                        </Box>
+                    </Grid>
+                  }
+
+                  { profInfo.interesses.length > 0 &&
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1" className={classes.subtitle}>
+                        Interesses:
+                      </Typography>
+
+                      <Box sx={{ display: "flex", flexWrap: "wrap"}}>
+                        { 
+                          profInfo.interesses.map((its, index) => (
+                            <Chip key={index} label={its.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />
+                        ))}
+                        </Box>
+                    </Grid>
+                  }
+
+                  { profInfo.phones.length > 0 &&                 
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1" className={classes.subtitle}>
+                        Números de contato:
+                      </Typography>
+
+                      <List>
+                        {
+                          profInfo.phones.map((phoneObj, index) => 
+                            <ListItem key={index} disableGutters disablePadding>
+                              <ListItemText>
+                                <ListItemText primary={phoneObj.phone} />
+                              </ListItemText>
+                            </ListItem>
+                          )
+                        }
+                      </List>
+                    </Grid>
+                  }
+                  
+                  { profInfo.emails.length > 0 &&
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1" className={classes.subtitle}>
+                        Emails de contato:
+                      </Typography>
+
+                      <List>
+                        {
+                          profInfo.emails.map((emailObj, index) => 
+                            <ListItem key={index} disableGutters disablePadding>
+                              <ListItemText>
+                                <ListItemText primary={emailObj.email} />
+                              </ListItemText>
+                            </ListItem>
+                          )
+                        }
+                      </List>
                   </Grid>
-
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Cursos:
-                    </Typography>
-                    <Box sx={{ display: "flex", flexWrap: "wrap"}}>
-                      { 
-                        profInfo.cursos.map((crs, index) => (
-                          <Chip key={index} label={crs.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />                            
-                      ))}
-                      </Box>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Interesses:
-                    </Typography>
-
-                    <Box sx={{ display: "flex", flexWrap: "wrap"}}>
-                      { 
-                        profInfo.interesses.map((its, index) => (
-                          <Chip key={index} label={its.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />
-                      ))}
-                      </Box>
-                  </Grid>
-
+                  }
                 </Grid>
               </CardContent>
 
