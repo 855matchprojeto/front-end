@@ -9,7 +9,7 @@ import {
   CardActions,
   useMediaQuery,
 } from "@mui/material";
-import { CardMedia, Button, Autocomplete } from "@mui/material";
+import { CardMedia, Button, Autocomplete, Dialog, DialogContent } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "./LoadingBox";
 import { useSnackbar } from "notistack";
@@ -57,6 +57,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 //---------
+
+function ImageDialog(props) 
+{
+  const [open, setOpen] = React.useState(false);
+  const classRef = props.classRef;
+  const urlImg = props.urlImg;
+  
+  function handleOpen()
+  {
+    if(urlImg !== null)
+      setOpen(true);
+  }
+
+  return (
+    <>
+      <CardMedia
+        alt="Not Found"
+        component={urlImg !== null ? Button : PersonIcon}
+        image={urlImg !== null ? urlImg : ""}
+        className={classRef}
+        onClick={() => handleOpen()}
+      >
+      </CardMedia>
+
+      <Dialog
+        open={open}
+        PaperProps={{style:{maxWidth:"1000px", margin:"16px"}}}
+        onClose={() => setOpen(false)}
+      >
+        <DialogContent style={{display:"flex", justifyContent:"center", padding:"15px 18px"}}>
+          <img alt="" src={urlImg} style={{maxHeight:"100%", maxWidth:"100%"}}>
+
+          </img>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
 
 const MeusDados = () => {
   const classes = useStyles();
@@ -249,6 +287,7 @@ const MeusDados = () => {
         <Grid container>
           <Card className={classes.card}>
             <CardHeader title={<Typography variant="h6">Perfil</Typography>} />
+
             <input
               ref={imageUpload}
               type="file"
@@ -257,13 +296,7 @@ const MeusDados = () => {
               onChange={(e) => updateImage(e)}
             />
 
-            <CardMedia
-              alt="Not Found"
-              component={user.url_imagem !== null ? Button : PersonIcon}
-              image={user.url_imagem !== null ? user.url_imagem : ""}
-              className={classes.media}
-            >
-            </CardMedia>
+            <ImageDialog urlImg={user.url_imagem} classRef={classes.media}/>
 
             <Button
               variant="outlined"
