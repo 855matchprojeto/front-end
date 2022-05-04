@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router";
 import { Grid, TextField, Autocomplete } from "@mui/material";
-import { Button, useMediaQuery,  Card,
-  CardMedia,
-  CardContent,
-  CardActions } from "@mui/material";
+import { Button, Card, CardMedia, CardContent, CardActions } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import UploadIcon from "@mui/icons-material/Upload";
 
@@ -22,7 +19,6 @@ import ProjectDefault from "../../icons/project.svg";
 const useStyles = makeStyles((theme) => ({
   grid: {
     alignSelf: "center",
-    marginTop: theme.spacing(4),
   },
 
   form: {
@@ -37,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",    
     boxShadow: "none",
+    backgroundColor: (theme.palette.mode === "dark" ? "#2c2c2c" : theme.palette.background.paper),
+    backgroundImage: "none"
   },
 
   cardContent: {
@@ -46,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   media: {
+    marginTop: theme.spacing(4),
     width: "300px",
     height: "200px",
     boxShadow: "0 0 3px" + (theme.palette.mode === "dark" ? theme.palette.grey[100] : theme.palette.common.black),
@@ -77,8 +76,6 @@ const CriarProjeto = () => {
 
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const matches = useMediaQuery("(max-width: 900px)");
-
   const imageRef = useRef(null);
   const history = useHistory();
   const [imageFile, setImageFile] = useState(null);
@@ -163,7 +160,7 @@ const CriarProjeto = () => {
   return (
     <>
       { !pageLoading &&
-      <Grid container maxWidth="lg" className={classes.grid}>
+      <Grid container maxWidth="md" className={classes.grid}>
         <Formik
           initialValues={values}
           validationSchema={validationScheme}
