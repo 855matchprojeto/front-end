@@ -262,8 +262,7 @@ const Home = () => {
           <Container>
             { typeSearch && 
               <Grid container style={{marginTop: "5px"}} spacing={1} rowGap={1}>
-                
-              
+                  
                 <Grid item xs={12}>
                   <Autocomplete
                     options={meusProjetos}

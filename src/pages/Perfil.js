@@ -23,7 +23,7 @@ const Perfil = () => {
   const classes = useStyles();
 
   return (
-    <Container maxWidth="lg" className={classes.container}>
+    <Container maxWidth="md" className={classes.container}>
       <Paper sx={{ minHeight: "calc(100vh - 148px)", mt: 4 }}>
         <MeusDados />
       </Paper>
