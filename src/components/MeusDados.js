@@ -1,30 +1,26 @@
 import React, { useRef } from "react";
-import {
-  Typography,
-  TextField,
-  Grid,
-  CardHeader,
-  CardContent,
-  Card,
-  CardActions,
-  useMediaQuery,
-} from "@mui/material";
+import {Typography, TextField, Grid, CardHeader, IconButton } from "@mui/material";
+import {CardContent, Card, CardActions, useMediaQuery } from "@mui/material";
 import { CardMedia, Button, Autocomplete, Dialog, DialogContent } from "@mui/material";
+import { List, ListItem, ListItemText, Divider } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "./LoadingBox";
 import { useSnackbar } from "notistack";
+
 import PersonIcon from "@mui/icons-material/Person";
 import UploadIcon from "@mui/icons-material/Upload";
+import PhoneIcon from '@mui/icons-material/Phone';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
 
-import {
-  doGetDataUser,
-  doGetAllCourses,
-  doGetAllInteresses,
-} from "../services/api_perfil";
+import { doGetAllCourses, doGetAllInteresses } from "../services/api_perfil";
+import { doGetDataUser, postPhones, deletePhones } from "../services/api_perfil";
+import { postEmail, deleteEmail } from "../services/api_perfil";
 import { doUpdateCourses, doUpdateInteresse } from "../services/api_perfil";
 import { doSaveProfile } from "../services/api_perfil";
-import { enqueueMySnackBar } from "../services/util";
-import { Base64 } from "../services/util";
+
+import { enqueueMySnackBar, Base64 } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -108,7 +104,6 @@ const MeusDados = () => {
   const [allInteresses, setAllInteresses] = React.useState([]);
   const [allCourses, setAllCourses] = React.useState([]);
   const imageUpload = useRef(null);
-
 
   React.useEffect(() => {
     async function getDataUser() {
@@ -250,11 +245,14 @@ const MeusDados = () => {
 
   async function handleSave() {
     setIsLoading(true);
-    const aux = {
+    
+    let aux = {
       nome_exibicao: `${user.name} ${user.sobrenome}`,
-      imagem_perfil: user.imagem_perfil,
-      bio: user.bio,
+      bio: user.bio
     };
+
+    if(user.imagem_perfil)
+      aux['imagem_perfil'] = user.imagem_perfil;
 
     const res = await doSaveProfile(aux);
     if (res.status === 200) 
@@ -279,6 +277,219 @@ const MeusDados = () => {
     };
 
     setUser({ ...user, url_imagem: url, imagem_perfil: img });
+  }
+
+  const MyPhones = () =>
+  {
+    const [open, setOpen] = React.useState(false);
+    const [newPhone, setNewPhone] = React.useState("");
+    const [phones, setPhones] = React.useState([]);
+
+    React.useEffect(() => 
+    {
+        async function doGetPhones()  
+        {
+          const res = await doGetDataUser();
+          if(res.status === 200)
+            setPhones(res.data.phones);
+        }
+        
+        doGetPhones();
+    }, [])
+    
+    const DeleteButton = (props) =>
+    {
+      const phoneGuid = props.phone;
+
+      async function handleDeletePhone()
+      {
+        let res = await deletePhones(phoneGuid);
+        if(res.status === 204)
+        {
+          res = await doGetDataUser();
+          if (res.status === 200)
+            setPhones(res.data.phones);    
+        }
+      }
+
+      return(
+        <IconButton edge="end" aria-label="delete" onClick={() => handleDeletePhone()}> <DeleteIcon/> </IconButton>
+      )
+    }
+
+    const AddButton = () =>
+    {      
+      async function handleNewPhone()
+      {
+        const body = {  "phone": newPhone, "id_tipo_contato": 1};
+        let res = await postPhones(body);
+        
+        if(res.status === 200)
+        {
+          res = await doGetDataUser();
+          if (res.status === 200)
+          {
+            setNewPhone("");
+            setPhones(res.data.phones);    
+          }
+        }
+
+      }
+
+      return(
+        <IconButton edge="end" aria-label="add" onClick={() => handleNewPhone()}> 
+          <AddCircleIcon /> 
+        </IconButton>
+      )
+    }
+
+    return(
+    <>
+        <Button size="medium" variant="outlined" startIcon={<PhoneIcon/>} onClick={() => setOpen(true)}>
+          Números de contato
+        </Button>
+
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <DialogContent style={{display:"flex", justifyContent:"center", padding:"10px 12px"}}>
+            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper'}} aria-label="phones">
+
+              <ListItem secondaryAction={<AddButton/>}>                  
+                <ListItemText>
+                  <TextField
+                    type="text"
+                    name="phones"
+                    size="small"
+                    value={newPhone}
+                    label="Número"
+                    onChange={(e) => setNewPhone(e.target.value)}
+                    fullWidth
+                  />
+                </ListItemText>
+              </ListItem>
+
+              <Divider />
+
+              {
+                phones.map((phoneObj, index) => 
+                <ListItem key={index} secondaryAction={<DeleteButton phone={phoneObj.guid}/>}>
+                  <ListItemText>
+                    <ListItemText primary={phoneObj.phone} />
+                  </ListItemText>
+                </ListItem>
+                )
+              }
+            </List>
+          </DialogContent>
+        </Dialog>
+    </>
+    )
+  }
+
+  const MyEmails = () =>
+  {
+    const [open, setOpen] = React.useState(false);
+    const [newEmail, setNewEmail] = React.useState("");
+    const [emails, setEmails] = React.useState([]);
+
+    React.useEffect(() => 
+    {
+        async function doGetEmails()  
+        {
+          const res = await doGetDataUser();
+          if(res.status === 200)
+            setEmails(res.data.emails);
+        }
+        
+        doGetEmails();
+    }, [])
+    
+    const DeleteButton = (props) =>
+    {
+      const emailGuid = props.email;
+
+      async function handleDeleteEmail()
+      {
+        let res = await deleteEmail(emailGuid);
+        if(res.status === 204)
+        {
+          res = await doGetDataUser();
+          if (res.status === 200)
+            setEmails(res.data.emails);    
+        }
+      }
+
+      return(
+        <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteEmail()}> <DeleteIcon/> </IconButton>
+      )
+    }
+
+    const AddButton = () =>
+    {      
+      async function handleNewEmail()
+      {
+        const body = {"email": newEmail};
+        let res = await postEmail(body);
+        
+        if(res.status === 200)
+        {
+          res = await doGetDataUser();
+          if (res.status === 200)
+          {
+            setNewEmail("");
+            console.log(res.data);
+            setEmails(res.data.emails);    
+          }
+        }
+
+      }
+
+      return(
+        <IconButton edge="end" aria-label="add" onClick={() => handleNewEmail()}> 
+          <AddCircleIcon /> 
+        </IconButton>
+      )
+    }
+
+    return(
+      <>
+        <Button size="medium" variant="outlined" startIcon={<ContactMailIcon/>} onClick={() => setOpen(true)}>
+          Emails de contato
+        </Button>
+
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <DialogContent style={{display:"flex", justifyContent:"center", padding:"10px 12px"}}>
+            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper'}} aria-label="emails">
+
+              <ListItem secondaryAction={<AddButton/>}>                  
+                <ListItemText>
+                  <TextField
+                    type="email"
+                    name="emails"
+                    size="small"
+                    value={newEmail}
+                    label="Email"
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    fullWidth
+                  />
+                  </ListItemText>
+              </ListItem>
+
+              <Divider />
+
+              {
+                emails.map((emailObj, index) => 
+                <ListItem key={index} secondaryAction={<DeleteButton email={emailObj.guid}/>}>
+                  <ListItemText>
+                    <ListItemText primary={emailObj.email} />
+                  </ListItemText>
+                </ListItem>
+                )
+              }
+            </List>
+          </DialogContent>
+        </Dialog>
+      </>
+    )
   }
 
   return (
@@ -365,6 +576,7 @@ const MeusDados = () => {
                     fullWidth
                   />
                 </Grid>
+
                 <Grid item xs={12} md={6}>
                   <Autocomplete
                     options={allCourses}
@@ -410,6 +622,15 @@ const MeusDados = () => {
                     onChange={(e, v) => updateInteresses(v)}
                   />
                 </Grid>
+
+                <Grid item md={6}>
+                  <MyPhones/>                    
+                </Grid>
+
+                <Grid item lg={3} sm={6} xs={12}>
+                  <MyEmails/>             
+                </Grid>
+
               </Grid>
             </CardContent>
 
