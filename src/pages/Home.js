@@ -239,6 +239,14 @@ const Home = () => {
     setPageLoading(false);
   }
 
+  function changeSelectedProjeto(v)
+  {
+    if(v)
+      setSelectedProjeto(v);
+    else
+      setSelectedProjeto(false);
+  }
+
   return (
     <>
       { !pageLoading &&
@@ -272,16 +280,18 @@ const Home = () => {
                     id="projeto"
                     size="small"
                     freeSolo
+                    style={{width:"50%",margin:"auto"}}
 
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        variant="standard"
                         label="Escolha um projeto"
                         fullWidth
                       />
                     )}
 
-                    onChange={(e,v) => setSelectedProjeto(v)}
+                    onChange={(e,v) => changeSelectedProjeto(v)}
                   />  
                 </Grid>
 

@@ -24,7 +24,7 @@ import Perfil from "./pages/Perfil";
 import Projetos from "./pages/Projetos";
 import ProjetoInfo from "./pages/ProjetoInfo";
 import ProfileInfo from "./pages/ProfileInfo";
-import EditProject from "./pages/EditProject";
+import ProjetoEditar from "./pages/ProjetoEditar";
 
 import { StyledEngineProvider } from "@mui/material/styles";
 import { estaLogado } from "./services/auth";
@@ -116,7 +116,7 @@ const RouteProtection = () => {
                   exact
                   path="/editproject"
                   render={() =>
-                    estaLogado ? <Base> <EditProject/> </Base> : <Redirect to="/" />
+                    estaLogado ? <Base> <ProjetoEditar/> </Base> : <Redirect to="/" />
                   }
                 />
 
