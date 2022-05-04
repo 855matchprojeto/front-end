@@ -12,13 +12,8 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import CardGroup from "../components/CardGroup";
 import InfoIcon from '@mui/icons-material/Info';
+import {Dialog, DialogContent, DialogContentText, DialogTitle, Slide} from "@mui/material";
 
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
 
 //--estilo--
 const useStyles = makeStyles(theme => ({
