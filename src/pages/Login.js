@@ -55,8 +55,8 @@ const Login = () => {
             alignItems: "center",
           }}
         >
-          <Typography variant="h4">Match de Projetos</Typography>
-          <Typography component="h1" variant="h5" sx={{ mt: 2 }}>
+          <Typography variant="h4" align="center">Match de Projetos</Typography>
+          <Typography component="h1" variant="h5" sx={{ mt: 2 }} align="center">
             {" "}
             Login{" "}
           </Typography>

@@ -9,7 +9,7 @@ import { limitString } from "../services/util";
 import ProjectDefault from "../icons/project.svg";
 
 //--estilo--
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
 
   grid: {
     display: "flex",
@@ -34,10 +34,8 @@ const useStyles = makeStyles({
   },
   
   media: {
-    width: "100%",
-    bgcolor: "#dedede",
-    backgroundSize: "cover",
-    height: "200px"
+    width: "fit-content",
+    height: "150px",
   },
 
   actions: {
@@ -53,7 +51,7 @@ const useStyles = makeStyles({
     display: "inline",
     fontWeight: 600
   }
-});
+}));
 
 const BigTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -124,9 +122,9 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
             <Typography variant="h6">{info.titulo}</Typography>
 
             <Typography component="div" variant="body2" className={classes.desc}>
-                {info.descricao && limitString(info.descricao, 150)}
+                {info.descricao && limitString(info.descricao, 200)}
 
-                { info.descricao && info.descricao.length > 150 && 
+                { info.descricao && info.descricao.length > 200 && 
                   <BigTooltip title={info.descricao} arrow>            
                     <div className={classes.tooltip}>
                       {" ..."}

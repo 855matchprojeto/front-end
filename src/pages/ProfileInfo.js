@@ -12,8 +12,7 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     maxWidth: "800px",
     alignSelf: "center",
-    marginTop: theme.spacing(4),
-    //minHeight: "calc(100vh - 148px)"
+    marginTop: theme.spacing(2),
   },
   
   card: {
@@ -128,10 +127,10 @@ const ProfileInfo = () => {
                     <Typography variant="subtitle1" className={classes.subtitle}>
                       Cursos:
                     </Typography>
-                    <Box sx={{ display: "flex" }}>
+                    <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                       { 
                         profInfo.cursos.map((crs, index) => (
-                          <Chip variant="outlined" key={index} label={crs.nome_exibicao} sx={{ mr: 1 }} />                            
+                          <Chip key={index} label={crs.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />                            
                       ))}
                       </Box>
                   </Grid>
@@ -141,10 +140,10 @@ const ProfileInfo = () => {
                       Interesses:
                     </Typography>
 
-                    <Box sx={{ display: "flex" }}>
+                    <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                       { 
                         profInfo.interesses.map((its, index) => (
-                          <Chip variant="outlined" key={index} label={its.nome_exibicao} sx={{ mr: 1 }} />
+                          <Chip key={index} label={its.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />
                       ))}
                       </Box>
                   </Grid>

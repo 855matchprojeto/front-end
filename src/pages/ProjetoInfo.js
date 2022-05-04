@@ -16,10 +16,36 @@ import { getProjUserRel, putRel } from "../services/api_projetos";
 import LoadingBox from "../components/LoadingBox";
 import ParticipanteCard from "../components/ParticipanteCard";
 import ProjectDefault from "../icons/project.svg";                              
+import { makeStyles } from "@mui/styles";
+
+//--estilo--
+const useStyles = makeStyles((theme) => ({  
+  grid: {
+    maxWidth: "800px",
+    alignSelf: "center",
+    marginTop: theme.spacing(2),
+  },
+  
+  mediaContainer: {
+    display: "flex", 
+    justifyContent: "center",
+    margin: theme.spacing(2),
+    boxShadow: "0 0 3px" + (theme.palette.mode === "dark" ? theme.palette.grey[100] : theme.palette.common.black),
+  },
+
+  media: {
+    display: "flex",
+    width: "fit-content",
+    height: "200px"
+  },
+}));
+//---------
 
 const ProjetoInfo = () => {
   const [currentTab, setCurrentTab] = useState("sobre");
   const [projectInfo, getProjectInfo] = useState(false);
+
+  const classes = useStyles();
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
@@ -71,11 +97,11 @@ const ProjetoInfo = () => {
   return (
     <>
       {!pageLoading && (
-        <Container maxWidth="md" sx={{ mb: 5 }}>
+        <Grid container className={classes.grid}>
           {projectInfo && (
             <Box sx={{ color: "text.secondary" }}>
               <Card sx={{ mt: 2 }}>
-                <Box sx={{ p: 2 }}>
+                <Box className={classes.mediaContainer} sx={{ p: 2 }}>
                   <CardMedia
                     component="img"
                     src={
@@ -83,12 +109,7 @@ const ProjetoInfo = () => {
                         ? projectInfo.url_imagem
                         : ProjectDefault
                     }
-                    height="300"
-                    sx={{
-                      margin: "auto",
-                      width: "100%",
-                      backgroundSize: "cover",
-                    }}
+                    className={classes.media}
                   />
                 </Box>
 
@@ -128,7 +149,8 @@ const ProjetoInfo = () => {
                           {projectInfo.descricao}
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} sx={{ mt: 2 }}>
+
+                      <Grid item xs={12}>
                         <Typography
                           variant="subtitle1"
                           sx={{ fontWeight: "bold", color: "text.secondary" }}
@@ -136,11 +158,12 @@ const ProjetoInfo = () => {
                           Cursos Envolvidos:
                         </Typography>
                       </Grid>
+
                       <Grid item xs={12}>
-                        <Box sx={{ display: "flex" }}>
+                        <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                           {projectInfo &&
                             projectInfo.cursos.map((curso, index) => (
-                              <Chip key={index} label={curso.nome_exibicao} sx={{ mr: 1 }}/>
+                              <Chip key={index} label={curso.nome_exibicao} sx={{ mr: 1, mt: 0.5}}/>
                             ))}
                         </Box>
                       </Grid>
@@ -158,10 +181,10 @@ const ProjetoInfo = () => {
                       </Grid>
 
                       <Grid item xs={12}>
-                        <Box sx={{ display: "flex" }}>
+                        <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                           {projectInfo &&
                             projectInfo.interesses.map((area, index) => (
-                                <Chip key={index} label={area.nome_exibicao} sx={{ mr: 1 }}/>
+                                <Chip key={index} label={area.nome_exibicao} sx={{ mr: 1 , mt: 0.5}}/>
                             ))}
                         </Box>
                       </Grid>
@@ -204,7 +227,7 @@ const ProjetoInfo = () => {
               </Card>
             </Box>
           )}
-        </Container>
+        </Grid>
       )}
 
       {pageLoading && <LoadingBox />}

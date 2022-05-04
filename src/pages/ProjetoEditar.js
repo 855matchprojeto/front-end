@@ -97,7 +97,7 @@ function ImageDialog(props)
   );
 }
 
-const EditProject = () => {
+const ProjetoEditar = () => {
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
   const pid = location.state?.data[0];
@@ -360,4 +360,4 @@ const EditProject = () => {
   );
 };
 
-export default EditProject;
+export default ProjetoEditar;
