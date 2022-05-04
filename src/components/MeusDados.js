@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import {Typography, TextField, Grid, CardHeader, IconButton } from "@mui/material";
-import {CardContent, Card, CardActions, useMediaQuery } from "@mui/material";
+import {CardContent, Card, CardActions } from "@mui/material";
 import { CardMedia, Button, Autocomplete, Dialog, DialogContent } from "@mui/material";
 import { List, ListItem, ListItemText, Divider } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -20,7 +20,7 @@ import { postEmail, deleteEmail } from "../services/api_perfil";
 import { doUpdateCourses, doUpdateInteresse } from "../services/api_perfil";
 import { doSaveProfile } from "../services/api_perfil";
 
-import { enqueueMySnackBar, Base64 } from "../services/util";
+import { enqueueMySnackBar, Base64, getLoginData } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -94,11 +94,12 @@ function ImageDialog(props)
 
 const MeusDados = () => {
   const classes = useStyles();
-  const matches = useMediaQuery("(max-width: 900px)");
   const { enqueueSnackbar } = useSnackbar();
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [componentLoading, setComponentLoading] = React.useState(true);
+
+  const [loginInfo, setLoginInfo] = React.useState(false);
 
   const [user, setUser] = React.useState(null);
   const [allInteresses, setAllInteresses] = React.useState([]);
@@ -108,6 +109,9 @@ const MeusDados = () => {
   React.useEffect(() => {
     async function getDataUser() {
       setComponentLoading(true);
+
+      let aux = getLoginData();
+      setLoginInfo({"email": aux.email, "username": aux.username});
 
       const res = await doGetDataUser();
       if (res.status === 200) {
@@ -522,15 +526,27 @@ const MeusDados = () => {
             <CardContent className={classes.cardContent}>
               <Grid container spacing={1} rowGap={1}>
 
-                <Grid item xs={12}>
+                <Grid item xs={6}>
+                  <TextField
+                    type="text"
+                    label="Username"
+                    name="username"
+                    value={loginInfo ? loginInfo.username : ""}
+                    size="small"
+                    disabled
+                    fullWidth
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
                   <TextField
                     type="email"
                     label="Email"
                     name="email"
-                    value={user ? user.email : ""}
+                    value={loginInfo ? loginInfo.email : ""}
                     size="small"
-                    style={{width: (matches) ? "100%" : "calc(50% - 4px)"}}
                     disabled
+                    fullWidth
                   />
                 </Grid>
 
