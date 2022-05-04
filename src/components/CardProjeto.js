@@ -3,7 +3,7 @@ import { Card, Grid, CardMedia, Typography, Tooltip } from "@mui/material";
 import { CardContent, CardActions, Button, tooltipClasses } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
 import { useHistory } from "react-router-dom";
-import { getProjUserRel } from "../services/api_projetos";
+import { getUserProjRel } from "../services/api_projetos";
 import { putRel } from "../services/api_projetos";
 import { limitString } from "../services/util";
 import ProjectDefault from "../icons/project.svg";
@@ -92,8 +92,8 @@ const CardProjeto = ({ info, type, valores, userGuid }) => {
     async function getStatusInteresse() 
     {
       setComponentLoading(true);
-      let aux = await getProjUserRel(valores.guid, true, null);
-      aux = aux.filter(item => item.guid_usuario === userGuid);
+      let aux = (await getUserProjRel(true, null, null)).data;
+      aux = aux.filter(item => item.guid === valores.guid);
       
       if(aux.length === 1)
         setBtnInteresse(true);
