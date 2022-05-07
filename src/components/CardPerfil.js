@@ -151,9 +151,8 @@ const CardPerfil = (props) => {
 
           </CardContent>
           
-          { !componentLoading &&
             <CardActions className={classes.actions}>
-              { projGuid &&
+              { projGuid && !componentLoading &&
                 <Button
                   variant="outlined"
                   color={btnInteresse ? "error" : "success" }
@@ -179,7 +178,7 @@ const CardPerfil = (props) => {
                 <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
               }
             </CardActions>
-          }
+          
         </Card>
         
     </Grid>
