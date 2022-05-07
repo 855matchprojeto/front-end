@@ -20,9 +20,18 @@ notifications.interceptors.response.use(
   }
 );
 
-export const getNotifications = async () => {
+export const getNotifications = async (flag) => {
   return notifications
-    .get("/users/user/me/get-notifications?is_read=false")
+    .get(`/users/user/me/get-notifications?is_read=${flag}`)
+    .then((res) => res)
+    .catch((err) => err);
+};
+
+export const setNotificationsAsRead = async (notificationsId) => {
+  return notifications
+    .put(`/users/user/me/batch-read-notifications`, {
+      id_notificacao_list: notificationsId,
+    })
     .then((res) => res)
     .catch((err) => err);
 };

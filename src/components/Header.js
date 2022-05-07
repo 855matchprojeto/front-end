@@ -11,6 +11,8 @@ import {
   Box,
   Divider,
   Badge,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
 import { IconButton, Drawer, Link } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -21,7 +23,11 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { getNotifications } from "../services/api_notifications";
+import {
+  getNotifications,
+  setNotificationsAsRead,
+} from "../services/api_notifications";
+import DialogNotification from "./DialogNotification";
 //--estilo--
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -113,18 +119,37 @@ const useStyles = makeStyles((theme) => ({
 //---------
 
 const Header = () => {
-  const [notifications, setNotifications] = useState(null);
+  const [notificationSelected, setNotificationSelected] = useState(null);
+  const [notificationsRead, setNotificationsRead] = useState([]);
+  const [notificationsNotRead, setNotificationsNotRead] = useState([]);
   const classes = useStyles();
   const [view, setView] = useState({ mobileView: false, drawerOpen: false });
 
+  const markNotificationsAsRead = async () => {
+    const res = await setNotificationsAsRead(
+      notificationsNotRead.map((notifications) => notifications.guid)
+    );
+    if (res.status === 200) {
+      const notificationsNotReadAux = [...notificationsNotRead];
+      setNotificationsRead([...notificationsNotReadAux, ...notificationsRead]);
+      setNotificationsNotRead([]);
+    }
+  };
+
   useEffect(() => {
-    const fetchNotifications = async () => {
-      const res = await getNotifications();
-      setNotifications(res.data.reverse());
+    const fetchNotificationsNotRead = async () => {
+      const res = await getNotifications(false);
+      setNotificationsNotRead(res.data.reverse());
     };
 
-    setInterval(fetchNotifications, 60000);
-    fetchNotifications();
+    const fetchNotificationsRead = async () => {
+      const res = await getNotifications(true);
+      setNotificationsRead(res.data.reverse());
+    };
+
+    setInterval(fetchNotificationsNotRead, 6000000);
+    fetchNotificationsNotRead();
+    fetchNotificationsRead();
 
     const setResponsiveView = () => {
       if (window.innerWidth < 900) {
@@ -139,7 +164,7 @@ const Header = () => {
 
     return () => {
       window.removeEventListener("resize", () => setResponsiveView());
-      clearInterval(fetchNotifications);
+      clearInterval(fetchNotificationsNotRead);
     };
   }, []);
 
@@ -219,14 +244,17 @@ const Header = () => {
             Projetos
           </Link>
           <IconButton
-            onClick={() => handleMenuNotificacoes(true)}
+            onClick={() => {
+              markNotificationsAsRead();
+              handleMenuNotificacoes(true);
+            }}
             sx={{
               ml: 3,
               transform: "translateY(5%)",
             }}
           >
             <Badge
-              badgeContent={notifications && notifications.length}
+              badgeContent={notificationsNotRead && notificationsNotRead.length}
               color="error"
             >
               <NotificationsIcon
@@ -347,12 +375,13 @@ const Header = () => {
               </Typography>
             </Box>
             <Divider />
-            {notifications &&
-              notifications.map((notification) => (
+            {[...notificationsNotRead, ...notificationsRead].map(
+              (notification) => (
                 <MenuItem
                   key={notification.guid_usuario}
                   component="button"
                   sx={{ width: "100%", p: 2 }}
+                  onClick={() => setNotificationSelected(notification)}
                 >
                   <Avatar>C</Avatar>
                   <Typography
@@ -365,7 +394,8 @@ const Header = () => {
                     {notification.conteudo}
                   </Typography>
                 </MenuItem>
-              ))}
+              )
+            )}
           </Menu>
         </nav>
       </Toolbar>
@@ -505,7 +535,10 @@ const Header = () => {
             )}
           </IconButton>
           <IconButton
-            onClick={() => handleMenuNotificacoes(true)}
+            onClick={() => {
+              handleMenuNotificacoes(true);
+              markNotificationsAsRead();
+            }}
             sx={{
               mr: 2,
               ml: 3,
@@ -513,7 +546,7 @@ const Header = () => {
             }}
           >
             <Badge
-              badgeContent={notifications && notifications.length}
+              badgeContent={notificationsNotRead && notificationsNotRead.length}
               color="error"
             >
               <NotificationsIcon
@@ -570,12 +603,13 @@ const Header = () => {
             </Typography>
           </Box>
           <Divider />
-          {notifications &&
-            notifications.map((notification) => (
+          {[...notificationsNotRead, ...notificationsRead].map(
+            (notification) => (
               <MenuItem
                 key={notification.guid_usuario}
                 component="button"
                 sx={{ width: "100%", p: 2 }}
+                onClick={() => setNotificationSelected(notification)}
               >
                 <Avatar>C</Avatar>
                 <Typography
@@ -588,16 +622,25 @@ const Header = () => {
                   {notification.conteudo}
                 </Typography>
               </MenuItem>
-            ))}
+            )
+          )}
         </Menu>
       </Toolbar>
     );
   };
 
   return (
-    <AppBar position="static">
-      {view.mobileView ? <DisplayMobile /> : <DisplayDesktop />}
-    </AppBar>
+    <>
+      {notificationSelected && (
+        <DialogNotification
+          notification={notificationSelected}
+          setOpen={setNotificationSelected}
+        />
+      )}
+      <AppBar position="static">
+        {view.mobileView ? <DisplayMobile /> : <DisplayDesktop />}
+      </AppBar>
+    </>
   );
 };
 
