@@ -120,18 +120,18 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
   const [notificationSelected, setNotificationSelected] = useState(null);
-  const [notificationsRead, setNotificationsRead] = useState([]);
   const [notificationsNotRead, setNotificationsNotRead] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const classes = useStyles();
   const [view, setView] = useState({ mobileView: false, drawerOpen: false });
 
   const markNotificationsAsRead = async () => {
+    if (notificationsNotRead.length <= 0) return;
+
     const res = await setNotificationsAsRead(
-      notificationsNotRead.map((notifications) => notifications.guid)
+      notificationsNotRead.map((notifications) => notifications.id)
     );
     if (res.status === 200) {
-      const notificationsNotReadAux = [...notificationsNotRead];
-      setNotificationsRead([...notificationsNotReadAux, ...notificationsRead]);
       setNotificationsNotRead([]);
     }
   };
@@ -139,15 +139,19 @@ const Header = () => {
   useEffect(() => {
     const fetchNotificationsNotRead = async () => {
       const res = await getNotifications(false);
-      setNotificationsNotRead(res.data.reverse());
+      const noti = res.data.reverse();
+      setNotificationsNotRead(noti);
+      setNotifications([...noti, ...notifications]);
     };
 
     const fetchNotificationsRead = async () => {
       const res = await getNotifications(true);
-      setNotificationsRead(res.data.reverse());
+      if (res.status === 200) {
+        setNotifications((current) => [...current, ...res.data.reverse()]);
+      }
     };
 
-    setInterval(fetchNotificationsNotRead, 6000000);
+    setInterval(fetchNotificationsNotRead, 30000);
     fetchNotificationsNotRead();
     fetchNotificationsRead();
 
@@ -375,27 +379,25 @@ const Header = () => {
               </Typography>
             </Box>
             <Divider />
-            {[...notificationsNotRead, ...notificationsRead].map(
-              (notification) => (
-                <MenuItem
-                  key={notification.guid_usuario}
-                  component="button"
-                  sx={{ width: "100%", p: 2 }}
-                  onClick={() => setNotificationSelected(notification)}
+            {notifications.map((notification) => (
+              <MenuItem
+                key={notification.id}
+                component="button"
+                sx={{ width: "100%", p: 2 }}
+                onClick={() => setNotificationSelected(notification)}
+              >
+                <Avatar>C</Avatar>
+                <Typography
+                  sx={{
+                    ml: 1,
+                    whiteSpace: "normal",
+                    textAlign: "justify",
+                  }}
                 >
-                  <Avatar>C</Avatar>
-                  <Typography
-                    sx={{
-                      ml: 1,
-                      whiteSpace: "normal",
-                      textAlign: "justify",
-                    }}
-                  >
-                    {notification.conteudo}
-                  </Typography>
-                </MenuItem>
-              )
-            )}
+                  {notification.conteudo}
+                </Typography>
+              </MenuItem>
+            ))}
           </Menu>
         </nav>
       </Toolbar>
@@ -536,8 +538,8 @@ const Header = () => {
           </IconButton>
           <IconButton
             onClick={() => {
-              handleMenuNotificacoes(true);
               markNotificationsAsRead();
+              handleMenuNotificacoes(true);
             }}
             sx={{
               mr: 2,
@@ -603,27 +605,25 @@ const Header = () => {
             </Typography>
           </Box>
           <Divider />
-          {[...notificationsNotRead, ...notificationsRead].map(
-            (notification) => (
-              <MenuItem
-                key={notification.guid_usuario}
-                component="button"
-                sx={{ width: "100%", p: 2 }}
-                onClick={() => setNotificationSelected(notification)}
+          {notifications.map((notification) => (
+            <MenuItem
+              key={notification.id}
+              component="button"
+              sx={{ width: "100%", p: 2 }}
+              onClick={() => setNotificationSelected(notification)}
+            >
+              <Avatar>C</Avatar>
+              <Typography
+                sx={{
+                  ml: 1,
+                  whiteSpace: "normal",
+                  textAlign: "justify",
+                }}
               >
-                <Avatar>C</Avatar>
-                <Typography
-                  sx={{
-                    ml: 1,
-                    whiteSpace: "normal",
-                    textAlign: "justify",
-                  }}
-                >
-                  {notification.conteudo}
-                </Typography>
-              </MenuItem>
-            )
-          )}
+                {notification.conteudo}
+              </Typography>
+            </MenuItem>
+          ))}
         </Menu>
       </Toolbar>
     );
