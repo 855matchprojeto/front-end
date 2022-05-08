@@ -48,7 +48,7 @@ const Interesses = () => {
           <CardGroup
             valores={marcados}
             cardsType="projetos"
-            userGuid={guid}
+            guidRef={guid}
           />
         </Grid>
       }

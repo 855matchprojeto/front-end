@@ -14,7 +14,6 @@ import CardGroup from "../components/CardGroup";
 import InfoIcon from '@mui/icons-material/Info';
 import {Dialog, DialogContent, DialogContentText, DialogTitle, Slide} from "@mui/material";
 
-
 //--estilo--
 const useStyles = makeStyles(theme => ({
   grid: {
@@ -144,7 +143,7 @@ const Home = () => {
   const [cardsProjetos, setCardsProjetos] = React.useState(false);
   const [pesquisa,setPesquisa] = React.useState("");
 
-  const [n_cards, setNcards] =  React.useState(10);
+  const [n_cards, setNcards] =  React.useState(5);
   const [typeSearch, setTypeSearch] = React.useState(false);
 
   // interesses e cursos para pesquisa
@@ -153,63 +152,20 @@ const Home = () => {
 
   // projetos do usuario
   const [meusProjetos, setMeusProjetos] = React.useState([]);
-  const [selectedProjeto, setSelectedProjeto] = React.useState(false);
 
-  const [guid, setGuid] = React.useState(false);
-  const [allInteresses, setAllInteresses] = React.useState({});
-  const [allCourses, setAllCourses] = React.useState({});
+  const [guidProjeto, setGuidProjeto] = React.useState(false);
+  const [guidUsuario, setGuidUsuario] = React.useState(false);
 
-  function fazerPesquisa(e)
-  {
-    if (e.key === 'Enter') 
-      setPesquisa(e.target.value)
-  }
+  const [allInteresses, setAllInteresses] = React.useState([]);
+  const [allCourses, setAllCourses] = React.useState([]);
   
   // mudando o número de cards por página, renderiza novamente 
   React.useEffect(() => 
   {
-      async function loadCards() 
-      { 
-        setPageLoading(true);
-
-        if(!typeSearch)
-        {
-          let aux = await getProjetos(pesquisa,false);
-          setCardsProjetos(aux.data);
-        }
-        else
-        {        
-          let dados = [selectedInteresses,selectedCourses,pesquisa];
-          let aux = await getProfiles(dados,n_cards);
-          setCardsProfiles(aux);
-        }
-
-        setPageLoading(false);
-      }
-
-      loadCards();
-
-  }, [n_cards, typeSearch, pesquisa, selectedCourses, selectedInteresses])
-
-  React.useEffect(() => 
-  {
-      async function loadFiltros() 
-      { 
-        setPageLoading(true);
-
-        let res = await doGetAllInteresses();
-        if (res.status === 200 && res.statusText === "OK") 
-          setAllInteresses(res.data);
-    
-        res = await doGetAllCourses();
-        if (res.status === 200 && res.statusText === "OK") 
-          setAllCourses(res.data); 
-      }
-
       async function getUserGuid() 
       { 
         let res = await doGetDataUser();
-        setGuid(res.data.guid_usuario);
+        setGuidUsuario(res.data.guid_usuario);
       }
 
       async function doGetMeusProjetos()
@@ -219,10 +175,51 @@ const Home = () => {
           setMeusProjetos(res.data);
       }
 
-      loadFiltros();
-      doGetMeusProjetos();
-      getUserGuid();
-  }, [])
+      async function loadFiltros() 
+      { 
+        let res = await doGetAllInteresses();
+        if (res.status === 200 && res.statusText === "OK") 
+          setAllInteresses(res.data);
+    
+        res = await doGetAllCourses();
+        if (res.status === 200 && res.statusText === "OK") 
+          setAllCourses(res.data); 
+      }
+
+      async function loadCards() 
+      { 
+        setPageLoading(true);
+
+        if(!typeSearch)
+        {
+          setGuidProjeto(false);
+          let aux = await getProjetos(pesquisa,false);
+          setCardsProjetos(aux.data);
+
+          getUserGuid();
+        }
+        else
+        {        
+          let dados = [selectedInteresses,selectedCourses,pesquisa];
+          let aux = await getProfiles(dados,n_cards);
+          setCardsProfiles(aux);
+
+          loadFiltros();
+          doGetMeusProjetos();
+        }
+
+        setPageLoading(false);
+      }
+
+      loadCards();
+
+  }, [n_cards, typeSearch, pesquisa, selectedCourses, selectedInteresses])
+
+  function fazerPesquisa(e)
+  {
+    if (e.key === 'Enter') 
+      setPesquisa(e.target.value)
+  }
 
   async function changePage(v)
   {
@@ -242,9 +239,9 @@ const Home = () => {
   function changeSelectedProjeto(v)
   {
     if(v)
-      setSelectedProjeto(v);
+      setGuidProjeto(v.guid);
     else
-      setSelectedProjeto(false);
+      setGuidProjeto(false);
   }
 
   return (
@@ -268,83 +265,86 @@ const Home = () => {
           </div>
 
           <Container>
-            { typeSearch && 
               <Grid container style={{marginTop: "5px"}} spacing={1} rowGap={1}>
                   
-                <Grid item xs={12}>
-                  <Autocomplete
-                    options={meusProjetos}
-                    getOptionLabel={(o) => o.titulo}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="Projeto"
-                    id="projeto"
-                    size="small"
-                    freeSolo
-                    style={{width:"50%",margin:"auto"}}
+                { typeSearch && meusProjetos &&
+                  <Grid item xs={12}>
+                    <Autocomplete
+                      options={meusProjetos}
+                      getOptionLabel={(o) => o.titulo}
+                      isOptionEqualToValue={(o, v) => o.id === v.id}
+                      name="Projeto"
+                      id="projeto"
+                      size="small"
+                      freeSolo
+                      style={{width:"50%",margin:"auto"}}
 
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        label="Escolha um projeto"
-                        fullWidth
-                      />
-                    )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          label="Escolha um projeto"
+                          fullWidth
+                        />
+                      )}
 
-                    onChange={(e,v) => changeSelectedProjeto(v)}
-                  />  
-                </Grid>
+                      onChange={(e,v) => changeSelectedProjeto(v)}
+                    />  
+                  </Grid>
+                }
 
-                <Grid item xs={6}>
-                  <Autocomplete
-                    options={allInteresses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    value={selectedInteresses}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="interesses"
-                    id="interesses"
-                    size="small"
-                    multiple
-                    freeSolo
+                { typeSearch &&
+                  <Grid item xs={6}>
+                    <Autocomplete
+                      options={allInteresses}
+                      getOptionLabel={(option) => option.nome_exibicao}
+                      value={selectedInteresses}
+                      isOptionEqualToValue={(o, v) => o.id === v.id}
+                      name="interesses"
+                      id="interesses"
+                      size="small"
+                      multiple
+                      freeSolo
 
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Filtrar Interesses"
-                        fullWidth
-                      />
-                    )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Filtrar Interesses"
+                          fullWidth
+                        />
+                      )}
 
-                    onChange={(e,v) => setSelectedInteresses(v)}
-                  />  
-                </Grid>
+                      onChange={(e,v) => setSelectedInteresses(v)}
+                    />  
+                  </Grid>
+                }
 
-                <Grid item xs={6}>
-                  <Autocomplete
-                    options={allCourses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    value={selectedCourses}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="cursos"
-                    id="cursos"
-                    size="small"
-                    multiple
-                    freeSolo
+                { typeSearch &&
+                  <Grid item xs={6}>
+                    <Autocomplete
+                      options={allCourses}
+                      getOptionLabel={(option) => option.nome_exibicao}
+                      value={selectedCourses}
+                      isOptionEqualToValue={(o, v) => o.id === v.id}
+                      name="cursos"
+                      id="cursos"
+                      size="small"
+                      multiple
+                      freeSolo
 
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Filtrar Cursos"
-                        fullWidth
-                      />
-                    )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Filtrar Cursos"
+                          fullWidth
+                        />
+                      )}
 
-                    onChange={(e, v) => setSelectedCourses(v)}
-                  />
-                </Grid>
-              
+                      onChange={(e, v) => setSelectedCourses(v)}
+                    />
+                  </Grid>
+                }
               </Grid>
-            }
           </Container>
 
           <Grid style={{width: "100%", display: "flex", justifyContent: "center", maxWidth: "1400px"}} p={1}>
@@ -384,8 +384,8 @@ const Home = () => {
             </Stack>
           </Grid>
 
-          {!typeSearch && guid && cardsProjetos && <CardGroup valores={cardsProjetos} userGuid={guid} cardsType="projetos"/>}
-          {typeSearch && guid && cardsProfiles && <CardGroup valores={cardsProfiles.items} projGuid={selectedProjeto.guid} cardsType="usuarios"/>}
+          {!typeSearch && cardsProjetos && <CardGroup guidRef={guidUsuario} cardsType="projetos" valores={cardsProjetos}/>}
+          { typeSearch && cardsProfiles && <CardGroup guidRef={guidProjeto} cardsType="usuarios" valores={cardsProfiles.items}/>}
 
           { cardsProfiles && typeSearch &&
             <>
