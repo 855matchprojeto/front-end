@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles';
 import { tooltipClasses } from '@mui/material/Tooltip';
 import PersonIcon from '@mui/icons-material/Person';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { putRel,getProjUserRel } from "../services/api_projetos";
+import { putRel } from "../services/api_projetos";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -72,8 +72,10 @@ const BigTooltip = styled(({ className, ...props }) => (
 const CardPerfil = (props) => {
   const classes = useStyles();
   let history = useHistory();
+
   const info = props.info;
   const projGuid = props.projGuid;
+  const status = props.status;
 
   const [btnInteresse, setBtnInteresse] = React.useState(false);
   const [componentLoading, setComponentLoading] = React.useState(true);
@@ -81,44 +83,50 @@ const CardPerfil = (props) => {
 
   React.useEffect(() => 
   {
-      async function getStatusInteresse()  
+    setComponentLoading(true);
+
+    if(projGuid)
+    {
+      if(status)
       {
-        setComponentLoading(true);
-        if(projGuid)
-        {
-          let aux = await getProjUserRel(projGuid, null, true);
-          aux = aux.filter(item => item.guid_usuario === info.guid_usuario);
-
-          if(aux.length === 1)
-          {
-            setHasMatch(aux[0].fl_match);
-            setBtnInteresse(true);
-          }
-          else
-            setBtnInteresse(false);
-        }
-        setComponentLoading(false);
+        setHasMatch(status.fl_match);
+        setBtnInteresse(true);
       }
-      
-      getStatusInteresse();
+      else
+      {
+        setHasMatch(false);
+        setBtnInteresse(false);
+      }
+    }
+    setComponentLoading(false);
 
-  }, [info.guid_usuario, projGuid])
+  }, [projGuid, status])
 
   async function changeInteresseNoUsuario()
   {    
     if(!btnInteresse)
     {
-      let body = {"fl_projeto_interesse": true};
-      await putRel(info.guid_usuario, projGuid, body);
+      let aux = {"fl_projeto_interesse": true};
+      aux = await putRel(info.guid_usuario, projGuid, aux);
+      
+      if(aux.status === 200)
+      {
+        setHasMatch(aux.data.fl_match);
+        setBtnInteresse(!btnInteresse);
+      }
     }
     else 
     {
-      let body = {"fl_projeto_interesse": false};
-      await putRel(info.guid_usuario, projGuid, body);
-      setHasMatch(false);
-    }
+      let aux = {"fl_projeto_interesse": false};
+      aux = await putRel(info.guid_usuario, projGuid, aux);
 
-    setBtnInteresse(!btnInteresse);
+      if(aux.status === 200)
+      {
+        setHasMatch(aux.data.fl_match);
+        setBtnInteresse(!btnInteresse);
+      }
+
+    }
   }
 
   return (

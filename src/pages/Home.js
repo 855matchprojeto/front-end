@@ -143,7 +143,7 @@ const Home = () => {
   const [cardsProjetos, setCardsProjetos] = React.useState(false);
   const [pesquisa,setPesquisa] = React.useState("");
 
-  const [n_cards, setNcards] =  React.useState(10);
+  const [n_cards, setNcards] =  React.useState(5);
   const [typeSearch, setTypeSearch] = React.useState(false);
 
   // interesses e cursos para pesquisa
@@ -156,8 +156,8 @@ const Home = () => {
   const [guidProjeto, setGuidProjeto] = React.useState(false);
   const [guidUsuario, setGuidUsuario] = React.useState(false);
 
-  const [allInteresses, setAllInteresses] = React.useState({});
-  const [allCourses, setAllCourses] = React.useState({});
+  const [allInteresses, setAllInteresses] = React.useState([]);
+  const [allCourses, setAllCourses] = React.useState([]);
   
   // mudando o número de cards por página, renderiza novamente 
   React.useEffect(() => 
