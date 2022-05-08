@@ -141,7 +141,7 @@ const Header = () => {
       const res = await getNotifications(false);
       const noti = res.data.reverse();
       setNotificationsNotRead(noti);
-      setNotifications([...noti, ...notifications]);
+      setNotifications((current) => [...noti, ...current]);
     };
 
     const fetchNotificationsRead = async () => {
