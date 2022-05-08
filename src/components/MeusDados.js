@@ -107,7 +107,8 @@ const MeusDados = () => {
   const imageUpload = useRef(null);
 
   React.useEffect(() => {
-    async function getDataUser() {
+    async function getDataUser() 
+    {
       setComponentLoading(true);
 
       let aux = getLoginData();
@@ -131,22 +132,20 @@ const MeusDados = () => {
       }
     }
 
-    async function getInteresses() {
-      const res = await doGetAllInteresses();
+    async function getSelect() 
+    {
+      let res = await doGetAllInteresses();
       if (res.status === 200 && res.statusText === "OK")
         setAllInteresses(res.data);
-    }
 
-    async function getAllCourses() {
-      const res = await doGetAllCourses();
+      res = await doGetAllCourses();
       if (res.status === 200 && res.statusText === "OK")
         setAllCourses(res.data);
       setComponentLoading(false);
     }
 
     getDataUser();
-    getInteresses();
-    getAllCourses();
+    getSelect();
   }, []);
 
   async function updateCourses(v) {
@@ -440,7 +439,6 @@ const MeusDados = () => {
           if (res.status === 200)
           {
             setNewEmail("");
-            console.log(res.data);
             setEmails(res.data.emails);    
           }
         }
