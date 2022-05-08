@@ -151,7 +151,7 @@ const Header = () => {
       }
     };
 
-    setInterval(fetchNotificationsNotRead, 30000);
+    setInterval(fetchNotificationsNotRead, 60000);
     fetchNotificationsNotRead();
     fetchNotificationsRead();
 
