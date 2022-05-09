@@ -1,43 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Grid, Button } from "@mui/material";
 import { useLocation } from "react-router";
-import {
-  TextField,
-  Card,
-  CardHeader,
-  Autocomplete,
-  Typography,
-  CardMedia,
-  CardContent,
-  CardActions,
-  DialogContent, 
-  Dialog
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import UploadIcon from "@mui/icons-material/Upload";
 import { useSnackbar } from "notistack";
-import LoadingBox from "../components/LoadingBox";
+
+import { Grid, Button } from "@mui/material";
+import { TextField, CardHeader, Autocomplete } from "@mui/material";
+import { Typography, CardActions, CardContent } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+
+import UploadIcon from "@mui/icons-material/Upload";
+
 import { doGetAllCourses, doGetAllInteresses } from "../services/api_projetos";
 import { getProjetos, updateProjetos } from "../services/api_projetos";
 import { doUpdateAreas, doUpdateCourses } from "../services/api_projetos";
+
 import { enqueueMySnackBar,Base64 } from "../services/util";
 import ProjectDefault from "../icons/project.svg";
+import CardPage from "../components/customCards/CardPage";
+import ImageDialog from "../components/dialogs/ImageDialog";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
-  grid: {
-    alignSelf: "center",
-    marginTop: theme.spacing(4),
-  },
-
-  card: {
-    width: "100%",
-    minHeight: "calc(100vh - 148px)",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",    
-  },
-
   cardContent: {
     display: "flex",
     flexDirection: "column",
@@ -50,6 +32,11 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0 0 3px" + (theme.palette.mode === "dark" ? theme.palette.grey[100] : theme.palette.common.black),
   }, 
 
+  mediaContainer: {
+    display: "flex", 
+    justifyContent: "center"
+  },
+
   actions: {
     display: "flex",
     justifyContent: "start",
@@ -58,44 +45,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 //---------
-
-function ImageDialog(props) 
-{
-  const [open, setOpen] = useState(false);
-  const classRef = props.classRef;
-  const urlImg = props.urlImg;
-  
-  function handleOpen()
-  {
-    if(urlImg !== null)
-      setOpen(true);
-  }
-
-  return (
-    <>
-      <CardMedia
-        alt="Not Found"
-        component={Button}
-        image={urlImg ? urlImg : ProjectDefault}
-        className={classRef}
-        onClick={() => handleOpen()}
-      >
-      </CardMedia>
-
-      <Dialog
-        PaperProps={{style:{maxWidth:"1000px", margin:"16px"}}}
-        open={open}
-        onClose={() => setOpen(false)}
-      >
-        <DialogContent style={{display:"flex", justifyContent:"center", padding:"15px 18px"}}>
-          <img alt="" src={urlImg} style={{maxHeight:"100%", maxWidth:"100%"}}>
-
-          </img>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
 
 const ProjetoEditar = () => {
   const mountedRef = useRef(true);
@@ -268,122 +217,124 @@ const ProjetoEditar = () => {
   }, [])
 
   return (
-    <>
-      {!pageLoading && (
-        <Grid container maxWidth="md" className={classes.grid}>
-          <Card className={classes.card}>
-            <CardHeader title={<Typography variant="h6">Editar Projeto</Typography>} />
-            <input
-              ref={imageRef}
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={(e) => updateImage(e)}
-            />
+    <CardPage loading={pageLoading}>
 
-            <ImageDialog urlImg={image} classRef={classes.media}/>
+      <CardHeader title={<Typography style={{display:"flex", justifyContent:"center"}} variant="h6">Editar Projeto</Typography>} />
+      <input
+        ref={imageRef}
+        type="file"
+        accept="image/*"
+        style={{ display: "none" }}
+        onChange={(e) => updateImage(e)}
+      />
+      <div className={classes.mediaContainer}>
+        <ImageDialog 
+          urlImg={image} 
+          classRef={classes.media}
+          cardMediaComp={Button}
+          cardMediaImg={image ? image : ProjectDefault}
+        />
+      </div>
+      
 
-            <Button
-              variant="outlined"
-              onClick={() => imageRef.current && imageRef.current.click()}
+      <Grid style={{display:"flex", justifyContent:"center"}}>
+        <Button
+          variant="outlined"
+          onClick={() => imageRef.current && imageRef.current.click()}
+          size="small"
+          sx={{ mt: 1, mb: 1 }}
+        >
+          Upload
+          <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
+        </Button> 
+      </Grid>
+
+      <CardContent className={classes.cardContent}>
+        <Grid container spacing={1} rowGap={1}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              type="input"
+              label="Título do projeto"
+              name="titulo"
+              value={fields ? fields.titulo : ""}
               size="small"
-              sx={{ mt: 1, mb: 1 }}
-            >
-              Upload
-              <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
-            </Button>
+              fullWidth
+              onChange={(e) => handleChangeFields(e, null)}
+            />
+          </Grid>
 
-            <CardContent className={classes.cardContent}>
-                <Grid container spacing={1} rowGap={1}>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      type="input"
-                      label="Título do projeto"
-                      name="titulo"
-                      value={fields ? fields.titulo : ""}
-                      size="small"
-                      fullWidth
-                      onChange={(e) => handleChangeFields(e, null)}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <TextField
-                      type="input"
-                      label="Descrição do projeto"
-                      name="descricao"
-                      value={fields ? fields.descricao : ""}
-                      onChange={(e) => handleChangeFields(e, null)}
-                      size="small"
-                      multiline
-                      fullWidth
-                    />
-                  </Grid>
+          <Grid item xs={12}>
+            <TextField
+              type="input"
+              label="Descrição do projeto"
+              name="descricao"
+              value={fields ? fields.descricao : ""}
+              onChange={(e) => handleChangeFields(e, null)}
+              size="small"
+              multiline
+              fullWidth
+            />
+          </Grid>
 
 
-                  <Grid item xs={12} md={6}>
-                    <Autocomplete
-                      options={allCourses}
-                      getOptionLabel={(option) => option.nome_exibicao}
-                      value={cursosSelecionados}
-                      isOptionEqualToValue={(o, v) => o.id === v.id}
-                      name="cursos"
-                      id="cursos"
-                      multiple
-                      freeSolo
-                      onChange={(e, v) => updateCourses(v)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Cursos"
-                          size="small"
-                          fullWidth
-                        />
-                      )}
-                    />
-                  </Grid>
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              options={allCourses}
+              getOptionLabel={(option) => option.nome_exibicao}
+              value={cursosSelecionados}
+              isOptionEqualToValue={(o, v) => o.id === v.id}
+              name="cursos"
+              id="cursos"
+              multiple
+              freeSolo
+              onChange={(e, v) => updateCourses(v)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Cursos"
+                  size="small"
+                  fullWidth
+                />
+              )}
+            />
+          </Grid>
 
-                  <Grid item xs={12} md={6}>
-                    <Autocomplete
-                      options={allInteresses}
-                      getOptionLabel={(option) => option.nome_exibicao}
-                      value={areasSelecionadas}
-                      isOptionEqualToValue={(o, v) => o.id === v.id}
-                      name="interesses"
-                      id="interesses"
-                      multiple
-                      freeSolo
-                      onChange={(e, v) => updateAreas(v)}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Áreas"
-                          size="small"
-                          fullWidth
-                        />
-                      )}
-                    />
-                  </Grid>
-                </Grid>
-            </CardContent>
-
-            <CardActions className={classes.actions}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleEditProject}
-                disabled={isLoading}
-              >
-                Salvar
-              </Button>
-            </CardActions>
-
-          </Card>
+          <Grid item xs={12} md={6}>
+            <Autocomplete
+              options={allInteresses}
+              getOptionLabel={(option) => option.nome_exibicao}
+              value={areasSelecionadas}
+              isOptionEqualToValue={(o, v) => o.id === v.id}
+              name="interesses"
+              id="interesses"
+              multiple
+              freeSolo
+              onChange={(e, v) => updateAreas(v)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Áreas"
+                  size="small"
+                  fullWidth
+                />
+              )}
+            />
+          </Grid>
         </Grid>
-      )}
+      </CardContent>
 
-      {pageLoading && <LoadingBox />}
-    </>
+      <CardActions className={classes.actions}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleEditProject}
+          disabled={isLoading}
+        >
+          Salvar
+        </Button>
+      </CardActions>
+
+    </CardPage>
   );
 };
 

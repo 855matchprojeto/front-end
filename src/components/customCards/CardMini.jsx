@@ -1,7 +1,7 @@
 import {Typography, Avatar, Box } from "@mui/material";
 import {Card, CardContent, Grid} from "@mui/material";
 
-function ParticipanteCard()
+function CardMini()
 {
   return (
     <Card>
@@ -31,4 +31,4 @@ function ParticipanteCard()
   );
 };
 
-export default ParticipanteCard;
+export default CardMini;
