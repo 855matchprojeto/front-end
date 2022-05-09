@@ -267,7 +267,7 @@ const Home = () => {
           <Container>
               <Grid container style={{marginTop: "5px"}} spacing={1} rowGap={1}>
                   
-                { typeSearch && meusProjetos &&
+                { typeSearch &&
                   <Grid item xs={12}>
                     <Autocomplete
                       options={meusProjetos}
@@ -277,7 +277,6 @@ const Home = () => {
                       id="projeto"
                       size="small"
                       freeSolo
-                      style={{width:"50%",margin:"auto"}}
 
                       renderInput={(params) => (
                         <TextField
@@ -294,7 +293,7 @@ const Home = () => {
                 }
 
                 { typeSearch &&
-                  <Grid item xs={6}>
+                  <Grid item xs={12} md={6}>
                     <Autocomplete
                       options={allInteresses}
                       getOptionLabel={(option) => option.nome_exibicao}
@@ -309,8 +308,9 @@ const Home = () => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
+                          variant="standard"
                           label="Filtrar Interesses"
-                          fullWidth
+                          
                         />
                       )}
 
@@ -320,7 +320,7 @@ const Home = () => {
                 }
 
                 { typeSearch &&
-                  <Grid item xs={6}>
+                  <Grid item xs={12} md={6}>
                     <Autocomplete
                       options={allCourses}
                       getOptionLabel={(option) => option.nome_exibicao}
@@ -335,6 +335,7 @@ const Home = () => {
                       renderInput={(params) => (
                         <TextField
                           {...params}
+                          variant="standard"
                           label="Filtrar Cursos"
                           fullWidth
                         />
@@ -362,11 +363,9 @@ const Home = () => {
                 variant="standard"
                 select
                 >
-                  <MenuItem value={5}>5</MenuItem>
-                  <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={20}>20</MenuItem>
-                  <MenuItem value={50}>50</MenuItem>
-                  <MenuItem value={100}>100</MenuItem>
+                  {
+                    [5,10,20,50,100].map((v,i) => <MenuItem key={i} value={v}>{v}</MenuItem>)
+                  }
               </TextField>
      
               <TextField 
@@ -381,13 +380,18 @@ const Home = () => {
                 <MenuItem value={false}>Projetos</MenuItem>
                 <MenuItem value={true}>Usuários</MenuItem>
               </TextField>
+
+
             </Stack>
           </Grid>
+          
+          <CardGroup 
+            guidRef={typeSearch ? guidUsuario : guidProjeto} 
+            cardsType={typeSearch ? "usuarios" : "projetos"} 
+            valores={typeSearch ? cardsProfiles.items : cardsProjetos}
+          />
 
-          {!typeSearch && cardsProjetos && <CardGroup guidRef={guidUsuario} cardsType="projetos" valores={cardsProjetos}/>}
-          { typeSearch && cardsProfiles && <CardGroup guidRef={guidProjeto} cardsType="usuarios" valores={cardsProfiles.items}/>}
-
-          { cardsProfiles && typeSearch &&
+          { typeSearch &&
             <>
               <Container className={classes.pagination}>
                 <IconButton aria-label="prev" disabled={!cardsProfiles.previous_cursor && !cardsProfiles.current_cursor} onClick={() => changePage(cardsProfiles.previous_cursor)}>
