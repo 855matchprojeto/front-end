@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import { IconButton } from "@mui/material";
 import {Dialog, DialogContent, DialogContentText, DialogTitle, Slide} from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 

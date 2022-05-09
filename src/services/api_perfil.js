@@ -122,7 +122,7 @@ export const getProfiles = async (data, page_size) => {
 };
 
 export const getProfilesGUID = async (guid) => {
-  return perf.get(`profiles/${guid}`).then((res) => res.data);
+  return perf.get(`profiles/${guid}`).then((res) => res);
 };
 
 // chamada para adicionar um telefone de contato

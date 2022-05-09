@@ -1,13 +1,6 @@
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  CardContent,
-  Card,
-  Tabs,
-  Tab,
-  Divider,
-} from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
+import { Box, Typography, CardContent, Card } from "@mui/material";
+import {  Tabs, Tab, Divider } from "@mui/material";
 import { Grid, CardMedia, CardActions, Button, Chip } from "@mui/material";
 import { useLocation } from "react-router";
 import { getProjetos } from "../services/api_projetos";
@@ -40,9 +33,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 //---------
 
-const ProjetoInfo = () => {
+function ProjetoInfo()
+{
+  const mountedRef = useRef(true);
   const [currentTab, setCurrentTab] = useState("sobre");
-  const [projectInfo, getProjectInfo] = useState(false);
+  const [projectInfo, setProjectInfo] = useState(false);
 
   const classes = useStyles();
 
@@ -53,7 +48,7 @@ const ProjetoInfo = () => {
   const pid = location.state?.data[0];
   const guid = location.state?.data[1];
   const userGuid = location.state?.data[2];
-  const [btnInteresse, setBtnInteresse] = React.useState(false);
+  const [btnInteresse, setBtnInteresse] = useState(false);
 
   async function updateRel() 
   {
@@ -72,26 +67,44 @@ const ProjetoInfo = () => {
   }
 
   useEffect(() => {
-    async function getStatusRel() 
-    {
-      let aux = await getProjUserRel(guid, true, null);
-      aux = aux.filter(item => item.guid_usuario === userGuid);
-
-      if(aux.length === 1)
-        setBtnInteresse(true);
-        setPageLoading(false);
-    }
-
-    async function getInfos() 
+    async function getData() 
     {
       setPageLoading(true);
-      const info = await getProjetos(pid, true);
-      getProjectInfo(info.data[0]);
+
+      await getProjetos(pid, true).then(res =>
+        {
+          if (!mountedRef.current)
+            return
+          if(res.status === 200)
+            setProjectInfo(res.data[0]);
+        }
+      )
+
+      await getProjUserRel(guid, true, null).then(res =>
+        {
+          if (!mountedRef.current)
+            return
+          if(res.status === 200)
+          {
+            let aux = res.filter(item => item.guid_usuario === userGuid);
+            if(aux.length === 1)
+              setBtnInteresse(true);
+          }
+          setPageLoading(false);
+        }
+      );
+      
     }
 
-    getInfos();
-    getStatusRel();
+    getData();
   }, [guid, pid, userGuid]);
+
+  // cleanup
+  useEffect(() => {
+    return () => { 
+      mountedRef.current = false
+    }
+  }, [])
 
   return (
     <>

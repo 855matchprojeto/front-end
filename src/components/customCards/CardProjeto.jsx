@@ -3,9 +3,9 @@ import { Card, Grid, CardMedia, Typography, Tooltip } from "@mui/material";
 import { CardContent, CardActions, Button, tooltipClasses } from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
 import { useHistory } from "react-router-dom";
-import { putRel } from "../services/api_projetos";
-import { limitString } from "../services/util";
-import ProjectDefault from "../icons/project.svg";
+import { putRel } from "../../services/api_projetos";
+import { limitString } from "../../services/util";
+import ProjectDefault from "../../icons/project.svg";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +61,8 @@ const BigTooltip = styled(({ className, ...props }) => (
 });
 //---------
 
-const CardProjeto = (props) => {
+function CardProjeto(props) 
+{
   const [btnInteresse, setBtnInteresse] = useState(false);
   const [componentLoading, setComponentLoading] = useState(true);
 

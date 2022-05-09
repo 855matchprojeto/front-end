@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 //---------
 
-const Base = (props) => {
+function Base(props) 
+{
   const classes = useStyles();
   const matches = useMediaQuery("(max-width: 900px)");
 

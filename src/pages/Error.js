@@ -20,7 +20,8 @@ const useStyles = makeStyles( ({
   }));
 //---------
 
-const Error = () => {
+function Error()
+{
   const classes = useStyles();
 
   return (

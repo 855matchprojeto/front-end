@@ -17,7 +17,8 @@ import { Logar } from "../services/api_auth";
 import { login } from "../services/auth";
 import { enqueueMySnackBar } from "../services/util";
 
-const Login = () => {
+function Login()
+{
   const { enqueueSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(false);
 

@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useRef, useEffect, useState} from "react";
 import { Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import CardProjeto from "./CardProjeto";
 import CardPerfil from "./CardPerfil";
-import { getUserProjRel,getProjUserRel } from "../services/api_projetos";
+import { getUserProjRel,getProjUserRel } from "../../services/api_projetos";
 
 //--estilo--
 const useStyles = makeStyles(theme => ({
@@ -16,39 +16,58 @@ const useStyles = makeStyles(theme => ({
 }));
 //---------
 
-const CardGroup = (props) => {
+function CardGroup(props)
+{
+  const mountedRef = useRef(true);
   const classes = useStyles();
   const cards = props.valores;
   const cardsType = props.cardsType;
   const guidRef = props.guidRef;
 
-  const [status, setStatus] = React.useState([]);
+  const [status, setStatus] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
 
     async function getStatus()
     {
       if(cardsType === "usuarios" && guidRef)
       {
-        let aux = await getProjUserRel(guidRef, null, true);
-        setStatus(aux);        
+        let aux = await getProjUserRel(guidRef, null, true).then(res =>
+          {
+            if (!mountedRef.current)
+              return
+            if(res.status === 200)
+              setStatus(aux);
+          }
+        )              
       }
       else
       {
-        let aux = await getUserProjRel(true, null, null);
-        if(aux.status === 200)
-        {
-          aux = aux.data;
-          aux.forEach(el => el.interesse_usuario_projeto.guid = el.guid);
-          aux = aux.map(el => el.interesse_usuario_projeto);
-          setStatus(aux);
-        }
+        await getUserProjRel(true, null, null).then(res => 
+          {
+            if (!mountedRef.current)
+              return
+            if(res.status === 200)
+            {
+              res = res.data;
+              res.forEach(el => el.interesse_usuario_projeto.guid = el.guid);
+              res = res.map(el => el.interesse_usuario_projeto);
+              setStatus(res);
+            }
+          }
+        )       
       }
-
     }
 
     getStatus();
   }, [cardsType, guidRef]);
+
+  // cleanup
+  useEffect(() => {
+    return () => { 
+      mountedRef.current = false
+    }
+  }, [])
 
   function checkStatus(card)
   { 

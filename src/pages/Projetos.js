@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { TabList, TabPanel, TabContext } from "@mui/lab";
 import { Tab, Box, Paper, Container } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -31,8 +31,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 //---------
 
-const Projetos = () => {
-  const [valueTab, setTabValue] = React.useState("projetos");
+function Projetos()
+{
+  const [valueTab, setTabValue] = useState("projetos");
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };

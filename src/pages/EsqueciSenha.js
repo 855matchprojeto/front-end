@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-//import { Link as RouterLink } from "react-router-dom";
 
 import {Formik} from 'formik'
 import * as Yup from "yup";
@@ -49,13 +48,14 @@ const useStyles = makeStyles(theme => ({
 }));
 //---------
 
-const EsqueciSenha = () => {
+function EsqueciSenha()
+{
   const classes = useStyles();
   let history = useHistory();
 
-  const [alert, setAlert] = React.useState(false);
-  const [severity, setSeverity] = React.useState('success');
-  const [alertContent, setAlertContent] = React.useState('');
+  const [alert, setAlert] = useState(false);
+  const [severity, setSeverity] = useState('success');
+  const [alertContent, setAlertContent] = useState('');
 
   function closeAlert(){
     setAlert(false)

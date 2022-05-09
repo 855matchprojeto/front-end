@@ -60,7 +60,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 //---------
 
-const CriarProjeto = () => {
+function CriarProjeto()
+{
   const values = {
     titulo: "",
     descricao: "",
@@ -76,6 +77,7 @@ const CriarProjeto = () => {
   });
 
   const classes = useStyles();
+  const mountedRef = useRef(true);
   const { enqueueSnackbar } = useSnackbar();
   const imageRef = useRef(null);
   const history = useHistory();
@@ -144,19 +146,35 @@ const CriarProjeto = () => {
     {
       setPageLoading(true);
 
-      let res = await doGetAllInteresses();
-      if (res.status === 200 && res.statusText === "OK") 
-        setAllInteresses(res.data);
+      await doGetAllInteresses().then(res =>
+        {
+          if (!mountedRef.current)
+            return
+          if (res.status === 200 && res.statusText === "OK") 
+            setAllInteresses(res.data);
+        }
+      );    
   
-      res = await doGetAllCourses();
-      if (res.status === 200 && res.statusText === "OK") 
-        setAllCourses(res.data); 
-
-      setPageLoading(false);
+      await doGetAllCourses().then(res =>
+        {
+          if (!mountedRef.current)
+            return
+          if (res.status === 200 && res.statusText === "OK") 
+            setAllCourses(res.data); 
+          setPageLoading(false);
+        }
+      )      
     }
 
     getSelects();
   }, []);
+
+  // cleanup
+  useEffect(() => {
+    return () => { 
+      mountedRef.current = false
+    }
+  }, [])
 
   return (
     <>

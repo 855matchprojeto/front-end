@@ -1,12 +1,8 @@
-import {
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  Avatar,
-  Box,
-} from "@mui/material";
-const ParticipanteCard = () => {
+import {Typography, Avatar, Box } from "@mui/material";
+import {Card, CardContent, Grid} from "@mui/material";
+
+function ParticipanteCard()
+{
   return (
     <Card>
       <CardContent>

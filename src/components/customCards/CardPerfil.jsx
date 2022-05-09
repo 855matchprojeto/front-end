@@ -1,14 +1,14 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Card, Grid, CardMedia, Typography } from "@mui/material";
 import { CardContent, CardActions, Button, Tooltip  } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { limitString } from "../services/util";
+import { limitString } from "../../services/util";
 import { useHistory } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { tooltipClasses } from '@mui/material/Tooltip';
 import PersonIcon from '@mui/icons-material/Person';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { putRel } from "../services/api_projetos";
+import { putRel } from "../../services/api_projetos";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -69,7 +69,8 @@ const BigTooltip = styled(({ className, ...props }) => (
 });
 //---------
 
-const CardPerfil = (props) => {
+function CardPerfil(props) 
+{
   const classes = useStyles();
   let history = useHistory();
 
@@ -77,11 +78,11 @@ const CardPerfil = (props) => {
   const projGuid = props.projGuid;
   const status = props.status;
 
-  const [btnInteresse, setBtnInteresse] = React.useState(false);
-  const [componentLoading, setComponentLoading] = React.useState(true);
-  const [hasMatch, setHasMatch] = React.useState(false);
+  const [btnInteresse, setBtnInteresse] = useState(false);
+  const [componentLoading, setComponentLoading] = useState(true);
+  const [hasMatch, setHasMatch] = useState(false);
 
-  React.useEffect(() => 
+  useEffect(() => 
   {
     setComponentLoading(true);
 

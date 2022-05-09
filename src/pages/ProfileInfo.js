@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from "react";
+import React,{ useRef, useState, useEffect } from "react";
 import {Box, Typography, CardContent, Card } from "@mui/material";
 import {Grid, Chip, Button, ListItem, ListItemText, List } from "@mui/material";
 import { useLocation } from "react-router";
@@ -70,14 +70,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 //---------
 
-const ProfileInfo = () => {
+function ProfileInfo()
+{
+  const mountedRef = useRef(true);
   const [profile, setProfile] = useState([]);
   const classes = useStyles();
+  const location =  useLocation();
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
-
-  const location =  useLocation();
   //const uid = location.state?.data[0];
   const guid = location.state?.data[1];
 
@@ -86,15 +87,29 @@ const ProfileInfo = () => {
        async function getInfos() 
        {
         setPageLoading(true);
-        let info = await getProfilesGUID(guid);
-        info["url_imagem"] = info.imagem_perfil !== null ? info.imagem_perfil.url : null;
-        setProfile(info);
+
+        await getProfilesGUID(guid).then(res =>
+          {
+            if(!mountedRef.current)
+              return;
+            if(res.status === 200)
+              setProfile(res.data);
+          }
+        )
+     
         setPageLoading(false);
        }
        
        getInfos();
 
    }, [guid])
+
+  // cleanup
+  useEffect(() => {
+    return () => { 
+      mountedRef.current = false
+    }
+  }, [])
 
   return (
     <>
