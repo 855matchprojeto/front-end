@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router";
 import { Grid, TextField, Autocomplete } from "@mui/material";
-import { Button, Card, CardMedia, CardContent, CardActions, DialogContent, Dialog } from "@mui/material";
+import { Button, Card, CardContent, CardActions } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import UploadIcon from "@mui/icons-material/Upload";
 
@@ -14,6 +14,7 @@ import { postProjetos } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
 import { enqueueMySnackBar,Base64 } from "../../services/util";
 import ProjectDefault from "../../icons/project.svg";                           
+import ImageDialog from "../dialogs/ImageDialog";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -58,44 +59,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 //---------
-
-function ImageDialog(props) 
-{
-  const [open, setOpen] = React.useState(false);
-  const classRef = props.classRef;
-  const urlImg = props.urlImg;
-  
-  function handleOpen()
-  {
-    if(urlImg !== null)
-      setOpen(true);
-  }
-
-  return (
-    <>
-      <CardMedia
-        alt="Not Found"
-        component={Button}
-        image={urlImg ? urlImg : ProjectDefault}
-        className={classRef}
-        onClick={() => handleOpen()}
-      >
-      </CardMedia>
-
-      <Dialog
-        PaperProps={{style:{maxWidth:"1000px", margin:"16px"}}}
-        open={open}
-        onClose={() => setOpen(false)}
-      >
-        <DialogContent style={{display:"flex", justifyContent:"center", padding:"15px 18px"}}>
-          <img alt="" src={urlImg} style={{maxHeight:"100%", maxWidth:"100%"}}>
-
-          </img>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
 
 const CriarProjeto = () => {
   const values = {
@@ -214,15 +177,20 @@ const CriarProjeto = () => {
           }) => (
             <Form className={classes.form}>
               <Card className={classes.card}>
-                  <input
-                    ref={imageRef}
-                    type="file"
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    onChange={(e) => updateImage(e)}
-                  />
+                <input
+                  ref={imageRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) => updateImage(e)}
+                />
 
-                <ImageDialog urlImg={image} classRef={classes.media}/>
+                <ImageDialog 
+                  urlImg={image} 
+                  classRef={classes.media} 
+                  cardMediaComp={Button} 
+                  cardMediaImg={image ? image : ProjectDefault}
+                />
 
                 <Button
                   variant="outlined"

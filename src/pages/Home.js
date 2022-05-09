@@ -11,8 +11,7 @@ import { getMeusProjetos } from "../services/api_projetos";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import CardGroup from "../components/CardGroup";
-import InfoIcon from '@mui/icons-material/Info';
-import {Dialog, DialogContent, DialogContentText, DialogTitle, Slide} from "@mui/material";
+import AlertDialog from "../components/dialogs/AlertDialog";
 
 //--estilo--
 const useStyles = makeStyles(theme => ({
@@ -86,51 +85,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 //---------
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-function AlertDialogSlide(props) 
-{
-  const [open, setOpen] = React.useState(false);
-  const type = props.type;
-
-  return (
-    <>
-      <IconButton aria-label="info" size="small" style={{borderRadius: "100%"}} onClick={() => setOpen(true)}>
-        <InfoIcon fontSize="inherit" />
-      </IconButton>
-
-      <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={() => setOpen(false)}
-        aria-describedby="dialog-desc"
-      >
-        <DialogTitle>{"Como pesquisar?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="dialog-desc">
-            { type ?
-              <> 
-                Busque por usuários da plataforma. Caso possuir algum projeto,
-                você pode selecionar algum específico, e buscar por usuários que se encaixam em algum perfil.
-                caso encontre algum que se encaixe, pode marcá-lo como de interesse do projeto.
-              </> 
-              :
-              <> 
-                Busque por projetos da plataforma. 
-                Caso encontre algum que goste, pode marcá-lo como de seu interesse.
-              </>
-            }
-            
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
 
 const Home = () => {
   const classes = useStyles();
@@ -351,7 +305,7 @@ const Home = () => {
           <Grid style={{width: "100%", display: "flex", justifyContent: "center", maxWidth: "1400px"}} p={1}>
             <Stack direction="row" spacing={1} className={matches ? classes.stackMobile : classes.stack}>    
               <div style={{display:"flex", alignItems:"center", justifyContent:"center"}}>   
-                <AlertDialogSlide type={typeSearch}/>
+                <AlertDialog type={typeSearch}/>
               </div>
 
               <TextField

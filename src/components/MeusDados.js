@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
-import {Typography, TextField, Grid, CardHeader, IconButton } from "@mui/material";
-import {CardContent, Card, CardActions } from "@mui/material";
-import { CardMedia, Button, Autocomplete, Dialog, DialogContent } from "@mui/material";
+import { Typography, TextField, Grid, CardHeader, IconButton } from "@mui/material";
+import { CardContent, Card, CardActions } from "@mui/material";
+import { Button, Autocomplete, Dialog, DialogContent } from "@mui/material";
 import { List, ListItem, ListItemText, Divider } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "./LoadingBox";
@@ -21,6 +21,7 @@ import { doUpdateCourses, doUpdateInteresse } from "../services/api_perfil";
 import { doSaveProfile } from "../services/api_perfil";
 
 import { enqueueMySnackBar, Base64, getLoginData } from "../services/util";
+import ImageDialog from "./dialogs/ImageDialog";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -54,44 +55,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 //---------
 
-function ImageDialog(props) 
-{
-  const [open, setOpen] = React.useState(false);
-  const classRef = props.classRef;
-  const urlImg = props.urlImg;
-  
-  function handleOpen()
-  {
-    if(urlImg !== null)
-      setOpen(true);
-  }
-
-  return (
-    <>
-      <CardMedia
-        alt="Not Found"
-        component={urlImg !== null ? Button : PersonIcon}
-        image={urlImg !== null ? urlImg : ""}
-        className={classRef}
-        onClick={() => handleOpen()}
-      >
-      </CardMedia>
-
-      <Dialog
-        open={open}
-        PaperProps={{style:{maxWidth:"1000px", margin:"16px"}}}
-        onClose={() => setOpen(false)}
-      >
-        <DialogContent style={{display:"flex", justifyContent:"center", padding:"15px 18px"}}>
-          <img alt="" src={urlImg} style={{maxHeight:"100%", maxWidth:"100%"}}>
-
-          </img>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
-
 const MeusDados = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -107,11 +70,14 @@ const MeusDados = () => {
 
   const [user, setUser] = useState(null);
 
-  const [MyCourses, setMyCourses] = useState([]);
-  const [MyNewCourses, setMyNewCourses] = useState([]);
+  const [myCourses, setMyCourses] = useState([]);
+  const [myNewCourses, setMyNewCourses] = useState([]);
 
-  const [MyInteresses, setMyInteresses] = useState([]);
+  const [myInteresses, setMyInteresses] = useState([]);
   const [myNewInteresses, setMyNewInteresses] = useState([]);
+
+  //const [myEmails, setMyEmails] = useState([]);  
+  //const [myPhones, setMyPhones] = useState([]);
 
   const [changeSelect, setChangeSelect] = useState(false);
 
@@ -132,6 +98,9 @@ const MeusDados = () => {
 
             setMyNewCourses(aux.cursos);
             setMyNewInteresses(aux.interesses);
+            
+            //setMyEmails(aux.emails);
+            //setMyEmails(aux.phones);
           }
         }
       );
@@ -205,14 +174,14 @@ const MeusDados = () => {
     if(user.imagem_perfil)
       aux['imagem_perfil'] = user.imagem_perfil;
 
-    let deleteArr = MyCourses.filter(({ id }) => !MyNewCourses.find((el) => el.id === id));
-    let insertArr = MyNewCourses.filter(({ id }) => !MyCourses.find((el) => el.id === id));
+    let deleteArr = myCourses.filter(({ id }) => !myNewCourses.find((el) => el.id === id));
+    let insertArr = myNewCourses.filter(({ id }) => !myCourses.find((el) => el.id === id));
 
     deleteArr.forEach(async (el) => {await doUpdateCourses(el.id, false)})
     insertArr.forEach(async (el) => {await doUpdateCourses(el.id, true)})
 
-    deleteArr = MyInteresses.filter(({ id }) => !myNewInteresses.find((el) => el.id === id));
-    insertArr = myNewInteresses.filter(({ id }) => !MyInteresses.find((el) => el.id === id));
+    deleteArr = myInteresses.filter(({ id }) => !myNewInteresses.find((el) => el.id === id));
+    insertArr = myNewInteresses.filter(({ id }) => !myInteresses.find((el) => el.id === id));
 
     deleteArr.forEach(async (el) => await doUpdateInteresse(el.id, false));
     insertArr.forEach(async (el) => await doUpdateInteresse(el.id, true));
@@ -471,7 +440,12 @@ const MeusDados = () => {
               onChange={(e) => updateImage(e)}
             />
 
-            <ImageDialog urlImg={user.url_imagem} classRef={classes.media}/>
+            <ImageDialog 
+              urlImg={user.url_imagem} 
+              classRef={classes.media} 
+              cardMediaComp={user.url_imagem !== null ? Button : PersonIcon} 
+              cardMediaImg={user.url_imagem !== null ? user.url_imagem : ""}
+            />
 
             <Button
               variant="outlined"
@@ -557,7 +531,7 @@ const MeusDados = () => {
                   <Autocomplete
                     options={allCourses}
                     getOptionLabel={(option) => option.nome_exibicao}
-                    value={MyNewCourses}
+                    value={myNewCourses}
                     isOptionEqualToValue={(o, v) => o.id === v.id}
                     name="cursos"
                     id="cursos"
@@ -604,7 +578,7 @@ const MeusDados = () => {
                 </Grid>
 
                 <Grid item lg={3} sm={6} xs={12}>
-                  <MyEmails/>             
+                  <MyEmails/>  
                 </Grid>
 
               </Grid>

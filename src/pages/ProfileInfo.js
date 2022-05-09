@@ -1,11 +1,12 @@
 import React,{ useState, useEffect } from "react";
 import {Box, Typography, CardContent, Card } from "@mui/material";
-import {Grid, Chip, CardMedia, ListItem, ListItemText, List } from "@mui/material";
+import {Grid, Chip, Button, ListItem, ListItemText, List } from "@mui/material";
 import { useLocation } from "react-router";
 import LoadingBox from "../components/LoadingBox";
 import { makeStyles } from "@mui/styles";
 import { getProfilesGUID } from "../services/api_perfil";
 import PersonIcon from '@mui/icons-material/Person';
+import ImageDialog from "../components/dialogs/ImageDialog";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -57,14 +58,20 @@ const useStyles = makeStyles((theme) => ({
     height: "150px", 
     border: "1px solid black", 
     padding: "0",
-    borderRadius: "4px",
+  },
+
+  mediaEmpty: {
+    width: "150px", 
+    height: "150px", 
+    border: "1px solid black", 
+    padding: "0",
     background: theme.palette.background.default
   }
 }));
 //---------
 
 const ProfileInfo = () => {
-  const [profInfo, getProfileInfo] = useState([]);
+  const [profile, setProfile] = useState([]);
   const classes = useStyles();
 
   // pagina carregando, esconde conteudo
@@ -79,8 +86,9 @@ const ProfileInfo = () => {
        async function getInfos() 
        {
         setPageLoading(true);
-        const info = await getProfilesGUID(guid);
-        getProfileInfo(info);
+        let info = await getProfilesGUID(guid);
+        info["url_imagem"] = info.imagem_perfil !== null ? info.imagem_perfil.url : null;
+        setProfile(info);
         setPageLoading(false);
        }
        
@@ -92,15 +100,16 @@ const ProfileInfo = () => {
     <>
       { !pageLoading &&
         <Grid container className={classes.grid}>
-          { profInfo &&
+          { profile &&
             <Card className={classes.card}>
 
               <div className={classes.mediaContainer}>
-                <CardMedia
-                    alt="Not Found"
-                    component={(profInfo.imagem_perfil !== null) ? "img" : PersonIcon}
-                    image={(profInfo.imagem_perfil !== null) ? profInfo.imagem_perfil.url : ""} 
-                    className={classes.media}
+
+                <ImageDialog 
+                  urlImg={profile.url_imagem} 
+                  classRef={profile.url_imagem ? classes.media : classes.mediaEmpty} 
+                  cardMediaComp={profile.url_imagem !== null ? Button : PersonIcon} 
+                  cardMediaImg={profile.url_imagem  !== null ? profile.url_imagem : ""} 
                 />
               </div>
         
@@ -109,37 +118,37 @@ const ProfileInfo = () => {
                 
                   <Grid item xs={12}>
                     <Typography variant="h5" className={classes.title}>
-                      {profInfo.nome_exibicao}
+                      {profile.nome_exibicao}
                     </Typography>
                   </Grid>
                   
-                  { profInfo.bio &&
+                  { profile.bio &&
                     <Grid item xs={12}>
                       <Typography variant="subtitle1" className={classes.subtitle}>
                         Bio:
                       </Typography>
 
                       <Typography component="div" variant="body2" className={classes.bio}>
-                        {profInfo.bio}
+                        {profile.bio}
                       </Typography>
                     </Grid>
                   }
 
-                  { profInfo.cursos.length > 0 &&
+                  { profile.cursos.length > 0 &&
                     <Grid item xs={12}>
                       <Typography variant="subtitle1" className={classes.subtitle}>
                         Cursos:
                       </Typography>
                       <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                         { 
-                          profInfo.cursos.map((crs, index) => (
+                          profile.cursos.map((crs, index) => (
                             <Chip key={index} label={crs.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />                            
                         ))}
                         </Box>
                     </Grid>
                   }
 
-                  { profInfo.interesses.length > 0 &&
+                  { profile.interesses.length > 0 &&
                     <Grid item xs={12}>
                       <Typography variant="subtitle1" className={classes.subtitle}>
                         Interesses:
@@ -147,14 +156,14 @@ const ProfileInfo = () => {
 
                       <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                         { 
-                          profInfo.interesses.map((its, index) => (
+                          profile.interesses.map((its, index) => (
                             <Chip key={index} label={its.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />
                         ))}
                         </Box>
                     </Grid>
                   }
 
-                  { profInfo.phones.length > 0 &&                 
+                  { profile.phones.length > 0 &&                 
                     <Grid item xs={12}>
                       <Typography variant="subtitle1" className={classes.subtitle}>
                         Números de contato:
@@ -162,7 +171,7 @@ const ProfileInfo = () => {
 
                       <List>
                         {
-                          profInfo.phones.map((phoneObj, index) => 
+                          profile.phones.map((phoneObj, index) => 
                             <ListItem key={index} disableGutters disablePadding>
                               <ListItemText>
                                 <ListItemText primary={phoneObj.phone} />
@@ -174,7 +183,7 @@ const ProfileInfo = () => {
                     </Grid>
                   }
                   
-                  { profInfo.emails.length > 0 &&
+                  { profile.emails.length > 0 &&
                     <Grid item xs={12}>
                       <Typography variant="subtitle1" className={classes.subtitle}>
                         Emails de contato:
@@ -182,7 +191,7 @@ const ProfileInfo = () => {
 
                       <List>
                         {
-                          profInfo.emails.map((emailObj, index) => 
+                          profile.emails.map((emailObj, index) => 
                             <ListItem key={index} disableGutters disablePadding>
                               <ListItemText>
                                 <ListItemText primary={emailObj.email} />
