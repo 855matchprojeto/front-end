@@ -57,7 +57,8 @@ const useStyles = makeStyles(theme => ({
 }));
 //---------
 
-const Cadastro = () => {
+function Cadastro()
+{
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   let history = useHistory();

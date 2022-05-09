@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef, useState, useEffect} from "react";
 import { Container, Grid, Typography, useMediaQuery, IconButton } from "@mui/material";
 import { Autocomplete, Box, TextField, MenuItem, Stack, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -10,7 +10,7 @@ import {doGetAllCourses,doGetAllInteresses,doGetDataUser} from "../services/api_
 import { getMeusProjetos } from "../services/api_projetos";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import CardGroup from "../components/CardGroup";
+import CardGroup from "../components/customCards/CardGroup";
 import AlertDialog from "../components/dialogs/AlertDialog";
 
 //--estilo--
@@ -86,88 +86,116 @@ const useStyles = makeStyles(theme => ({
 }));
 //---------
 
-const Home = () => {
+function Home()
+{
+  const mountedRef = useRef(true);
   const classes = useStyles();
   const matches = useMediaQuery('(max-width: 600px)');
 
   // pagina carregando, esconde conteudo
-  const [pageLoading, setPageLoading] = React.useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
 
-  const [cardsProfiles, setCardsProfiles] = React.useState(false);
-  const [cardsProjetos, setCardsProjetos] = React.useState(false);
-  const [pesquisa,setPesquisa] = React.useState("");
+  const [cardsProfiles, setCardsProfiles] = useState(false);
+  const [cardsProjetos, setCardsProjetos] = useState(false);
+  const [pesquisa,setPesquisa] = useState("");
 
-  const [n_cards, setNcards] =  React.useState(5);
-  const [typeSearch, setTypeSearch] = React.useState(false);
+  const [n_cards, setNcards] =  useState(5);
+  const [typeSearch, setTypeSearch] = useState(false);
 
   // interesses e cursos para pesquisa
-  const  [selectedInteresses, setSelectedInteresses] = React.useState([]);
-  const  [selectedCourses, setSelectedCourses] = React.useState([]);
+  const  [selectedInteresses, setSelectedInteresses] = useState([]);
+  const  [selectedCourses, setSelectedCourses] = useState([]);
 
   // projetos do usuario
-  const [meusProjetos, setMeusProjetos] = React.useState([]);
+  const [meusProjetos, setMeusProjetos] = useState([]);
 
-  const [guidProjeto, setGuidProjeto] = React.useState(false);
-  const [guidUsuario, setGuidUsuario] = React.useState(false);
+  const [guidProjeto, setGuidProjeto] = useState(false);
+  const [guidUsuario, setGuidUsuario] = useState(false);
 
-  const [allInteresses, setAllInteresses] = React.useState([]);
-  const [allCourses, setAllCourses] = React.useState([]);
+  const [allInteresses, setAllInteresses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
   
   // mudando o número de cards por página, renderiza novamente 
-  React.useEffect(() => 
+  useEffect(() => 
   {
-      async function getUserGuid() 
-      { 
-        let res = await doGetDataUser();
-        setGuidUsuario(res.data.guid_usuario);
-      }
-
-      async function doGetMeusProjetos()
-      {
-        const res = await getMeusProjetos();
-        if (res.status === 200) 
-          setMeusProjetos(res.data);
-      }
-
-      async function loadFiltros() 
-      { 
-        let res = await doGetAllInteresses();
-        if (res.status === 200 && res.statusText === "OK") 
-          setAllInteresses(res.data);
-    
-        res = await doGetAllCourses();
-        if (res.status === 200 && res.statusText === "OK") 
-          setAllCourses(res.data); 
-      }
-
       async function loadCards() 
       { 
         setPageLoading(true);
-
+        
         if(!typeSearch)
         {
           setGuidProjeto(false);
-          let aux = await getProjetos(pesquisa,false);
-          setCardsProjetos(aux.data);
 
-          getUserGuid();
+          await getProjetos(pesquisa,false).then(res =>
+            {
+              if (!mountedRef.current)
+                return
+              if(res.status === 200)
+                setCardsProjetos(res.data);
+            }
+          );
+
+          await doGetDataUser().then(res =>
+            {
+              if (!mountedRef.current)
+                return
+              if(res.status === 200)
+                setGuidUsuario(res.data.guid_usuario);
+              setPageLoading(false);
+            }
+          );
         }
         else
         {        
           let dados = [selectedInteresses,selectedCourses,pesquisa];
-          let aux = await getProfiles(dados,n_cards);
-          setCardsProfiles(aux);
+          await getProfiles(dados,n_cards).then(res =>
+            {
+              if (!mountedRef.current)
+                return
+              setCardsProfiles(res);
+            }
+          );
 
-          loadFiltros();
-          doGetMeusProjetos();
+          await doGetAllInteresses().then(res =>
+            {
+              if (!mountedRef.current)
+                return
+              if (res.status === 200 && res.statusText === "OK") 
+                setAllInteresses(res.data);
+            }
+          )
+          
+          await doGetAllCourses().then(res =>
+            {
+              if (!mountedRef.current)
+                return
+              if (res.status === 200 && res.statusText === "OK") 
+                setAllCourses(res.data); 
+            }
+          )  
+
+          await getMeusProjetos().then(res =>
+            {
+              if (!mountedRef.current)
+                return
+              if (res.status === 200) 
+                setMeusProjetos(res.data);
+              setPageLoading(false);
+            }
+          ); 
         }
-
-        setPageLoading(false);
       }
 
       loadCards();
 
   }, [n_cards, typeSearch, pesquisa, selectedCourses, selectedInteresses])
+
+  // cleanup
+  useEffect(() => {
+    return () => { 
+      mountedRef.current = false
+    }
+  }, [])
 
   function fazerPesquisa(e)
   {
@@ -340,7 +368,7 @@ const Home = () => {
           </Grid>
           
           <CardGroup 
-            guidRef={typeSearch ? guidUsuario : guidProjeto} 
+            guidRef={typeSearch ? guidProjeto : guidUsuario} 
             cardsType={typeSearch ? "usuarios" : "projetos"} 
             valores={typeSearch ? cardsProfiles.items : cardsProjetos}
           />

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Grid, Typography, Box } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { getUserProjRel } from "../../services/api_projetos";
 import { doGetDataUser } from "../../services/api_perfil";
 import LoadingBox from "../LoadingBox";
-import CardGroup from "../CardGroup";
+import CardGroup from "../customCards/CardGroup";
 
 const useStyles = makeStyles((theme) => ({
   font: {
@@ -14,30 +14,49 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Interesses = () => {
+function Interesses()
+{
+  const mountedRef = useRef(true);
   const classes = useStyles();
   const [marcados, setMarcados] = useState([]);
   const [componentLoading, setComponentLoading] = useState(true);
-  const [guid, setGuid] = React.useState("");
+  const [guid, setGuid] = useState("");
 
   useEffect(() => {
-    async function doGetUserProjRel() 
-    {
-      setComponentLoading(true);
-      let aux = await getUserProjRel(true, null, null);
-      setMarcados(aux.data);
-    }
 
-    async function getUserGuid() 
+    async function getData() 
     { 
-      let res = await doGetDataUser();
-      setGuid(res.data.guid_usuario);
-      setComponentLoading(false);
+      setComponentLoading(true);
+      
+      await getUserProjRel(true, null, null).then(res =>
+        {
+          if (!mountedRef.current)
+            return
+          if(res.status === 200)
+            setMarcados(res.data);
+        }
+      );
+
+      await doGetDataUser().then(res =>
+        {
+          if (!mountedRef.current)
+            return
+          if(res.status === 200)
+            setGuid(res.data.guid_usuario);
+          setComponentLoading(false);
+        }
+      )
     }
 
-    doGetUserProjRel();
-    getUserGuid();
+    getData();
   }, []);
+
+  // cleanup
+  useEffect(() => {
+    return () => { 
+      mountedRef.current = false
+    }
+  }, [])
 
   const boxSx = {mt: 4, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"};
   
@@ -45,11 +64,7 @@ const Interesses = () => {
     <>
       { !componentLoading && marcados.length > 0 &&
         <Grid container spacing={0.5} sx={{ py: 1.5, pl: 1 }}>
-          <CardGroup
-            valores={marcados}
-            cardsType="projetos"
-            guidRef={guid}
-          />
+          <CardGroup valores={marcados} cardsType="projetos" guidRef={guid}/>
         </Grid>
       }
 

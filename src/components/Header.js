@@ -91,7 +91,8 @@ const useStyles = makeStyles(theme => ({
 
 //---------
 
-const Header = () => {
+function Header()
+{
   const classes = useStyles();
   const [view, setView] = useState({ mobileView: false, drawerOpen: false });
 

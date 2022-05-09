@@ -1,8 +1,8 @@
 import React from "react";
 import { Container, CircularProgress} from "@mui/material";
 
-const LoadingBox = (props) => {
-
+function LoadingBox()
+{
     return(
         <Container style={{display: "flex", height: "100%", alignItems: "center", justifyContent: "center",alignSelf: "center"}} maxWidth="lg">
           <CircularProgress size={100} color="secondary" />

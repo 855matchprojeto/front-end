@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Grid, Typography, Box, IconButton } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { getMeusProjetos } from "../../services/api_projetos";
 import LoadingBox from "../LoadingBox";
-import CardGroup from "../CardGroup";
+import CardGroup from "../customCards/CardGroup";
 import { ReactComponent as AddIcon } from "../../icons/add-icon.svg";
 
 const useStyles = makeStyles((theme) => ({
@@ -14,7 +14,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MeusProjetos = ({ setTabValue }) => {
+function MeusProjetos({ setTabValue }) 
+{
+  const mountedRef = useRef(true);
   const classes = useStyles();
   const [meusProjetos, setMeusProjetos] = useState([]);
   const [componentLoading, setComponentLoading] = useState(true);
@@ -23,14 +25,26 @@ const MeusProjetos = ({ setTabValue }) => {
     async function doGetMeusProjetos() {
       setComponentLoading(true);
 
-      const res = await getMeusProjetos();
-      if (res.status === 200) setMeusProjetos(res.data);
-
-      setComponentLoading(false);
+      await getMeusProjetos().then(res =>
+        {
+          if (!mountedRef.current)
+            return
+          if (res.status === 200) 
+            setMeusProjetos(res.data);
+          setComponentLoading(false);
+        }
+      )
     }
 
     doGetMeusProjetos();
   }, []);
+
+  // cleanup
+  useEffect(() => {
+    return () => { 
+      mountedRef.current = false
+    }
+  }, [])
 
   const boxSx = {mt: 4, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"};
 

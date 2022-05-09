@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Grid, Button } from "@mui/material";
 import { useLocation } from "react-router";
 import {
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ImageDialog(props) 
 {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const classRef = props.classRef;
   const urlImg = props.urlImg;
   
@@ -98,21 +98,22 @@ function ImageDialog(props)
 }
 
 const ProjetoEditar = () => {
+  const mountedRef = useRef(true);
   const { enqueueSnackbar } = useSnackbar();
   const location = useLocation();
   const pid = location.state?.data[0];
   const guid = location.state?.data[1];
   const classes = useStyles();
-  const imageRef = React.useRef();
+  const imageRef = useRef();
 
-  const [fields, setFields] = React.useState(null);
+  const [fields, setFields] = useState(null);
 
-  const [image, setImage] = React.useState(null);
-  const [imageFile, setImageFile] = React.useState(null);
+  const [image, setImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
-  const [pageLoading, setPageLoading] = React.useState(true);
-  const [allInteresses, setAllInteresses] = React.useState([]);
-  const [allCourses, setAllCourses] = React.useState([]);
+  const [pageLoading, setPageLoading] = useState(true);
+  const [allInteresses, setAllInteresses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
 
   async function updateImage(e) 
   {
@@ -132,10 +133,10 @@ const ProjetoEditar = () => {
   }
 
   // enquanto estiver criando um projeto, nao deixa clicar no botao
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [areasSelecionadas, setAreasSelecionadas] = React.useState([]);
-  const [cursosSelecionados, setCursosSelecionados] = React.useState([]);
+  const [areasSelecionadas, setAreasSelecionadas] = useState([]);
+  const [cursosSelecionados, setCursosSelecionados] = useState([]);
 
   const handleChangeFields = (e) => {
     setFields({ ...fields, [e.target.name]: e.target.value });
@@ -212,33 +213,59 @@ const ProjetoEditar = () => {
   useEffect(() => {
     async function getDados() {
       setPageLoading(true);
-      let res = await doGetAllInteresses();
-      if (res.status === 200 && res.statusText === "OK")
-        setAllInteresses(res.data);
 
-      res = await doGetAllCourses();
-      if (res.status === 200 && res.statusText === "OK")
-        setAllCourses(res.data);
-      setPageLoading(false);
+      await doGetAllInteresses().then(res => 
+        {
+          if (!mountedRef.current)
+            return
+          if (res.status === 200 && res.statusText === "OK")
+            setAllInteresses(res.data);
+        }
+      )
+      
+      await doGetAllCourses().then(res => 
+        {
+          if (!mountedRef.current)
+            return
+          if (res.status === 200 && res.statusText === "OK")
+            setAllCourses(res.data);
+          setPageLoading(false);
+        }
+      )
+      
     }
 
     getDados();
   }, []);
 
   useEffect(() => {
-    async function getInfos() {
-      // faz uma chamada de api com o pid (project id) e seta dados basicos
-      const info = await getProjetos(pid, true);
-      if (info.status === 200) {
-        const infoData = info.data[0];
-        setFields(infoData);
-        setCursosSelecionados(infoData.cursos);
-        setAreasSelecionadas(infoData.interesses);
-      }
+    async function getInfos() 
+    {
+      await getProjetos(pid, true).then(res =>
+        {
+          if (!mountedRef.current)
+            return
+          if (res.status === 200) 
+          {
+            const infoData = res.data[0];
+            setFields(infoData);
+            setCursosSelecionados(infoData.cursos);
+            setAreasSelecionadas(infoData.interesses);
+          }
+        }
+      );
+      
     }
 
     getInfos();
   }, [pid]);
+
+  // cleanup
+  useEffect(() => {
+    return () => { 
+      mountedRef.current = false
+    }
+  }, [])
 
   return (
     <>

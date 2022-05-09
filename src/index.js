@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { createContext, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import { SnackbarProvider } from "notistack";
 import {
@@ -34,10 +34,11 @@ import { getPrefMode,setPrefMode } from "./services/util";
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 
-const RouteProtection = () => {
-  const [mode, setMode] = React.useState(getPrefMode);
+function RouteProtection()
+{
+  const [mode, setMode] = useState(getPrefMode);
 
-  const colorMode = React.useMemo(
+  const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -47,7 +48,7 @@ const RouteProtection = () => {
     [mode],
   );
 
-  const myTheme = React.useMemo(
+  const myTheme = useMemo(
     () =>
       createTheme({
         palette: {
