@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
-import {Typography, TextField, Grid, CardHeader, IconButton } from "@mui/material";
-import {CardContent, Card, CardActions } from "@mui/material";
-import { CardMedia, Button, Autocomplete, Dialog, DialogContent } from "@mui/material";
+import React, { useRef, useState, useEffect } from "react";
+import { Typography, TextField, Grid, CardHeader, IconButton } from "@mui/material";
+import { CardContent, Card, CardActions } from "@mui/material";
+import { Button, Autocomplete, Dialog, DialogContent } from "@mui/material";
 import { List, ListItem, ListItemText, Divider } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LoadingBox from "./LoadingBox";
@@ -21,6 +21,7 @@ import { doUpdateCourses, doUpdateInteresse } from "../services/api_perfil";
 import { doSaveProfile } from "../services/api_perfil";
 
 import { enqueueMySnackBar, Base64, getLoginData } from "../services/util";
+import ImageDialog from "./dialogs/ImageDialog";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -54,200 +55,115 @@ const useStyles = makeStyles((theme) => ({
 }));
 //---------
 
-function ImageDialog(props) 
-{
-  const [open, setOpen] = React.useState(false);
-  const classRef = props.classRef;
-  const urlImg = props.urlImg;
-  
-  function handleOpen()
-  {
-    if(urlImg !== null)
-      setOpen(true);
-  }
-
-  return (
-    <>
-      <CardMedia
-        alt="Not Found"
-        component={urlImg !== null ? Button : PersonIcon}
-        image={urlImg !== null ? urlImg : ""}
-        className={classRef}
-        onClick={() => handleOpen()}
-      >
-      </CardMedia>
-
-      <Dialog
-        open={open}
-        PaperProps={{style:{maxWidth:"1000px", margin:"16px"}}}
-        onClose={() => setOpen(false)}
-      >
-        <DialogContent style={{display:"flex", justifyContent:"center", padding:"15px 18px"}}>
-          <img alt="" src={urlImg} style={{maxHeight:"100%", maxWidth:"100%"}}>
-
-          </img>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
-
 const MeusDados = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [componentLoading, setComponentLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [componentLoading, setComponentLoading] = useState(true);
 
-  const [loginInfo, setLoginInfo] = React.useState(false);
+  const [loginInfo, setLoginInfo] = useState(false);
 
-  const [user, setUser] = React.useState(null);
-  const [allInteresses, setAllInteresses] = React.useState([]);
-  const [allCourses, setAllCourses] = React.useState([]);
+  const [allInteresses, setAllInteresses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
   const imageUpload = useRef(null);
 
-  React.useEffect(() => {
-    async function getDataUser() {
+  const [user, setUser] = useState(null);
+
+  const [myCourses, setMyCourses] = useState([]);
+  const [myNewCourses, setMyNewCourses] = useState([]);
+
+  const [myInteresses, setMyInteresses] = useState([]);
+  const [myNewInteresses, setMyNewInteresses] = useState([]);
+
+  //const [myEmails, setMyEmails] = useState([]);  
+  //const [myPhones, setMyPhones] = useState([]);
+
+  const [changeSelect, setChangeSelect] = useState(false);
+
+  useEffect(() => {
+    
+    async function getDataUser() 
+    {
+      setIsLoading(true);
+
+      await doGetDataUser().then(res =>
+        {
+          if(res.status === 200)
+          {
+            let aux = res.data;
+
+            setMyCourses(aux.cursos);
+            setMyInteresses(aux.interesses);
+
+            setMyNewCourses(aux.cursos);
+            setMyNewInteresses(aux.interesses);
+            
+            //setMyEmails(aux.emails);
+            //setMyEmails(aux.phones);
+          }
+        }
+      );
+
+      setIsLoading(false);
+    }
+
+    getDataUser();
+  },[changeSelect])
+
+  useEffect(() => {
+    async function getData() 
+    {
       setComponentLoading(true);
 
       let aux = getLoginData();
       setLoginInfo({"email": aux.email, "username": aux.username});
 
-      const res = await doGetDataUser();
-      if (res.status === 200) {
-        setUser({
-          name: res.data.nome_exibicao.split(" ")[0],
-          sobrenome: res.data.nome_exibicao.split(" ")[1],
-          interesses: res.data.interesses,
-          bio: res.data.bio !== null ? res.data.bio : "",
-          cursos: res.data.cursos,
-          email:
-            res.data.emails && res.data.emails.length > 0
-              ? res.data.emails[0].email
-              : "",
-          url_imagem:
-            res.data.imagem_perfil !== null ? res.data.imagem_perfil.url : null,
-        });
-      }
-    }
+      await doGetDataUser().then(res =>
+        {
+          if (res.status === 200) 
+          {
+            aux = res.data;
+            let body = {
+              name: aux.nome_exibicao.split(" ")[0],
+              sobrenome: aux.nome_exibicao.split(" ")[1],
+              bio: aux.bio !== null ? aux.bio : "",
+              url_imagem: aux.imagem_perfil !== null ? aux.imagem_perfil.url : null,
+            };
+    
+            setUser(body);
 
-    async function getInteresses() {
-      const res = await doGetAllInteresses();
-      if (res.status === 200 && res.statusText === "OK")
-        setAllInteresses(res.data);
-    }
+            setMyCourses(aux.cursos);
+            setMyInteresses(aux.interesses);
+    
+            setMyNewCourses(aux.cursos);
+            setMyNewInteresses(aux.interesses);
+          }
+        }
+      );
 
-    async function getAllCourses() {
-      const res = await doGetAllCourses();
-      if (res.status === 200 && res.statusText === "OK")
-        setAllCourses(res.data);
+      await doGetAllInteresses().then(res =>
+        {
+          if(res.status === 200 && res.statusText === "OK")
+          {setAllInteresses(res.data);}
+        }
+      );
+
+      await doGetAllCourses().then(res =>
+        {
+          if (res.status === 200 && res.statusText === "OK")
+          {setAllCourses(res.data);}
+        }
+      )
+
       setComponentLoading(false);
     }
 
-    getDataUser();
-    getInteresses();
-    getAllCourses();
+    getData();
   }, []);
 
-  async function updateCourses(v) {
-    let aux = user.cursos;
-    let flag;
-
-    if (aux.length > v.length) {
-      //delete
-      aux = aux.filter(({ id }) => !v.find((el) => el.id === id));
-      flag = false;
-    } //insert
-    else {
-      aux = v.filter(({ id }) => !aux.find((el) => el.id === id));
-      flag = true;
-    }
-
-    const res = await doUpdateCourses(aux[0].id, flag);
-    if (flag) 
-    {
-      if (res.status === 201) 
-      {
-        const msg = "Curso adicionado com sucesso!";
-        const type = "success";
-        enqueueMySnackBar(enqueueSnackbar, msg, type);
-        setUser({ ...user, cursos: v });
-      } 
-      else 
-      {
-        const msg = "Houve um erro ao adicionar o curso!";
-        const type = "error";
-        enqueueMySnackBar(enqueueSnackbar, msg, type);
-      }
-    } 
-    else 
-    {
-      if (res.status === 204) 
-      {
-        const msg = "Curso removido com sucesso!";
-        const type = "success";
-        enqueueMySnackBar(enqueueSnackbar, msg, type);
-        setUser({ ...user, cursos: v });
-      } 
-      else 
-      {
-        const msg = "Houve um erro ao remover o curso!";
-        const type = "error";
-        enqueueMySnackBar(enqueueSnackbar, msg, type);
-      }
-    }
-  }
-
-  async function updateInteresses(v) {
-    let aux = user.interesses;
-    let flag;
-
-    if (aux.length > v.length) {
-      //delete
-      aux = aux.filter(({ id }) => !v.find((el) => el.id === id));
-      flag = false;
-    } //insert
-    else {
-      aux = v.filter(({ id }) => !aux.find((el) => el.id === id));
-      flag = true;
-    }
-
-    const res = await doUpdateInteresse(aux[0].id, flag);
-    if (flag) 
-    {
-      if (res.status === 201) 
-      {
-        const msg = "Interesse adicionado com sucesso!";
-        const type = "success";
-        enqueueMySnackBar(enqueueSnackbar, msg, type);
-        setUser({ ...user, interesses: v });
-      } 
-      else 
-      {
-        const msg = "Houve um erro ao adicionar o interese!";
-        const type = "error";
-        enqueueMySnackBar(enqueueSnackbar, msg, type);
-      }
-    } 
-    else 
-    {
-      if (res.status === 204) 
-      {
-        const msg = "Interesse removido com sucesso!";
-        const type = "success";
-        enqueueMySnackBar(enqueueSnackbar, msg, type);
-        setUser({ ...user, interesses: v });
-      } 
-      else 
-      {
-        const msg = "Houve um erro ao remover o interesse!";
-        const type = "error";
-        enqueueMySnackBar(enqueueSnackbar, msg, type);
-      }
-    }
-  }
-
-  async function handleSave() {
+  async function handleSave() 
+  {
     setIsLoading(true);
     
     let aux = {
@@ -258,13 +174,27 @@ const MeusDados = () => {
     if(user.imagem_perfil)
       aux['imagem_perfil'] = user.imagem_perfil;
 
-    const res = await doSaveProfile(aux);
+    let deleteArr = myCourses.filter(({ id }) => !myNewCourses.find((el) => el.id === id));
+    let insertArr = myNewCourses.filter(({ id }) => !myCourses.find((el) => el.id === id));
+
+    deleteArr.forEach(async (el) => {await doUpdateCourses(el.id, false)})
+    insertArr.forEach(async (el) => {await doUpdateCourses(el.id, true)})
+
+    deleteArr = myInteresses.filter(({ id }) => !myNewInteresses.find((el) => el.id === id));
+    insertArr = myNewInteresses.filter(({ id }) => !myInteresses.find((el) => el.id === id));
+
+    deleteArr.forEach(async (el) => await doUpdateInteresse(el.id, false));
+    insertArr.forEach(async (el) => await doUpdateInteresse(el.id, true));
+
+    let res = await doSaveProfile(aux);
     if (res.status === 200) 
     {
       const msg = "Dados atualizados com sucesso!";
       const type = "success";
       enqueueMySnackBar(enqueueSnackbar, msg, type);
     }
+
+    setChangeSelect(!changeSelect);
     setIsLoading(false);
   }
 
@@ -285,11 +215,11 @@ const MeusDados = () => {
 
   const MyPhones = () =>
   {
-    const [open, setOpen] = React.useState(false);
-    const [newPhone, setNewPhone] = React.useState("");
-    const [phones, setPhones] = React.useState([]);
+    const [open, setOpen] = useState(false);
+    const [newPhone, setNewPhone] = useState("");
+    const [phones, setPhones] = useState([]);
 
-    React.useEffect(() => 
+    useEffect(() => 
     {
         async function doGetPhones()  
         {
@@ -391,11 +321,11 @@ const MeusDados = () => {
 
   const MyEmails = () =>
   {
-    const [open, setOpen] = React.useState(false);
-    const [newEmail, setNewEmail] = React.useState("");
-    const [emails, setEmails] = React.useState([]);
+    const [open, setOpen] = useState(false);
+    const [newEmail, setNewEmail] = useState("");
+    const [emails, setEmails] = useState([]);
 
-    React.useEffect(() => 
+    useEffect(() => 
     {
         async function doGetEmails()  
         {
@@ -440,7 +370,6 @@ const MeusDados = () => {
           if (res.status === 200)
           {
             setNewEmail("");
-            console.log(res.data);
             setEmails(res.data.emails);    
           }
         }
@@ -511,7 +440,12 @@ const MeusDados = () => {
               onChange={(e) => updateImage(e)}
             />
 
-            <ImageDialog urlImg={user.url_imagem} classRef={classes.media}/>
+            <ImageDialog 
+              urlImg={user.url_imagem} 
+              classRef={classes.media} 
+              cardMediaComp={user.url_imagem !== null ? Button : PersonIcon} 
+              cardMediaImg={user.url_imagem !== null ? user.url_imagem : ""}
+            />
 
             <Button
               variant="outlined"
@@ -597,7 +531,7 @@ const MeusDados = () => {
                   <Autocomplete
                     options={allCourses}
                     getOptionLabel={(option) => option.nome_exibicao}
-                    value={user.cursos}
+                    value={myNewCourses}
                     isOptionEqualToValue={(o, v) => o.id === v.id}
                     name="cursos"
                     id="cursos"
@@ -612,7 +546,7 @@ const MeusDados = () => {
                         fullWidth
                       />
                     )}
-                    onChange={(e, v) => updateCourses(v)}
+                    onChange={(e, v) => setMyNewCourses(v)}
                   />
                 </Grid>
 
@@ -620,7 +554,7 @@ const MeusDados = () => {
                   <Autocomplete
                     options={allInteresses}
                     getOptionLabel={(option) => option.nome_exibicao}
-                    value={user.interesses}
+                    value={myNewInteresses}
                     isOptionEqualToValue={(o, v) => o.id === v.id}
                     name="interesses"
                     id="interesses"
@@ -635,7 +569,7 @@ const MeusDados = () => {
                         fullWidth
                       />
                     )}
-                    onChange={(e, v) => updateInteresses(v)}
+                    onChange={(e, v) => setMyNewInteresses(v)}
                   />
                 </Grid>
 
@@ -644,7 +578,7 @@ const MeusDados = () => {
                 </Grid>
 
                 <Grid item lg={3} sm={6} xs={12}>
-                  <MyEmails/>             
+                  <MyEmails/>  
                 </Grid>
 
               </Grid>
