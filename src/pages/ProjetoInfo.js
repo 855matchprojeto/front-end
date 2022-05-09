@@ -1,33 +1,46 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Box, Typography, CardContent, Card } from "@mui/material";
-import {  Tabs, Tab, Divider } from "@mui/material";
-import { Grid, CardMedia, CardActions, Button, Chip } from "@mui/material";
 import { useLocation } from "react-router";
-import { getProjetos } from "../services/api_projetos";
-import { getProjUserRel, putRel } from "../services/api_projetos";
-import LoadingBox from "../components/LoadingBox";
-import ParticipanteCard from "../components/ParticipanteCard";
-import ProjectDefault from "../icons/project.svg";                              
+
+import { Grid, Box, Typography, CardContent } from "@mui/material";
+import { CardActions, Button, Chip } from "@mui/material";
+import { Tabs, Tab, Divider } from "@mui/material";
+
+import { getProjetos, getProjUserRel, putRel } from "../services/api_projetos";
+import CardMini from "../components/customCards/CardMini";
+
+import ProjectDefault from "../icons/project.svg";    
 import { makeStyles } from "@mui/styles";
+import CardPage from "../components/customCards/CardPage";
+import ImageDialog from "../components/dialogs/ImageDialog";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({  
-  grid: {
-    maxWidth: "800px",
-    alignSelf: "center",
-    marginTop: theme.spacing(2),
+  title: {
+    textAlign: "center",
   },
-  
+
+  subtitle: {
+    fontWeight: "bold",
+    color: theme.palette.text.secondary
+  },
+
+  descricao: {
+    textAlign: "justify",
+    color: theme.palette.text.secondary,
+    textIndent: theme.spacing(4)
+  },
+
   mediaContainer: {
     display: "flex", 
     justifyContent: "center",
     margin: theme.spacing(2),
+    padding: theme.spacing(2),
     boxShadow: "0 0 3px" + (theme.palette.mode === "dark" ? theme.palette.grey[100] : theme.palette.common.black),
   },
 
   media: {
     display: "flex",
-    width: "fit-content",
+    width: "300px",
     height: "200px"
   },
 }));
@@ -76,7 +89,11 @@ function ProjetoInfo()
           if (!mountedRef.current)
             return
           if(res.status === 200)
-            setProjectInfo(res.data[0]);
+          {
+            let aux = res.data[0];
+            aux["participantes"] = [1,2,3];
+            setProjectInfo(aux);
+          }
         }
       )
 
@@ -107,143 +124,111 @@ function ProjetoInfo()
   }, [])
 
   return (
-    <>
-      {!pageLoading && (
-        <Grid container className={classes.grid}>
-          {projectInfo && (
-            <Box sx={{ color: "text.secondary" }}>
-              <Card sx={{ mt: 2 }}>
-                <Box className={classes.mediaContainer} sx={{ p: 2 }}>
-                  <CardMedia
-                    component="img"
-                    src={
-                      projectInfo.url_imagem
-                        ? projectInfo.url_imagem
-                        : ProjectDefault
-                    }
-                    className={classes.media}
-                  />
-                </Box>
+    <CardPage loading={pageLoading}>
+      { projectInfo && 
+        <>
+          <div className={classes.mediaContainer}>
+            <ImageDialog 
+              urlImg={projectInfo.url_imagem} 
+              classRef={classes.media}
+              cardMediaComp={Button}
+              cardMediaImg={projectInfo.url_imagem ? projectInfo.url_imagem : ProjectDefault}
+            />
+          </div>
 
-                <CardContent>
-                  <Tabs
-                    value={currentTab}
-                    onChange={(e, newValue) => setCurrentTab(newValue)}
-                  >
-                    <Tab label="Sobre" value="sobre" />
-                    <Tab label="Participantes" value="participantes" />
-                  </Tabs>
-                  <Divider mt="0.5" mb="1" />
+          <CardContent>
+            <Tabs
+              value={currentTab}
+              onChange={(e, v) => setCurrentTab(v)}
+            >
+              <Tab label="Sobre" value="sobre" />
+              <Tab label="Participantes" value="participantes" />
+            </Tabs>
+            
+            <Divider mt="0.5" mb="1" />
 
-                  {currentTab === "sobre" && (
-                    <Grid container spacing={2} sx={{ p: 3, px: 1 }}>
-                      <Grid item xs={12}>
-                        <Typography variant="h6" color="textSecondary">
-                          {projectInfo.titulo}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} sx={{ mt: 1 }}>
-                        <Typography
-                          variant="subtitle1"
-                          sx={{ color: "text.secondary", fontWeight: "bold" }}
-                        >
-                          Descrição:
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: "text.secondary",
-                            textAlign: "justify",
-                          }}
-                        >
-                          {projectInfo.descricao}
-                        </Typography>
-                      </Grid>
+            {currentTab === "sobre" && (
+              <Grid container spacing={2}>
 
-                      <Grid item xs={12}>
-                        <Typography
-                          variant="subtitle1"
-                          sx={{ fontWeight: "bold", color: "text.secondary" }}
-                        >
-                          Cursos Envolvidos:
-                        </Typography>
-                      </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h5" className={classes.title}>
+                    {projectInfo.titulo}
+                  </Typography>
+                </Grid>
 
-                      <Grid item xs={12}>
-                        <Box sx={{ display: "flex", flexWrap: "wrap"}}>
-                          {projectInfo &&
-                            projectInfo.cursos.map((curso, index) => (
-                              <Chip key={index} label={curso.nome_exibicao} sx={{ mr: 1, mt: 0.5}}/>
-                            ))}
-                        </Box>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Typography
-                          variant="subtitle1"
-                          sx={{
-                            fontWeight: "bold",
-                            color: "text.secondary",
-                            mt: 2,
-                          }}
-                        >
-                          Áreas Envolvidas:
-                        </Typography>
-                      </Grid>
+                { projectInfo.descricao &&
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
+                      Descrição:
+                    </Typography>
 
-                      <Grid item xs={12}>
-                        <Box sx={{ display: "flex", flexWrap: "wrap"}}>
-                          {projectInfo &&
-                            projectInfo.interesses.map((area, index) => (
-                                <Chip key={index} label={area.nome_exibicao} sx={{ mr: 1 , mt: 0.5}}/>
-                            ))}
-                        </Box>
-                      </Grid>
+                    <Typography component="div" variant="body2" className={classes.descricao}>
+                      {projectInfo.descricao}
+                    </Typography>
+                  </Grid>
+                }
+
+                { projectInfo.cursos && projectInfo.cursos.length > 0 &&
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
+                      Cursos Envolvidos:
+                    </Typography>
+
+                    <Box sx={{ display: "flex", flexWrap: "wrap"}}>
+                      { 
+                        projectInfo.cursos.map((crs, index) => (
+                          <Chip key={index} label={crs.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />                            
+                        ))
+                      }
+                    </Box>
+                  </Grid>
+                }
+
+                { projectInfo.interesses && projectInfo.interesses.length > 0 &&
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
+                      Áreas Envolvidas:
+                    </Typography>
+
+                    <Box sx={{ display: "flex", flexWrap: "wrap"}}>
+                      { 
+                        projectInfo.interesses.map((area, index) => (
+                          <Chip key={index} label={area.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />                            
+                        ))
+                      }
+                    </Box>
+                  </Grid>
+                }
+              </Grid>
+            )}
+
+            { currentTab === "participantes" && 
+              <Grid container spacing={2} sx={{ p: 3, px: 1 }}>
+                { projectInfo && projectInfo.participantes.map((part, index) =>
+                    <Grid item key={index} xs={12}>
+                      <CardMini participante={part} />
                     </Grid>
-                  )}
+                  ) 
+                }
+              </Grid>
+            }
+          </CardContent>
 
-                  {currentTab === "participantes" && (
-                    <Grid container spacing={2} sx={{ p: 3, px: 1 }}>
-                      {/* projectsInfo && projects.participantes.map(participante =>
-                      (
-                      <Grid item key={participante.id} xs={12}>
-                        <ParticipanteCard participante={participante} />
-                      </Grid>
-                      )) */}
-                      <Grid item xs={12}>
-                        <ParticipanteCard />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <ParticipanteCard />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <ParticipanteCard />
-                      </Grid>
-                    </Grid>
-                  )}
-                </CardContent>
-
-                <CardActions
-                  sx={{ display: "flex", justifyContent: "end", p: 2 }}
-                >
-                  <Button
-                    variant="contained"
-                    size="small"
-                    color={btnInteresse ? "error" : "success"}
-                    onClick={() => updateRel()}
-                  >
-                    {btnInteresse ? "Remover interesse" : "Marcar interesse"}
-                  </Button>
-                </CardActions>
-              </Card>
-            </Box>
-          )}
-        </Grid>
-      )}
-
-      {pageLoading && <LoadingBox />}
-    </>
+          <CardActions
+            sx={{ display: "flex", justifyContent: "end", p: 2 }}
+          >
+            <Button
+              variant="contained"
+              size="small"
+              color={btnInteresse ? "error" : "success"}
+              onClick={() => updateRel()}
+            >
+              {btnInteresse ? "Remover interesse" : "Marcar interesse"}
+            </Button>
+          </CardActions>
+        </>
+      }
+    </CardPage>
   );
 };
 

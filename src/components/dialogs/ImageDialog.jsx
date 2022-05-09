@@ -1,5 +1,9 @@
-import React, { useState } from "react";
-import { CardMedia, Dialog, DialogContent } from "@mui/material";
+import React, { useState, forwardRef } from "react";
+import { CardMedia, Dialog, DialogContent, Slide } from "@mui/material";
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function ImageDialog(props) 
 {
@@ -29,6 +33,7 @@ function ImageDialog(props)
 
       <Dialog
         open={open}
+        TransitionComponent={Transition}
         PaperProps={{style:{maxWidth:"1000px", margin:"16px"}}}
         onClose={() => setOpen(false)}
       >

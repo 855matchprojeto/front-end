@@ -1,11 +1,15 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, forwardRef } from "react";
 import { TextField, IconButton } from "@mui/material";
 import { Button, Dialog, DialogContent } from "@mui/material";
-import { List, ListItem, ListItemText, Divider } from "@mui/material";
+import { List, ListItem, ListItemText, Divider, Slide } from "@mui/material";
 import PhoneIcon from '@mui/icons-material/Phone';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { doGetDataUser, postPhones, deletePhones } from "../../services/api_perfil";
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function MyPhones()
 {
@@ -89,7 +93,11 @@ function MyPhones()
         Números de contato
       </Button>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog 
+        open={open} 
+        TransitionComponent={Transition}
+        onClose={() => setOpen(false)}
+      >
         <DialogContent style={{display:"flex", justifyContent:"center", padding:"10px 12px"}}>
           <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper'}} aria-label="phones">
 

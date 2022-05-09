@@ -1,21 +1,18 @@
-import React,{ useRef, useState, useEffect } from "react";
-import {Box, Typography, CardContent, Card } from "@mui/material";
-import {Grid, Chip, Button, ListItem, ListItemText, List } from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router";
-import LoadingBox from "../components/LoadingBox";
-import { makeStyles } from "@mui/styles";
+
+import { Grid, Box, Typography, CardContent } from "@mui/material";
+import { Chip, Button, ListItem, ListItemText, List } from "@mui/material";
+
 import { getProfilesGUID } from "../services/api_perfil";
-import PersonIcon from '@mui/icons-material/Person';
 import ImageDialog from "../components/dialogs/ImageDialog";
 
+import PersonIcon from '@mui/icons-material/Person';
+import { makeStyles } from "@mui/styles";
+import CardPage from "../components/customCards/CardPage";
+
 //--estilo--
-const useStyles = makeStyles((theme) => ({
-  grid: {
-    maxWidth: "800px",
-    alignSelf: "center",
-    marginTop: theme.spacing(2),
-  },
-  
+const useStyles = makeStyles((theme) => ({  
   card: {
     width: "100%",
     display:"flex", 
@@ -45,9 +42,9 @@ const useStyles = makeStyles((theme) => ({
   },
 
   mediaContainer: {
+    display:"flex",
+    justifyContent: "center", 
     width: "100%", 
-    display:"flex", 
-    justifyContent: "center",
     alignItems: "center",
     background: "linear-gradient( gray 50%, rgba(0,0,0,0) 50%)",
     height: "200px",
@@ -73,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 function ProfileInfo()
 {
   const mountedRef = useRef(true);
-  const [profile, setProfile] = useState([]);
+  const [profile, setProfile] = useState(false);
   const classes = useStyles();
   const location =  useLocation();
 
@@ -93,7 +90,12 @@ function ProfileInfo()
             if(!mountedRef.current)
               return;
             if(res.status === 200)
-              setProfile(res.data);
+            {
+              let aux = res.data;
+              aux["url_imagem"] = aux.imagem_perfil ? aux.imagem_perfil.url : null;
+              setProfile(aux);
+            }
+              
           }
         )
      
@@ -112,121 +114,112 @@ function ProfileInfo()
   }, [])
 
   return (
-    <>
-      { !pageLoading &&
-        <Grid container className={classes.grid}>
-          { profile &&
-            <Card className={classes.card}>
-
-              <div className={classes.mediaContainer}>
-
-                <ImageDialog 
-                  urlImg={profile.url_imagem} 
-                  classRef={profile.url_imagem ? classes.media : classes.mediaEmpty} 
-                  cardMediaComp={profile.url_imagem !== null ? Button : PersonIcon} 
-                  cardMediaImg={profile.url_imagem  !== null ? profile.url_imagem : ""} 
-                />
-              </div>
-        
-              <CardContent className={classes.cardContent}>
-                <Grid container spacing={2}>
+      <CardPage loading={pageLoading}>
+        { profile &&
+          <>
+            <div className={classes.mediaContainer}>
+              <ImageDialog 
+                urlImg={profile.url_imagem} 
+                classRef={profile.url_imagem ? classes.media : classes.mediaEmpty} 
+                cardMediaComp={profile.url_imagem !== null ? Button : PersonIcon} 
+                cardMediaImg={profile.url_imagem  !== null ? profile.url_imagem : ""} 
+              />
+            </div>
+      
+            <CardContent className={classes.cardContent}>
+              <Grid container spacing={2}>
+              
+                <Grid item xs={12}>
+                  <Typography variant="h5" className={classes.title}>
+                    {profile.nome_exibicao}
+                  </Typography>
+                </Grid>
                 
+                { profile.bio &&
                   <Grid item xs={12}>
-                    <Typography variant="h5" className={classes.title}>
-                      {profile.nome_exibicao}
+                    <Typography variant="subtitle1" className={classes.subtitle}>
+                      Bio:
+                    </Typography>
+
+                    <Typography component="div" variant="body2" className={classes.bio}>
+                      {profile.bio}
                     </Typography>
                   </Grid>
-                  
-                  { profile.bio &&
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle1" className={classes.subtitle}>
-                        Bio:
-                      </Typography>
+                }
 
-                      <Typography component="div" variant="body2" className={classes.bio}>
-                        {profile.bio}
-                      </Typography>
-                    </Grid>
-                  }
-
-                  { profile.cursos.length > 0 &&
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle1" className={classes.subtitle}>
-                        Cursos:
-                      </Typography>
-                      <Box sx={{ display: "flex", flexWrap: "wrap"}}>
-                        { 
-                          profile.cursos.map((crs, index) => (
-                            <Chip key={index} label={crs.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />                            
-                        ))}
-                        </Box>
-                    </Grid>
-                  }
-
-                  { profile.interesses.length > 0 &&
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle1" className={classes.subtitle}>
-                        Interesses:
-                      </Typography>
-
-                      <Box sx={{ display: "flex", flexWrap: "wrap"}}>
-                        { 
-                          profile.interesses.map((its, index) => (
-                            <Chip key={index} label={its.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />
-                        ))}
-                        </Box>
-                    </Grid>
-                  }
-
-                  { profile.phones.length > 0 &&                 
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle1" className={classes.subtitle}>
-                        Números de contato:
-                      </Typography>
-
-                      <List>
-                        {
-                          profile.phones.map((phoneObj, index) => 
-                            <ListItem key={index} disableGutters disablePadding>
-                              <ListItemText>
-                                <ListItemText primary={phoneObj.phone} />
-                              </ListItemText>
-                            </ListItem>
-                          )
-                        }
-                      </List>
-                    </Grid>
-                  }
-                  
-                  { profile.emails.length > 0 &&
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle1" className={classes.subtitle}>
-                        Emails de contato:
-                      </Typography>
-
-                      <List>
-                        {
-                          profile.emails.map((emailObj, index) => 
-                            <ListItem key={index} disableGutters disablePadding>
-                              <ListItemText>
-                                <ListItemText primary={emailObj.email} />
-                              </ListItemText>
-                            </ListItem>
-                          )
-                        }
-                      </List>
+                { profile.cursos && profile.cursos.length > 0 &&
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
+                      Cursos:
+                    </Typography>
+                    <Box sx={{ display: "flex", flexWrap: "wrap"}}>
+                      { 
+                        profile.cursos.map((crs, index) => (
+                          <Chip key={index} label={crs.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />                            
+                      ))}
+                    </Box>
                   </Grid>
-                  }
+                }
+
+                { profile.interesses && profile.interesses.length > 0 &&
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
+                      Interesses:
+                    </Typography>
+
+                    <Box sx={{ display: "flex", flexWrap: "wrap"}}>
+                      { 
+                        profile.interesses.map((its, index) => (
+                          <Chip key={index} label={its.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />
+                      ))}
+                    </Box>
+                  </Grid>
+                }
+
+                { profile.phones && profile.phones.length > 0 &&                 
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
+                      Números de contato:
+                    </Typography>
+
+                    <List>
+                      {
+                        profile.phones.map((phoneObj, index) => 
+                          <ListItem key={index} disableGutters disablePadding>
+                            <ListItemText>
+                              <ListItemText primary={phoneObj.phone} />
+                            </ListItemText>
+                          </ListItem>
+                        )
+                      }
+                    </List>
+                  </Grid>
+                }
+                
+                { profile.emails && profile.emails.length > 0 &&
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" className={classes.subtitle}>
+                      Emails de contato:
+                    </Typography>
+
+                    <List>
+                      {
+                        profile.emails.map((emailObj, index) => 
+                          <ListItem key={index} disableGutters disablePadding>
+                            <ListItemText>
+                              <ListItemText primary={emailObj.email} />
+                            </ListItemText>
+                          </ListItem>
+                        )
+                      }
+                    </List>
                 </Grid>
-              </CardContent>
-
-            </Card>
-          }
-        </Grid>
-      }
-
-      { pageLoading && <LoadingBox/>}
-    </>
+                }
+              </Grid>
+            </CardContent>
+          </>
+        }
+      </CardPage>
   );
 
 };
