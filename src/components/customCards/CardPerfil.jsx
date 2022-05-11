@@ -108,25 +108,28 @@ function CardPerfil(props)
     if(!btnInteresse)
     {
       let aux = {"fl_projeto_interesse": true};
-      aux = await putRel(info.guid_usuario, projGuid, aux);
-      
-      if(aux.status === 200)
-      {
-        setHasMatch(aux.data.fl_match);
-        setBtnInteresse(!btnInteresse);
-      }
+      await putRel(info.guid_usuario, projGuid, aux).then(res =>
+        {
+          if(res.status === 200)
+          {
+            setHasMatch(res.data.fl_match);
+            setBtnInteresse(!btnInteresse);
+          }
+        }
+      );
     }
     else 
     {
       let aux = {"fl_projeto_interesse": false};
-      aux = await putRel(info.guid_usuario, projGuid, aux);
-
-      if(aux.status === 200)
-      {
-        setHasMatch(aux.data.fl_match);
-        setBtnInteresse(!btnInteresse);
-      }
-
+      await putRel(info.guid_usuario, projGuid, aux).then(res =>
+        {
+          if(res.status === 200)
+          {
+            setHasMatch(res.data.fl_match);
+            setBtnInteresse(!btnInteresse);
+          }
+        }
+      );
     }
   }
 
