@@ -27,25 +27,19 @@ function Interesses()
     async function getData() 
     { 
       setComponentLoading(true);
-      
-      await getUserProjRel(true, null, null).then(res =>
-        {
-          if (!mountedRef.current)
-            return
-          if(res.status === 200)
-            setMarcados(res.data);
-        }
-      );
 
-      await doGetDataUser().then(res =>
+      await Promise.all([getUserProjRel(true, null, null), doGetDataUser()]).then(data => 
         {
           if (!mountedRef.current)
             return
-          if(res.status === 200)
-            setGuid(res.data.guid_usuario);
+          if (data[0].status === 200) 
+            setMarcados(data[0].data);
+          if (data[1].status === 200) 
+            setGuid(data[1].data.guid_usuario);
+          
           setComponentLoading(false);
         }
-      )
+      );
     }
 
     getData();

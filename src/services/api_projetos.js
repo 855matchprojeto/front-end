@@ -90,7 +90,7 @@ export const getProjUserRel = async (guid_projeto, fl_usuario_interesse, fl_proj
     }
     
     return proj.get(query)
-        .then(res => res.data)
+        .then(res => res)
         .catch(err => console.log(err))
 }
 

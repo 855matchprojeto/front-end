@@ -98,34 +98,17 @@ function CardProjeto(props)
 
   async function updateInteresse() 
   {
-    if(!btnInteresse)
-    {
-      let aux = {"fl_usuario_interesse": true};
-      await putRel(userGuid, info.guid, aux).then(res => 
+    let aux = {"fl_usuario_interesse": !btnInteresse};
+    
+    await putRel(userGuid, info.guid, aux).then(res => 
+      {
+        if(res.status === 200)
         {
-          if(res.status === 200)
-          {
-            setHasMatch(res.data.fl_match);
-            setBtnInteresse(!btnInteresse);
-          }
+          setHasMatch(res.data.fl_match);
+          setBtnInteresse(!btnInteresse);
         }
-      );
-      
-    }
-    else 
-    {
-      let aux = {"fl_usuario_interesse": false};
-      await putRel(userGuid, info.guid, aux).then(res => 
-        {
-          if(res.status === 200)
-          {
-            setHasMatch(res.data.fl_match);
-            setBtnInteresse(!btnInteresse);
-          }
-        }
-      )
-     
-    }
+      }
+    );
   }
 
   return (

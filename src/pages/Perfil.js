@@ -58,23 +58,18 @@ function Perfil()
   const [isLoading, setIsLoading] = useState(false);
   const [componentLoading, setComponentLoading] = useState(true);
 
-  const [loginInfo, setLoginInfo] = useState(false);
-
   const [allInteresses, setAllInteresses] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
   const imageUpload = useRef(null);
 
   const [user, setUser] = useState(null);
-
+  const [loginInfo, setLoginInfo] = useState(false);
   const [myCourses, setMyCourses] = useState([]);
   const [myNewCourses, setMyNewCourses] = useState([]);
-
   const [myInteresses, setMyInteresses] = useState([]);
   const [myNewInteresses, setMyNewInteresses] = useState([]);
-
   const [myEmails, setMyEmails] = useState([]);  
   const [myPhones, setMyPhones] = useState([]);
-
   const [changeSelect, setChangeSelect] = useState(false);
 
   useEffect(() => {
@@ -90,13 +85,10 @@ function Perfil()
           if(res.status === 200)
           {
             let aux = res.data;
-
             setMyCourses(aux.cursos);
             setMyInteresses(aux.interesses);
-
             setMyNewCourses(aux.cursos);
-            setMyNewInteresses(aux.interesses);
-            
+            setMyNewInteresses(aux.interesses);      
             setMyEmails(aux.emails);
             setMyPhones(aux.phones);
           }
@@ -132,34 +124,25 @@ function Perfil()
             };
     
             setUser(body);
-
             setMyCourses(aux.cursos);
             setMyInteresses(aux.interesses);
-    
             setMyNewCourses(aux.cursos);
             setMyNewInteresses(aux.interesses);
           }
         }
       );
 
-      await doGetAllInteresses().then(res =>
+      await Promise.all([doGetAllInteresses(), doGetAllCourses()]).then(data => 
         {
           if (!mountedRef.current)
             return
-          if(res.status === 200 && res.statusText === "OK")
-            setAllInteresses(res.data);
-        }
-      );
-
-      await doGetAllCourses().then(res =>
-        {
-          if (!mountedRef.current)
-            return
-          if (res.status === 200 && res.statusText === "OK")
-            setAllCourses(res.data);
+          if (data[0].status === 200 && data[0].statusText === "OK") 
+            setAllInteresses(data[0].data);
+          if (data[1].status === 200 && data[1].statusText === "OK") 
+            setAllCourses(data[1].data); 
           setComponentLoading(false);
         }
-      )
+      );
     }
 
     getData();
@@ -201,13 +184,16 @@ function Perfil()
     deleteArr.forEach(async (el) => await doUpdateInteresse(el.id, false));
     insertArr.forEach(async (el) => await doUpdateInteresse(el.id, true));
 
-    let res = await doSaveProfile(aux);
-    if (res.status === 200) 
-    {
-      const msg = "Dados atualizados com sucesso!";
-      const type = "success";
-      enqueueMySnackBar(enqueueSnackbar, msg, type);
-    }
+    await doSaveProfile(aux).then(res => 
+      {
+        if (res.status === 200) 
+        {
+          const msg = "Dados atualizados com sucesso!";
+          const type = "success";
+          enqueueMySnackBar(enqueueSnackbar, msg, type);
+        }
+      }
+    ); 
 
     setChangeSelect(!changeSelect);
     setIsLoading(false);
@@ -228,6 +214,24 @@ function Perfil()
 
     setUser({ ...user, url_imagem: url, imagem_perfil: img });
   }
+
+  function handleFieldChange(e)
+  {setUser({ ...user, [e.target.name]: e.target.value });}
+
+  const cardContentValues = [
+    {
+      type: "text",
+      label: "Username",
+      name: "Username",
+      value: (loginInfo ? loginInfo.username : ""),
+    },
+    {
+      type: "email",
+      label: "Email",
+      name: "Email",
+      value: (loginInfo ? loginInfo.email : ""),
+    }
+  ];
 
   return (
     <CardPage loading={componentLoading}>
@@ -267,55 +271,42 @@ function Perfil()
             <CardContent className={classes.cardContent}>
               <Grid container spacing={1} rowGap={1}>
 
-                <Grid item xs={6}>
-                  <TextField
-                    type="text"
-                    label="Username"
-                    name="username"
-                    value={loginInfo ? loginInfo.username : ""}
-                    size="small"
-                    disabled
-                    fullWidth
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    type="email"
-                    label="Email"
-                    name="email"
-                    value={loginInfo ? loginInfo.email : ""}
-                    size="small"
-                    disabled
-                    fullWidth
-                  />
-                </Grid>
+                { cardContentValues.map((el,i) => 
+                    <Grid item xs={12} md={6} key={i}>
+                      <TextField
+                        type={el.type}
+                        label={el.label}
+                        name={el.name}
+                        value={el.value}
+                        size="small"
+                        fullWidth
+                        disabled
+                      />
+                    </Grid>
+                  )
+                }
 
                 <Grid item xs={12} md={6}>
                   <TextField
                     type="text"
                     label="Nome"
-                    name="name"
+                    name="Nome"
                     value={user ? user.name : ""}
-                    onChange={(e) =>
-                      setUser({ ...user, [e.target.name]: e.target.value })
-                    }
                     size="small"
                     fullWidth
+                    onChange={(e) => handleFieldChange(e)}
                   />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
                   <TextField
-                    type="input"
+                    type="text"
                     label="Sobrenome"
-                    name="sobrenome"
+                    name="Sobrenome"
                     value={user ? user.sobrenome : ""}
-                    onChange={(e) =>
-                      setUser({ ...user, [e.target.name]: e.target.value })
-                    }
                     size="small"
                     fullWidth
+                    onChange={(e) => handleFieldChange(e)}
                   />
                 </Grid>
                 
@@ -323,14 +314,12 @@ function Perfil()
                   <TextField
                     type="text"
                     label="Bio"
-                    name="bio"
+                    name="Bio"
                     value={user ? user.bio : ""}
-                    onChange={(e) =>
-                      setUser({ ...user, [e.target.name]: e.target.value })
-                    }
+                    onChange={(e) => handleFieldChange(e)}
                     size="small"
-                    multiline
                     fullWidth
+                    multiline
                   />
                 </Grid>
 

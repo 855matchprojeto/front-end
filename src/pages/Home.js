@@ -114,14 +114,42 @@ function Home()
 
   const [allInteresses, setAllInteresses] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
-  
+
   // mudando o número de cards por página, renderiza novamente 
+  useEffect(() => 
+  {
+      async function loadSelects() 
+      { 
+        setPageLoading(true);
+
+        if(typeSearch)
+        {                    
+          await Promise.all([doGetAllInteresses(), doGetAllCourses(), getMeusProjetos()]).then(data => 
+            {
+              if (!mountedRef.current)
+                return
+              if (data[0].status === 200 && data[0].statusText === "OK") 
+                setAllInteresses(data[0].data);
+              if (data[1].status === 200 && data[1].statusText === "OK") 
+                setAllCourses(data[1].data); 
+              if (data[2].status === 200) 
+                setMeusProjetos(data[2].data);
+              
+              setPageLoading(false);
+            }
+          )
+        }
+      }
+
+      loadSelects();
+  }, [typeSearch])
+
   useEffect(() => 
   {
       async function loadCards() 
       { 
         setPageLoading(true);
-        
+
         if(!typeSearch)
         {
           setGuidProjeto(false);
@@ -147,48 +175,22 @@ function Home()
         }
         else
         {        
-          let dados = [selectedInteresses,selectedCourses,pesquisa];
+          let dados = [selectedInteresses, selectedCourses, pesquisa];
+
           await getProfiles(dados,n_cards).then(res =>
             {
               if (!mountedRef.current)
                 return
               setCardsProfiles(res);
-            }
-          );
-
-          await doGetAllInteresses().then(res =>
-            {
-              if (!mountedRef.current)
-                return
-              if (res.status === 200 && res.statusText === "OK") 
-                setAllInteresses(res.data);
-            }
-          )
-          
-          await doGetAllCourses().then(res =>
-            {
-              if (!mountedRef.current)
-                return
-              if (res.status === 200 && res.statusText === "OK") 
-                setAllCourses(res.data); 
-            }
-          )  
-
-          await getMeusProjetos().then(res =>
-            {
-              if (!mountedRef.current)
-                return
-              if (res.status === 200) 
-                setMeusProjetos(res.data);
               setPageLoading(false);
             }
-          ); 
+          );
         }
       }
 
       loadCards();
 
-  }, [n_cards, typeSearch, pesquisa, selectedCourses, selectedInteresses])
+  }, [n_cards, pesquisa, selectedCourses, selectedInteresses, typeSearch]);
 
   // cleanup
   useEffect(() => {
@@ -196,12 +198,6 @@ function Home()
       mountedRef.current = false
     }
   }, [])
-
-  function fazerPesquisa(e)
-  {
-    if (e.key === 'Enter') 
-      setPesquisa(e.target.value)
-  }
 
   async function changePage(v)
   {
@@ -241,7 +237,7 @@ function Home()
                   className={classes.styledInput} 
                   placeholder={!typeSearch ? "Buscar projetos..."  : "Buscar usuários..."} 
                   inputProps={{ 'aria-label': 'search' }} 
-                  onKeyPress={(e) => fazerPesquisa(e)}
+                  onKeyPress={(e) => {if (e.key === 'Enter') setPesquisa(e.target.value)}}
                 />
               </div>
           </div>
@@ -292,7 +288,6 @@ function Home()
                           {...params}
                           variant="standard"
                           label="Filtrar Interesses"
-                          
                         />
                       )}
 
@@ -362,7 +357,6 @@ function Home()
                 <MenuItem value={false}>Projetos</MenuItem>
                 <MenuItem value={true}>Usuários</MenuItem>
               </TextField>
-
 
             </Stack>
           </Grid>

@@ -65,18 +65,13 @@ function ProjetoInfo()
 
   async function updateRel() 
   {
-    if(!btnInteresse)
-    {
-      let body = {"fl_usuario_interesse": true};
-      await putRel(userGuid, guid, body);
-    }
-    else 
-    {
-      let body = {"fl_usuario_interesse": false};
-      await putRel(userGuid, guid, body);
-    }
-
-    setBtnInteresse(!btnInteresse);
+    let body = {"fl_usuario_interesse": !btnInteresse};
+    await putRel(userGuid, guid, body).then(res =>
+      {
+        if(res.status === 200)
+          setBtnInteresse(!btnInteresse);
+      }
+    );
   }
 
   useEffect(() => {
@@ -84,35 +79,30 @@ function ProjetoInfo()
     {
       setPageLoading(true);
 
-      await getProjetos(pid, true).then(res =>
+      await Promise.all([getProjetos(pid, true), getProjUserRel(guid, true, null)]).then(data => 
         {
           if (!mountedRef.current)
             return
-          if(res.status === 200)
+
+          if (data[0].status === 200) 
           {
-            let aux = res.data[0];
+            let aux = data[0].data[0];
             aux["participantes"] = [1,2,3];
             setProjectInfo(aux);
           }
-        }
-      )
 
-      await getProjUserRel(guid, true, null).then(res =>
-        {
-          if (!mountedRef.current)
-            return
-          if(res.status === 200)
+          if (data[1].status === 200) 
           {
-            let aux = res.filter(item => item.guid_usuario === userGuid);
+            let aux = data[1].data.filter(item => item.guid_usuario === userGuid);
             if(aux.length === 1)
               setBtnInteresse(true);
           }
+          
           setPageLoading(false);
         }
       );
-      
     }
-
+    	
     getData();
   }, [guid, pid, userGuid]);
 
@@ -122,6 +112,14 @@ function ProjetoInfo()
       mountedRef.current = false
     }
   }, [])
+
+  const Subtitle = (props) => {
+    return(
+      <Typography variant="subtitle1" className={classes.subtitle}>
+        {props.txt}
+      </Typography>
+    );
+  }
 
   return (
     <CardPage loading={pageLoading}>
@@ -158,9 +156,7 @@ function ProjetoInfo()
 
                 { projectInfo.descricao &&
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Descrição:
-                    </Typography>
+                    <Subtitle txt="Descrição:"/>
 
                     <Typography component="div" variant="body2" className={classes.descricao}>
                       {projectInfo.descricao}
@@ -170,9 +166,7 @@ function ProjetoInfo()
 
                 { projectInfo.cursos && projectInfo.cursos.length > 0 &&
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Cursos Envolvidos:
-                    </Typography>
+                    <Subtitle txt="Cursos Envolvidos:"/>
 
                     <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                       { 
@@ -186,9 +180,7 @@ function ProjetoInfo()
 
                 { projectInfo.interesses && projectInfo.interesses.length > 0 &&
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Áreas Envolvidas:
-                    </Typography>
+                    <Subtitle txt="Áreas Envolvidas:"/>
 
                     <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                       { 
