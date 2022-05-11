@@ -105,29 +105,16 @@ function CardPerfil(props)
 
   async function changeInteresseNoUsuario()
   {    
-    if(!btnInteresse)
-    {
-      let aux = {"fl_projeto_interesse": true};
-      aux = await putRel(info.guid_usuario, projGuid, aux);
-      
-      if(aux.status === 200)
+    let aux = {"fl_projeto_interesse": !btnInteresse};
+    await putRel(info.guid_usuario, projGuid, aux).then(res =>
       {
-        setHasMatch(aux.data.fl_match);
-        setBtnInteresse(!btnInteresse);
+        if(res.status === 200)
+        {
+          setHasMatch(res.data.fl_match);
+          setBtnInteresse(!btnInteresse);
+        }
       }
-    }
-    else 
-    {
-      let aux = {"fl_projeto_interesse": false};
-      aux = await putRel(info.guid_usuario, projGuid, aux);
-
-      if(aux.status === 200)
-      {
-        setHasMatch(aux.data.fl_match);
-        setBtnInteresse(!btnInteresse);
-      }
-
-    }
+    );
   }
 
   return (
@@ -178,7 +165,7 @@ function CardPerfil(props)
                 color="secondary"
                 size="small"
                 sx={{textTransform: 'none'}}
-                onClick={() => history.push("/profile", { data: [info.id, info.guid] })}
+                onClick={() => history.push("/profile", { data: [info.guid] })}
               >
                 Ver Perfil
               </Button>

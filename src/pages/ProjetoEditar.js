@@ -235,7 +235,6 @@ const ProjetoEditar = () => {
           cardMediaImg={image ? image : ProjectDefault}
         />
       </div>
-      
 
       <Grid style={{display:"flex", justifyContent:"center"}}>
         <Button

@@ -86,16 +86,15 @@ function CardGroup(props)
     if (cardsType === "usuarios")
       return cards.map((card, index) => <CardPerfil  key={index} info={card} projGuid={guidRef} status={checkStatus(card)} />);
     else
+    {
       return cards.map((card, index) => <CardProjeto key={index} info={card} userGuid={guidRef} status={checkStatus(card)} type={cardsType} />);
+    }
+      
   }
 
   return (
     <Grid className={classes.grid} container>
-      { cards && 
-        <>
-          {mapingCards()}
-        </>
-      }
+      {cards && <> {mapingCards()} </>}
     </Grid>
   );
 };

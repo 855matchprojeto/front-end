@@ -99,20 +99,23 @@ function CriarProjeto()
       cursos: values.cursos.map((curso) => curso.id),
     };
 
-    const res = await postProjetos(form);
-    if (res.status === 200) 
-    {
-      const msg = "Projeto criado com sucesso!";
-      const type = "success";  
-      enqueueMySnackBar(enqueueSnackbar, msg, type);
-      history.push("/projeto", { data: [res.data.id, res.data.guid] });
-    } 
-    else 
-    {
-      const msg = "Erro ao criar o projeto!";
-      const type = "error";
-      enqueueMySnackBar(enqueueSnackbar, msg, type);
-    }
+    await postProjetos(form).then(res => 
+      {
+        if (res.status === 200) 
+        {
+          const msg = "Projeto criado com sucesso!";
+          const type = "success";  
+          enqueueMySnackBar(enqueueSnackbar, msg, type);
+          history.push("/projeto", { data: [res.data.id, res.data.guid] });
+        }
+        else
+        {
+          const msg = "Erro ao criar o projeto!";
+          const type = "error";
+          enqueueMySnackBar(enqueueSnackbar, msg, type);
+        }
+      }
+    )
 
     setIsLoading(false);
   }
@@ -146,24 +149,18 @@ function CriarProjeto()
     {
       setPageLoading(true);
 
-      await doGetAllInteresses().then(res =>
+      await Promise.all([doGetAllInteresses(), doGetAllCourses()]).then(data => 
         {
           if (!mountedRef.current)
             return
-          if (res.status === 200 && res.statusText === "OK") 
-            setAllInteresses(res.data);
-        }
-      );    
-  
-      await doGetAllCourses().then(res =>
-        {
-          if (!mountedRef.current)
-            return
-          if (res.status === 200 && res.statusText === "OK") 
-            setAllCourses(res.data); 
+          if (data[0].status === 200 && data[0].statusText === "OK") 
+            setAllInteresses(data[0].data);
+          if (data[1].status === 200 && data[1].statusText === "OK") 
+            setAllCourses(data[1].data); 
+          
           setPageLoading(false);
         }
-      )      
+      )
     }
 
     getSelects();

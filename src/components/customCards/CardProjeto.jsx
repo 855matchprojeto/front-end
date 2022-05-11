@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { putRel } from "../../services/api_projetos";
 import { limitString } from "../../services/util";
 import ProjectDefault from "../../icons/project.svg";
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -65,6 +66,7 @@ function CardProjeto(props)
 {
   const [btnInteresse, setBtnInteresse] = useState(false);
   const [componentLoading, setComponentLoading] = useState(true);
+  const [hasMatch, setHasMatch] = useState(false);
 
   const classes = useStyles();
   let history = useHistory();
@@ -74,35 +76,40 @@ function CardProjeto(props)
   const userGuid = props.userGuid;
   const status = props.status;
 
-  async function updateInteresse() 
-  {
-    if(!btnInteresse)
-    {
-      let aux = {"fl_usuario_interesse": true};
-      aux = await putRel(userGuid, info.guid, aux);
-      if(aux.status === 200)
-        setBtnInteresse(!btnInteresse);
-    }
-    else 
-    {
-      let aux = {"fl_usuario_interesse": false};
-      aux = await putRel(userGuid, info.guid, aux);
-      if(aux.status === 200)
-        setBtnInteresse(!btnInteresse);
-    }
-  }
-
   useEffect(() => {
     setComponentLoading(true);
 
     if (type === "projetos") 
     {
       if(status)
+      {
+        setHasMatch(status.fl_match);
         setBtnInteresse(true);
+      }
+      else
+      {
+        setHasMatch(false);
+        setBtnInteresse(false);
+      }
     }
     
     setComponentLoading(false);
   }, [type, status]);
+
+  async function updateInteresse() 
+  {
+    let aux = {"fl_usuario_interesse": !btnInteresse};
+    
+    await putRel(userGuid, info.guid, aux).then(res => 
+      {
+        if(res.status === 200)
+        {
+          setHasMatch(res.data.fl_match);
+          setBtnInteresse(!btnInteresse);
+        }
+      }
+    );
+  }
 
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} container className={classes.grid} p={1}>
@@ -166,6 +173,9 @@ function CardProjeto(props)
                 Detalhes
               </Button>
 
+              { hasMatch &&
+                <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
+              }
             </CardActions>
           
         </Card>

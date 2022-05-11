@@ -76,8 +76,7 @@ function ProfileInfo()
 
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
-  //const uid = location.state?.data[0];
-  const guid = location.state?.data[1];
+  const guid = location.state?.data[0];
 
    useEffect(() => 
    {
@@ -95,15 +94,12 @@ function ProfileInfo()
               aux["url_imagem"] = aux.imagem_perfil ? aux.imagem_perfil.url : null;
               setProfile(aux);
             }
-              
+            setPageLoading(false);
           }
-        )
-     
-        setPageLoading(false);
+        )   
        }
        
        getInfos();
-
    }, [guid])
 
   // cleanup
@@ -112,6 +108,14 @@ function ProfileInfo()
       mountedRef.current = false
     }
   }, [])
+
+  const Subtitle = (props) => {
+    return(
+      <Typography variant="subtitle1" className={classes.subtitle}>
+        {props.txt}
+      </Typography>
+    );
+  }
 
   return (
       <CardPage loading={pageLoading}>
@@ -137,9 +141,7 @@ function ProfileInfo()
                 
                 { profile.bio &&
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Bio:
-                    </Typography>
+                    <Subtitle txt="Bio:"/>
 
                     <Typography component="div" variant="body2" className={classes.bio}>
                       {profile.bio}
@@ -149,12 +151,10 @@ function ProfileInfo()
 
                 { profile.cursos && profile.cursos.length > 0 &&
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Cursos:
-                    </Typography>
+                    <Subtitle txt="Cursos:"/>
+
                     <Box sx={{ display: "flex", flexWrap: "wrap"}}>
-                      { 
-                        profile.cursos.map((crs, index) => (
+                      { profile.cursos.map((crs, index) => (
                           <Chip key={index} label={crs.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />                            
                       ))}
                     </Box>
@@ -163,13 +163,10 @@ function ProfileInfo()
 
                 { profile.interesses && profile.interesses.length > 0 &&
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Interesses:
-                    </Typography>
+                    <Subtitle txt="Interesses:"/>
 
                     <Box sx={{ display: "flex", flexWrap: "wrap"}}>
-                      { 
-                        profile.interesses.map((its, index) => (
+                      { profile.interesses.map((its, index) => (
                           <Chip key={index} label={its.nome_exibicao} sx={{ mr: 1, mt: 0.5}} />
                       ))}
                     </Box>
@@ -178,9 +175,7 @@ function ProfileInfo()
 
                 { profile.phones && profile.phones.length > 0 &&                 
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Números de contato:
-                    </Typography>
+                    <Subtitle txt="Números de contato:"/>
 
                     <List>
                       {
@@ -198,9 +193,7 @@ function ProfileInfo()
                 
                 { profile.emails && profile.emails.length > 0 &&
                   <Grid item xs={12}>
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                      Emails de contato:
-                    </Typography>
+                    <Subtitle txt="Emails de contato:"/>
 
                     <List>
                       {
