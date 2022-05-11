@@ -5,6 +5,8 @@ import { Button, Autocomplete } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useSnackbar } from "notistack";
 
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import PhoneIcon from '@mui/icons-material/Phone';
 import PersonIcon from "@mui/icons-material/Person";
 import UploadIcon from "@mui/icons-material/Upload";
 
@@ -70,8 +72,8 @@ function Perfil()
   const [myInteresses, setMyInteresses] = useState([]);
   const [myNewInteresses, setMyNewInteresses] = useState([]);
 
-  //const [myEmails, setMyEmails] = useState([]);  
-  //const [myPhones, setMyPhones] = useState([]);
+  const [myEmails, setMyEmails] = useState([]);  
+  const [myPhones, setMyPhones] = useState([]);
 
   const [changeSelect, setChangeSelect] = useState(false);
 
@@ -95,8 +97,8 @@ function Perfil()
             setMyNewCourses(aux.cursos);
             setMyNewInteresses(aux.interesses);
             
-            //setMyEmails(aux.emails);
-            //setMyEmails(aux.phones);
+            setMyEmails(aux.emails);
+            setMyPhones(aux.phones);
           }
         }
       );
@@ -379,11 +381,11 @@ function Perfil()
                 </Grid>
 
                 <Grid item md={6}>
-                  <MyPhones/>                    
+                  <MyPhones data={myPhones} btnIcon={<PhoneIcon/>}/>                    
                 </Grid>
 
                 <Grid item lg={6} sm={6} xs={12}>
-                  <MyEmails/>  
+                  <MyEmails data={myEmails} btnIcon={<ContactMailIcon/>}/>  
                 </Grid>
 
               </Grid>

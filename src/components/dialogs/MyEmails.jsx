@@ -1,63 +1,36 @@
-import React, { useRef, useState, useEffect, forwardRef } from "react";
+import React, { useState, forwardRef } from "react";
 import { TextField, IconButton } from "@mui/material";
 import { Button, Dialog, DialogContent } from "@mui/material";
 import { List, ListItem, ListItemText, Divider, Slide } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ContactMailIcon from '@mui/icons-material/ContactMail';
-import { doGetDataUser, postEmail, deleteEmail } from "../../services/api_perfil";
+import { postEmail, deleteEmail } from "../../services/api_perfil";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function MyEmails()
+function MyEmails(props)
 {
-  const mountedRef = useRef(true);
   const [open, setOpen] = useState(false);
-  const [newEmail, setNewEmail] = useState("");
-  const [emails, setEmails] = useState([]);
+  const [newData, setNewData] = useState("");
+  const [arrayData, setArrayData] = useState(props.data);
+  const btnIcon = props.btnIcon;
 
-  useEffect(() => 
-  {
-      async function doGetEmails()  
-      {
-        await doGetDataUser().then(res =>
-          {
-            if (!mountedRef.current)
-              return
-            if(res.status === 200)
-              setEmails(res.data.emails);
-          }
-        );
-        
-      }
-      
-      doGetEmails();
-  }, [])
-
-  // cleanup
-  useEffect(() => {
-    return () => { 
-      mountedRef.current = false
-    }
-  }, [])
-  
   const DeleteButton = (props) =>
   {
-    async function handleDeleteEmail()
+    async function handleDeleteValue()
     {
-      let res = await deleteEmail(props.email);
-      if(res.status === 204)
-      {
-        res = await doGetDataUser();
-        if (res.status === 200)
-          setEmails(res.data.emails);    
-      }
+      await deleteEmail(props.email).then(res =>
+        {
+          if(res.status === 204)
+            setArrayData(arrayData.filter(el => el.guid !== props.guid));
+        }
+      );
     }
 
     return(
-      <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteEmail()}> 
+      <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteValue()}> 
         <DeleteIcon/> 
       </IconButton>
     )
@@ -65,24 +38,21 @@ function MyEmails()
 
   const AddButton = () =>
   {      
-    async function handleNewEmail()
+    async function handleNewValue()
     {
-      let res = await postEmail({"email": newEmail});
-      
-      if(res.status === 200)
-      {
-        res = await doGetDataUser();
-        if (res.status === 200)
+      await postEmail({"email": newData}).then(res => 
         {
-          setNewEmail("");
-          setEmails(res.data.emails);    
+          if(res.status === 200)
+          {
+            setNewData("");
+            setArrayData([res.data, ...arrayData]); 
+          }
         }
-      }
-
+      );
     }
 
     return(
-      <IconButton edge="end" aria-label="add" onClick={() => handleNewEmail()}> 
+      <IconButton edge="end" aria-label="add" onClick={() => handleNewValue()}> 
         <AddCircleIcon /> 
       </IconButton>
     )
@@ -90,7 +60,7 @@ function MyEmails()
 
   return(
     <>
-      <Button size="medium" variant="outlined" startIcon={<ContactMailIcon/>} onClick={() => setOpen(true)}>
+      <Button size="medium" variant="outlined" startIcon={btnIcon} onClick={() => setOpen(true)}>
         Emails de contato
       </Button>
 
@@ -108,9 +78,9 @@ function MyEmails()
                   type="email"
                   name="emails"
                   size="small"
-                  value={newEmail}
+                  value={newData}
                   label="Email"
-                  onChange={(e) => setNewEmail(e.target.value)}
+                  onChange={(e) => setNewData(e.target.value)}
                   fullWidth
                 />
                 </ListItemText>
@@ -119,10 +89,10 @@ function MyEmails()
             <Divider />
 
             {
-              emails.map((emailObj, index) => 
-              <ListItem key={index} secondaryAction={<DeleteButton email={emailObj.guid}/>}>
+              arrayData.map((obj, i) => 
+              <ListItem key={i} secondaryAction={<DeleteButton guid={obj.guid}/>}>
                 <ListItemText>
-                  <ListItemText primary={emailObj.email} />
+                  <ListItemText primary={obj.email} />
                 </ListItemText>
               </ListItem>
               )
