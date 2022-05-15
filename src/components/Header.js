@@ -189,8 +189,12 @@ const Header = () => {
     };
 
     const handleMenuNotificacoes = (open) => {
-      if (open) setAnchorElNotifications(notificacoesRef.current);
-      else setAnchorElNotifications(null);
+      if (open) {
+        setAnchorElNotifications(notificacoesRef.current);
+      } else {
+        setAnchorElNotifications(null);
+        markNotificationsAsRead();
+      }
     };
     return (
       <Toolbar className={classes.toolbar}>
@@ -249,7 +253,7 @@ const Header = () => {
           </Link>
           <IconButton
             onClick={() => {
-              markNotificationsAsRead();
+              // markNotificationsAsRead();
               handleMenuNotificacoes(true);
             }}
             sx={{
@@ -258,7 +262,9 @@ const Header = () => {
             }}
           >
             <Badge
-              badgeContent={notificationsNotRead && notificationsNotRead.length}
+              badgeContent={
+                anchorElNotifications ? 0 : notificationsNotRead.length
+              }
               color="error"
             >
               <NotificationsIcon
@@ -279,7 +285,7 @@ const Header = () => {
             anchorEl={anchorEl}
             id="account-menu"
             open={open}
-            onClose={handleClose}
+            onClose={() => handleClose}
             onClick={handleClose}
             PaperProps={{
               elevation: 0,
@@ -419,8 +425,12 @@ const Header = () => {
     };
 
     const handleMenuNotificacoes = (open) => {
-      if (open) setAnchorElNotifications(notificacoesRef.current);
-      else setAnchorElNotifications(null);
+      if (open) {
+        setAnchorElNotifications(notificacoesRef.current);
+      } else {
+        setAnchorElNotifications(null);
+        markNotificationsAsRead();
+      }
     };
 
     return (
@@ -538,7 +548,6 @@ const Header = () => {
           </IconButton>
           <IconButton
             onClick={() => {
-              markNotificationsAsRead();
               handleMenuNotificacoes(true);
             }}
             sx={{
@@ -548,7 +557,9 @@ const Header = () => {
             }}
           >
             <Badge
-              badgeContent={notificationsNotRead && notificationsNotRead.length}
+              badgeContent={
+                anchorElNotifications ? 0 : notificationsNotRead.length
+              }
               color="error"
             >
               <NotificationsIcon
