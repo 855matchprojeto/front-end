@@ -23,6 +23,7 @@ import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { doGetDataUser } from "../services/api_perfil";
 import {
   getNotifications,
   setNotificationsAsRead,
@@ -121,6 +122,7 @@ const Header = () => {
   const [notificationSelected, setNotificationSelected] = useState(null);
   const [notificationsNotRead, setNotificationsNotRead] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [user, setUser] = useState(null);
   const classes = useStyles();
   const [view, setView] = useState({ mobileView: false, drawerOpen: false });
 
@@ -135,7 +137,73 @@ const Header = () => {
     }
   };
 
+  async function getUser() {
+    const res = await doGetDataUser();
+    setUser(res.data);
+  }
+
+  function getLetterAvatar(notification) {
+    let letter = "";
+    console.log(notification.tipo);
+    switch (notification.tipo) {
+      case "MATCH_PROJETO":
+        letter = "MP";
+        break;
+      case "MATCH_USUARIO":
+        letter = "MU";
+        break;
+      case "INTERESSE_USUARIO_PROJETO":
+        let user = notification.json_details?.user;
+        if (user) {
+          letter = user.username.length > 0 ? user.username[0] : "U";
+        } else {
+          letter = "U";
+        }
+        break;
+      case "INTERESSE_PROJETO_USUARIO":
+        letter = "P";
+        break;
+      default:
+        letter = "A";
+    }
+
+    return letter.toUpperCase();
+  }
+
+  function stringToColor(string) {
+    let hash = 0;
+    let i;
+
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    let color = "#";
+
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+
+    return color;
+  }
+
+  function stringAvatar(notification) {
+    let string =
+      notification.tipo === "INTERESSE_USUARIO_PROJETO"
+        ? notification.json_details.user
+        : notification.tipo;
+    return {
+      sx: {
+        bgcolor: stringToColor(string),
+        color: "#ffffff",
+      },
+    };
+  }
   useEffect(() => {
+    getUser();
     const fetchNotificationsNotRead = async () => {
       const res = await getNotifications(false);
       const noti = res.data.reverse();
@@ -278,7 +346,11 @@ const Header = () => {
               ml: 4,
             }}
           >
-            <Avatar ref={menuRef}>C</Avatar>
+            <Avatar ref={menuRef}>
+              {user && user.nome_exibicao && user.nome_exibicao.length >= 1
+                ? user.nome_exibicao[0].toUpperCase()
+                : "U"}
+            </Avatar>
           </IconButton>
           <Menu
             anchorEl={anchorEl}
@@ -391,7 +463,9 @@ const Header = () => {
                 sx={{ width: "100%", p: 2 }}
                 onClick={() => setNotificationSelected(notification)}
               >
-                <Avatar>C</Avatar>
+                <Avatar {...stringAvatar(notification)}>
+                  {getLetterAvatar(notification)}
+                </Avatar>
                 <Typography
                   sx={{
                     ml: 1,
@@ -471,7 +545,9 @@ const Header = () => {
                   height: "50px",
                 }}
               >
-                C
+                {user && user.nome_exibicao && user.nome_exibicao.length >= 1
+                  ? user.nome_exibicao[0].toUpperCase()
+                  : "U"}
               </Avatar>
             </IconButton>
           </Box>
@@ -622,7 +698,9 @@ const Header = () => {
               sx={{ width: "100%", p: 2 }}
               onClick={() => setNotificationSelected(notification)}
             >
-              <Avatar>C</Avatar>
+              <Avatar {...stringAvatar(notification)}>
+                {getLetterAvatar(notification)}
+              </Avatar>
               <Typography
                 sx={{
                   ml: 1,
@@ -645,6 +723,7 @@ const Header = () => {
         <DialogNotification
           notification={notificationSelected}
           setOpen={setNotificationSelected}
+          user={user}
         />
       )}
       <AppBar position="static">
