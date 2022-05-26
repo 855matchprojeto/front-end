@@ -66,7 +66,7 @@ function CriarProjeto()
     titulo: "",
     descricao: "",
     cursos: [],
-    areas: [],
+    areas: []
   };
 
   const validationScheme = Yup.object().shape({
@@ -79,9 +79,9 @@ function CriarProjeto()
   const classes = useStyles();
   const mountedRef = useRef(true);
   const { enqueueSnackbar } = useSnackbar();
-  const imageRef = useRef(null);
   const history = useHistory();
-  
+
+  const imageRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
   const [image, setImage] = useState(null);
 
@@ -96,7 +96,7 @@ function CriarProjeto()
       interesses: values.areas.map((area) => area.id),
       cursos: values.cursos.map((curso) => curso.id),
     };
-
+    
     // imagem (optional)
     if(imageFile)
       form['imagem_projeto'] = imageFile;
@@ -105,21 +105,16 @@ function CriarProjeto()
       {
         if (res.status === 200) 
         {
-          const msg = "Projeto criado com sucesso!";
-          const type = "success";  
-          enqueueMySnackBar(enqueueSnackbar, msg, type);
+          enqueueMySnackBar(enqueueSnackbar, "Projeto criado com sucesso!", "success");
           history.push("/projeto", { data: [res.data.id, res.data.guid] });
         }
         else
         {
-          const msg = "Erro ao criar o projeto!";
-          const type = "error";
-          enqueueMySnackBar(enqueueSnackbar, msg, type);
+          enqueueMySnackBar(enqueueSnackbar, "Erro ao criar o projeto!", "error");
+          setIsLoading(false);
         }
       }
     )
-
-    setIsLoading(false);
   }
 
   async function updateImage(e) 
