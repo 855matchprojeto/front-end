@@ -81,8 +81,8 @@ function CriarProjeto()
   const { enqueueSnackbar } = useSnackbar();
   const imageRef = useRef(null);
   const history = useHistory();
+  
   const [imageFile, setImageFile] = useState(null);
-
   const [image, setImage] = useState(null);
 
   async function handleCreateProject(values) 
@@ -93,11 +93,13 @@ function CriarProjeto()
     const form = {
       titulo: values.titulo,
       descricao: values.descricao,
-      entidades: [],
-      tags: [],
       interesses: values.areas.map((area) => area.id),
       cursos: values.cursos.map((curso) => curso.id),
     };
+
+    // imagem (optional)
+    if(imageFile)
+      form['imagem_projeto'] = imageFile;
 
     await postProjetos(form).then(res => 
       {
