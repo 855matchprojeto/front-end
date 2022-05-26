@@ -99,16 +99,14 @@ function Cadastro()
     if (signup.status === 200) {
       await Email(signup.data.username);
       const msg = "Cadastrado realizado com sucesso!";
-      const type = "success";
-      enqueueMySnackBar(enqueueSnackbar,msg,type);
+      enqueueMySnackBar(enqueueSnackbar,msg,"success");
       await delay(2000);
       history.push("/");
     } 
     else 
     {
       const msg = signup.response.data.detail;
-      const type = "error";
-      enqueueMySnackBar(enqueueSnackbar,msg,type);
+      enqueueMySnackBar(enqueueSnackbar,msg,"error");
     }
 
     setIsLoading(false);

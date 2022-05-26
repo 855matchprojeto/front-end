@@ -218,6 +218,41 @@ const ProjetoEditar = () => {
     }
   }, [])
 
+  const MyAutoComplete = (props) => {
+    const name_id = props.NameId;
+    const options = props.Options;
+    const event = props.Event;
+    const label = props.Label;
+    const value = props.Value;
+
+    return (
+      <>
+        <Autocomplete
+            options={options}
+            getOptionLabel={(o) => o.nome_exibicao}
+            value={value}
+            isOptionEqualToValue={(o, v) => o.id === v.id}
+            name={name_id}
+            id={name_id}
+            multiple
+            freeSolo
+
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={label}
+                autoComplete="off"
+                size="small"
+                fullWidth
+              />
+            )}
+
+            onChange={(e,v) => event(v)}
+          />  
+      </>
+    )
+  }
+
   return (
     <CardPage loading={pageLoading}>
       { fields &&
@@ -278,48 +313,23 @@ const ProjetoEditar = () => {
                 />
               </Grid>
 
-
               <Grid item xs={12} md={6}>
-                <Autocomplete
-                  options={allCourses}
-                  getOptionLabel={(option) => option.nome_exibicao}
-                  value={cursosSelecionados}
-                  isOptionEqualToValue={(o, v) => o.id === v.id}
-                  name="cursos"
-                  id="cursos"
-                  multiple
-                  freeSolo
-                  onChange={(e, v) => updateCourses(v)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Cursos"
-                      size="small"
-                      fullWidth
-                    />
-                  )}
+                <MyAutoComplete
+                  NameId="cursos" 
+                  Options={allCourses} 
+                  Event={updateCourses} 
+                  Label="Cursos" 
+                  Value={cursosSelecionados}
                 />
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Autocomplete
-                  options={allInteresses}
-                  getOptionLabel={(option) => option.nome_exibicao}
-                  value={areasSelecionadas}
-                  isOptionEqualToValue={(o, v) => o.id === v.id}
-                  name="interesses"
-                  id="interesses"
-                  multiple
-                  freeSolo
-                  onChange={(e, v) => updateAreas(v)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Áreas"
-                      size="small"
-                      fullWidth
-                    />
-                  )}
+                <MyAutoComplete
+                  NameId="interesses" 
+                  Options={allInteresses} 
+                  Event={updateAreas} 
+                  Label="Áreas" 
+                  Value={areasSelecionadas}
                 />
               </Grid>
             </Grid>

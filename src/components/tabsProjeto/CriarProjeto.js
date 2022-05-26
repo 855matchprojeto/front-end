@@ -85,6 +85,13 @@ function CriarProjeto()
   const [imageFile, setImageFile] = useState(null);
   const [image, setImage] = useState(null);
 
+  // pagina carregando, esconde conteudo
+  const [pageLoading, setPageLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [allInteresses, setAllInteresses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
+
   async function handleCreateProject(values) 
   {
     // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
@@ -133,13 +140,6 @@ function CriarProjeto()
     setImage(url);
     setImageFile(img);
   }
-
-  // pagina carregando, esconde conteudo
-  const [pageLoading, setPageLoading] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [allInteresses, setAllInteresses] = useState([]);
-  const [allCourses, setAllCourses] = useState([]);
 
   useEffect(() => {
     async function getSelects() 

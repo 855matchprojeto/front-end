@@ -21,7 +21,7 @@ import { doGetDataUser } from "../services/api_perfil";
 import { setNotificationsAsRead } from "../services/api_notifications";
 import { getNotifications } from "../services/api_notifications";
 
-import DialogNotification from "./DialogNotification";
+import DialogNotification from "./dialogs/DialogNotification";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -44,11 +44,6 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 3,
     display: "flex",
     justifyContent: "flex-end",
-    alignItems: "center",
-  },
-
-  themeBox: {
-    display: "flex",
     alignItems: "center",
   },
 
@@ -298,29 +293,41 @@ const Header = () => {
     );
   }
 
-  const ThemeSwitch = () => {
+  const IconBox = (props) => {
+    const event = props.Event;
+    const anchorElNotif = props.anchor;
+    const notificacoesRef = props.refPass;
+
     const theme = useTheme();
     const colorMode = useContext(ColorModeContext);
+    
+    return (
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <IconButton
+          title={theme.palette.mode === "light" ? "Tema escuro" : "Tema claro"}
+          onClick={colorMode.toggleColorMode}
+          sx={{mr: 1, ml: 1, transform: "translateY(5%)"}}
+        >
+          { theme.palette.mode === "light" ? 
+            <DarkModeOutlinedIcon fontSize="small" sx={{ color: "#ffffff" }}/>: 
+            <LightModeOutlinedIcon fontSize="small" sx={{ color: "#ffffff" }}/>
+          }
+        </IconButton>
 
-    return(
-      <IconButton
-        title={theme.palette.mode === "light" ? "Tema escuro" : "Tema claro"}
-        variant="outlined"
-        onClick={colorMode.toggleColorMode}
-        sx={{
-          border: "1px solid #ffffff",
-          borderRadius: "8px",
-          padding: "5px !important",
-        }}
-      >
-
-      { theme.palette.mode === "light" ? 
-        <DarkModeOutlinedIcon fontSize="small" sx={{color: "#ffffff"}}/>: 
-        <LightModeOutlinedIcon fontSize="small" sx={{color: "#f4f4f4"}}/>
-      }
-    </IconButton>
+        <IconButton
+          onClick={() => {event(true)}}
+          sx={{mr: 1, ml: 1, transform: "translateY(5%)"}}
+        >
+          <Badge
+              badgeContent={anchorElNotif ? 0 : notifsNotRead.length}
+              color="error"
+          >
+            <NotificationsIcon ref={notificacoesRef} sx={{ color: "#ffffff" }}/>
+          </Badge>
+        </IconButton>
+    </Box>
     );
-  }
+  };
 
   const NotifDrawer = (props) => {
     const anchorElNotif = props.anchorElNotif;
@@ -405,21 +412,11 @@ const Header = () => {
 
         <nav className={classes.nav}>
 
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <ThemeSwitch/>
-
-            <IconButton
-              onClick={() => handleMenuNotif(true)}
-              sx={{ml: 3, transform: "translateY(5%)"}}
-            >
-              <Badge
-                badgeContent = {anchorElNotif ? 0 : notifsNotRead.length}
-                color = "error"
-              >
-                <NotificationsIcon ref={notificacoesRef} sx={{ color: "#ffffff" }}/>
-              </Badge>
-            </IconButton>
-          </Box>
+          <IconBox 
+            Event={handleMenuNotif} 
+            anchor={anchorElNotif} 
+            refPass={notificacoesRef}
+          />
 
           { menuList.map((v,i) => 
               <Link
@@ -599,31 +596,17 @@ const Header = () => {
 
         <HeaderTitle/>
 
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <ThemeSwitch/>
-
-          <IconButton
-            onClick={() => {handleMenuNotif(true)}}
-            sx={{mr: 2, ml: 3, transform: "translateY(5%)"}}
-          >
-            <Badge
-              badgeContent={
-                anchorElNotif ? 0 : notifsNotRead.length
-              }
-              color="error"
-            >
-              <NotificationsIcon
-                ref={notificacoesRef}
-                sx={{ color: "#ffffff" }}
-              />
-            </Badge>
-          </IconButton>
-        </Box>
+        <IconBox 
+            Event={handleMenuNotif} 
+            anchor={anchorElNotif} 
+            refPass={notificacoesRef}
+        />
 
         <NotifDrawer 
           anchorElNotif={anchorElNotif} 
           handleMenuNotif={handleMenuNotif}
         />
+        
       </Toolbar>
     );
   };

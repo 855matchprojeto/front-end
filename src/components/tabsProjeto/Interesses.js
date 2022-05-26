@@ -52,7 +52,13 @@ function Interesses()
     }
   }, [])
 
-  const boxSx = {mt: 4, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"};
+  const boxSx = {
+    mt: 4, 
+    display: "flex", 
+    flexDirection: "column", 
+    justifyContent: "center", 
+    alignItems: "center"
+  };
   
   return (
     <>
