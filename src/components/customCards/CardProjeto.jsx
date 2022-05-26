@@ -118,7 +118,7 @@ function CardProjeto(props)
           <div className={classes.mediaContainer}>
             <CardMedia
               component="img"
-              image={(info.url_imagem !== null) ? info.url_imagem : ProjectDefault} 
+              image={(info.imagem_projeto !== null) ? info.imagem_projeto.url : ProjectDefault} 
               className={classes.media}
             />
           </div>

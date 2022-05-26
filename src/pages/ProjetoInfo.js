@@ -6,7 +6,6 @@ import { CardActions, Button, Chip } from "@mui/material";
 import { Tabs, Tab, Divider } from "@mui/material";
 
 import { getProjetos, getProjUserRel, putRel } from "../services/api_projetos";
-import CardMini from "../components/customCards/CardMini";
 
 import ProjectDefault from "../icons/project.svg";
 import { makeStyles } from "@mui/styles";
@@ -78,27 +77,37 @@ function ProjetoInfo() {
     async function getData() {
       setPageLoading(true);
 
-      await Promise.all([
-        getProjetos(pid, true),
-        getProjUserRel(guid, true, null),
-      ]).then((data) => {
-        if (!mountedRef.current) return;
+      await Promise.all([getProjetos(pid, true), getProjUserRel(guid, true, null),]).then((data) => 
+        {
+          if (!mountedRef.current) 
+            return;
 
-        if (data[0].status === 200) {
-          let aux = data[0].data[0];
-          aux["participantes"] = [1, 2, 3];
-          setProjectInfo(aux);
+          if (data[0].status === 200) 
+          {
+            let aux = data[0].data[0];
+
+            let body = {
+              titulo: aux.titulo,
+              descricao: aux.descricao,
+              cursos: aux.cursos,
+              interesses: aux.interesses,
+              url_imagem: aux.imagem_projeto !== null ? aux.imagem_projeto.url : null,
+              participantes: [1, 2, 3]
+            };
+
+            setProjectInfo(body);
+          }
+
+          if (data[1].status === 200) 
+          {
+            let aux = data[1].data.filter((item) => item.guid_usuario === userGuid);
+            if (aux.length === 1) 
+              setBtnInteresse(true);
+          }
+
+          setPageLoading(false);
         }
-
-        if (data[1].status === 200) {
-          let aux = data[1].data.filter(
-            (item) => item.guid_usuario === userGuid
-          );
-          if (aux.length === 1) setBtnInteresse(true);
-        }
-
-        setPageLoading(false);
-      });
+      );
     }
 
     getData();

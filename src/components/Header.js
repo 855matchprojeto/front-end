@@ -11,8 +11,6 @@ import {
   Box,
   Divider,
   Badge,
-  Dialog,
-  DialogContent,
 } from "@mui/material";
 import { IconButton, Drawer, Link } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -144,7 +142,7 @@ const Header = () => {
 
   function getLetterAvatar(notification) {
     let letter = "";
-    console.log(notification.tipo);
+    //console.log(notification.tipo);
     switch (notification.tipo) {
       case "MATCH_PROJETO":
         letter = "MP";
