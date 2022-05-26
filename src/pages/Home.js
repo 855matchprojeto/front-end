@@ -104,7 +104,7 @@ function Home()
 
   const [cardsProfiles, setCardsProfiles] = useState(false);
   const [cardsProjetos, setCardsProjetos] = useState(false);
-  const [pesquisa,setPesquisa] = useState("");
+  const [pesquisa, setPesquisa] = useState("");
 
   const [n_cards, setNcards] =  useState(5);
   const [typeSearch, setTypeSearch] = useState(false);
@@ -115,6 +115,7 @@ function Home()
 
   // projetos do usuario
   const [meusProjetos, setMeusProjetos] = useState([]);
+  const [selectedProj, setSelectedProj] = useState(null);
 
   const [guidProjeto, setGuidProjeto] = useState(false);
   const [guidUsuario, setGuidUsuario] = useState(false);
@@ -235,6 +236,8 @@ function Home()
 
   function changeSelectedProjeto(v)
   {
+    setSelectedProj(v);
+
     if(v)
       setGuidProjeto(v.guid);
     else
@@ -268,8 +271,9 @@ function Home()
                     <Autocomplete
                       options={meusProjetos}
                       getOptionLabel={(o) => o.titulo}
+                      value={selectedProj}
                       isOptionEqualToValue={(o, v) => o.id === v.id}
-                      name="Projeto"
+                      name="projeto"
                       id="projeto"
                       size="small"
                       freeSolo
@@ -291,7 +295,7 @@ function Home()
                 <Grid item xs={12} md={6}>
                   <Autocomplete
                     options={allInteresses}
-                    getOptionLabel={(option) => option.nome_exibicao}
+                    getOptionLabel={(o) => o.nome_exibicao}
                     value={selectedInteresses}
                     isOptionEqualToValue={(o, v) => o.id === v.id}
                     name="interesses"
@@ -315,7 +319,7 @@ function Home()
                 <Grid item xs={12} md={6}>
                   <Autocomplete
                     options={allCourses}
-                    getOptionLabel={(option) => option.nome_exibicao}
+                    getOptionLabel={(o) => o.nome_exibicao}
                     value={selectedCourses}
                     isOptionEqualToValue={(o, v) => o.id === v.id}
                     name="cursos"
