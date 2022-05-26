@@ -32,12 +32,12 @@ function CardGroup(props)
     {
       if(cardsType === "usuarios" && guidRef)
       {
-        let aux = await getProjUserRel(guidRef, null, true).then(res =>
+        await getProjUserRel(guidRef, null, true).then(res =>
           {
             if (!mountedRef.current)
               return
             if(res.status === 200)
-              setStatus(aux);
+              setStatus(res.data);
           }
         )              
       }

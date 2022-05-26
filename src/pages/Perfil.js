@@ -233,6 +233,41 @@ function Perfil()
     }
   ];
 
+  const MyAutoComplete = (props) => {
+    const name_id = props.NameId;
+    const options = props.Options;
+    const event = props.Event;
+    const label = props.Label;
+    const value = props.Value;
+
+    return (
+      <>
+        <Autocomplete
+            options={options}
+            getOptionLabel={(o) => o.nome_exibicao}
+            value={value}
+            isOptionEqualToValue={(o, v) => o.id === v.id}
+            name={name_id}
+            id={name_id}
+            disableClearable={true}
+            multiple
+
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={label}
+                autoComplete="off"
+                size="small"
+                fullWidth
+              />
+            )}
+
+            onChange={(e,v) => event(v)}
+          />  
+      </>
+    )
+  }
+
   return (
     <CardPage loading={componentLoading}>
         { user &&
@@ -324,48 +359,22 @@ function Perfil()
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                  <Autocomplete
-                    options={allCourses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    value={myNewCourses}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="cursos"
-                    id="cursos"
-                    disableClearable={true}
-                    multiple
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Cursos"
-                        autoComplete="off"
-                        size="small"
-                        fullWidth
-                      />
-                    )}
-                    onChange={(e, v) => setMyNewCourses(v)}
+                  <MyAutoComplete 
+                    NameId="cursos" 
+                    Options={allCourses} 
+                    Event={setMyNewCourses} 
+                    Label="Cursos" 
+                    Value={myNewCourses}
                   />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                  <Autocomplete
-                    options={allInteresses}
-                    getOptionLabel={(option) => option.nome_exibicao}
-                    value={myNewInteresses}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="interesses"
-                    id="interesses"
-                    disableClearable={true}
-                    multiple
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Áreas de Interesse"
-                        autoComplete="off"
-                        size="small"
-                        fullWidth
-                      />
-                    )}
-                    onChange={(e, v) => setMyNewInteresses(v)}
+                  <MyAutoComplete 
+                    NameId="interesses" 
+                    Options={allInteresses} 
+                    Event={setMyNewInteresses} 
+                    Label="Áreas de Interesse" 
+                    Value={myNewInteresses}
                   />
                 </Grid>
 

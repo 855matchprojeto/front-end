@@ -118,13 +118,16 @@ function CardProjeto(props)
           <div className={classes.mediaContainer}>
             <CardMedia
               component="img"
-              image={(info.url_imagem !== null) ? info.url_imagem : ProjectDefault} 
+              image={(info.imagem_projeto !== null) ? info.imagem_projeto.url : ProjectDefault} 
               className={classes.media}
             />
           </div>
 
           <CardContent sx={{width: "100%"}}>
             <Typography variant="h6">{info.titulo}</Typography>
+            { hasMatch &&
+              <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
+            }
 
             <Typography component="div" variant="body2" className={classes.desc}>
                 {info.descricao && limitString(info.descricao, 200)}
@@ -172,10 +175,6 @@ function CardProjeto(props)
               >
                 Detalhes
               </Button>
-
-              { hasMatch &&
-                <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
-              }
             </CardActions>
           
         </Card>

@@ -53,16 +53,19 @@ const ProjetoEditar = () => {
   const pid = location.state?.data[0];
   const guid = location.state?.data[1];
   const classes = useStyles();
+
   const imageRef = useRef();
-
   const [fields, setFields] = useState(null);
-
-  const [image, setImage] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
 
   const [pageLoading, setPageLoading] = useState(true);
   const [allInteresses, setAllInteresses] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
+
+  // enquanto estiver criando um projeto, nao deixa clicar no botao
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [areasSelecionadas, setAreasSelecionadas] = useState([]);
+  const [cursosSelecionados, setCursosSelecionados] = useState([]);
 
   async function updateImage(e) 
   {
@@ -77,15 +80,8 @@ const ProjetoEditar = () => {
       b64_content: aux,
     };
 
-    setImage(url);
-    setImageFile(img);
+    setFields({ ...fields, url_imagem: url, imagem_projeto: img });
   }
-
-  // enquanto estiver criando um projeto, nao deixa clicar no botao
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [areasSelecionadas, setAreasSelecionadas] = useState([]);
-  const [cursosSelecionados, setCursosSelecionados] = useState([]);
 
   const handleChangeFields = (e) => {
     setFields({ ...fields, [e.target.name]: e.target.value });
@@ -127,40 +123,40 @@ const ProjetoEditar = () => {
     setAreasSelecionadas(v);
   }
 
-  // termina aqui
-  async function handleEditProject(e) {
-    // Faz as requisições para adicionar o projeto, e desativa o botao enquanto faz a requisição
+  async function handleEditProject(e) 
+  {
     setIsLoading(true);
 
     const form = {
       titulo: fields.titulo,
-      descricao: fields.descricao,
-      interesses: areasSelecionadas.map((area) => area.id),
-      cursos: cursosSelecionados.map((curso) => curso.id),
-      entidades: [],
-      tags: [],
+      descricao: fields.descricao
     };
 
-    const res = await updateProjetos(guid, form);
+    // imagem (optional)
+    if(fields.imagem_projeto)
+      form['imagem_projeto'] = fields.imagem_projeto;
 
-    if (res.status === 200) 
-    {
-      const msg = "Projeto atualizado com sucesso!";
-      const type = "success";  
-      enqueueMySnackBar(enqueueSnackbar, msg, type);
-    } 
-    else 
-    {
-      const msg = "Erro ao atualizar o projeto!";
-      const type = "error";  
-      enqueueMySnackBar(enqueueSnackbar, msg, type);
-    }
+    await updateProjetos(guid, form).then(res => 
+      {
+        if (res.status === 200) 
+        {
+          const msg = "Projeto atualizado com sucesso!";
+          enqueueMySnackBar(enqueueSnackbar, msg, "success");
+        } 
+        else 
+        {
+          const msg = "Erro ao atualizar o projeto!";
+          enqueueMySnackBar(enqueueSnackbar, msg, "error");
+        }
 
-    setIsLoading(false);
+        setIsLoading(false);
+      }
+    );
   }
 
   useEffect(() => {
-    async function getDados() {
+    async function getDados() 
+    {
       setPageLoading(true);
 
       await doGetAllInteresses().then(res => 
@@ -196,10 +192,16 @@ const ProjetoEditar = () => {
             return
           if (res.status === 200) 
           {
-            const infoData = res.data[0];
-            setFields(infoData);
-            setCursosSelecionados(infoData.cursos);
-            setAreasSelecionadas(infoData.interesses);
+            let aux = res.data[0];
+            let body = {
+              titulo: aux.titulo,
+              descricao: aux.descricao,
+              url_imagem: aux.imagem_projeto !== null ? aux.imagem_projeto.url : null,
+            };
+
+            setFields(body);
+            setCursosSelecionados(aux.cursos);
+            setAreasSelecionadas(aux.interesses);
           }
         }
       );
@@ -216,123 +218,135 @@ const ProjetoEditar = () => {
     }
   }, [])
 
+  const MyAutoComplete = (props) => {
+    const name_id = props.NameId;
+    const options = props.Options;
+    const event = props.Event;
+    const label = props.Label;
+    const value = props.Value;
+
+    return (
+      <>
+        <Autocomplete
+            options={options}
+            getOptionLabel={(o) => o.nome_exibicao}
+            value={value}
+            isOptionEqualToValue={(o, v) => o.id === v.id}
+            name={name_id}
+            id={name_id}
+            multiple
+            freeSolo
+
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={label}
+                autoComplete="off"
+                size="small"
+                fullWidth
+              />
+            )}
+
+            onChange={(e,v) => event(v)}
+          />  
+      </>
+    )
+  }
+
   return (
     <CardPage loading={pageLoading}>
-
-      <CardHeader title={<Typography style={{display:"flex", justifyContent:"center"}} variant="h6">Editar Projeto</Typography>} />
-      <input
-        ref={imageRef}
-        type="file"
-        accept="image/*"
-        style={{ display: "none" }}
-        onChange={(e) => updateImage(e)}
-      />
-      <div className={classes.mediaContainer}>
-        <ImageDialog 
-          urlImg={image} 
-          classRef={classes.media}
-          cardMediaComp={Button}
-          cardMediaImg={image ? image : ProjectDefault}
-        />
-      </div>
-
-      <Grid style={{display:"flex", justifyContent:"center"}}>
-        <Button
-          variant="outlined"
-          onClick={() => imageRef.current && imageRef.current.click()}
-          size="small"
-          sx={{ mt: 1, mb: 1 }}
-        >
-          Upload
-          <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
-        </Button> 
-      </Grid>
-
-      <CardContent className={classes.cardContent}>
-        <Grid container spacing={1} rowGap={1}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              type="input"
-              label="Título do projeto"
-              name="titulo"
-              value={fields ? fields.titulo : ""}
-              size="small"
-              fullWidth
-              onChange={(e) => handleChangeFields(e, null)}
+      { fields &&
+        <>
+          <CardHeader title={<Typography style={{display:"flex", justifyContent:"center"}} variant="h6">Editar Projeto</Typography>} />
+          <input
+            ref={imageRef}
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={(e) => updateImage(e)}
+          />
+          <div className={classes.mediaContainer}>
+            <ImageDialog 
+              urlImg={fields.url_imagem} 
+              classRef={classes.media}
+              cardMediaComp={Button}
+              cardMediaImg={fields.url_imagem !== null ? fields.url_imagem : ProjectDefault}
             />
+          </div>
+
+          <Grid style={{display:"flex", justifyContent:"center"}}>
+            <Button
+              variant="outlined"
+              onClick={() => imageRef.current && imageRef.current.click()}
+              size="small"
+              sx={{ mt: 1, mb: 1 }}
+            >
+              Upload
+              <UploadIcon fontSize="small" sx={{ ml: 0.4 }} />
+            </Button> 
           </Grid>
 
-          <Grid item xs={12}>
-            <TextField
-              type="input"
-              label="Descrição do projeto"
-              name="descricao"
-              value={fields ? fields.descricao : ""}
-              onChange={(e) => handleChangeFields(e, null)}
-              size="small"
-              multiline
-              fullWidth
-            />
-          </Grid>
-
-
-          <Grid item xs={12} md={6}>
-            <Autocomplete
-              options={allCourses}
-              getOptionLabel={(option) => option.nome_exibicao}
-              value={cursosSelecionados}
-              isOptionEqualToValue={(o, v) => o.id === v.id}
-              name="cursos"
-              id="cursos"
-              multiple
-              freeSolo
-              onChange={(e, v) => updateCourses(v)}
-              renderInput={(params) => (
+          <CardContent className={classes.cardContent}>
+            <Grid container spacing={1} rowGap={1}>
+              <Grid item xs={12} md={6}>
                 <TextField
-                  {...params}
-                  label="Cursos"
+                  type="input"
+                  label="Título do projeto"
+                  name="titulo"
+                  value={fields ? fields.titulo : ""}
                   size="small"
                   fullWidth
+                  onChange={(e) => handleChangeFields(e, null)}
                 />
-              )}
-            />
-          </Grid>
+              </Grid>
 
-          <Grid item xs={12} md={6}>
-            <Autocomplete
-              options={allInteresses}
-              getOptionLabel={(option) => option.nome_exibicao}
-              value={areasSelecionadas}
-              isOptionEqualToValue={(o, v) => o.id === v.id}
-              name="interesses"
-              id="interesses"
-              multiple
-              freeSolo
-              onChange={(e, v) => updateAreas(v)}
-              renderInput={(params) => (
+              <Grid item xs={12}>
                 <TextField
-                  {...params}
-                  label="Áreas"
+                  type="input"
+                  label="Descrição do projeto"
+                  name="descricao"
+                  value={fields ? fields.descricao : ""}
+                  onChange={(e) => handleChangeFields(e, null)}
                   size="small"
+                  multiline
                   fullWidth
                 />
-              )}
-            />
-          </Grid>
-        </Grid>
-      </CardContent>
+              </Grid>
 
-      <CardActions className={classes.actions}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleEditProject}
-          disabled={isLoading}
-        >
-          Salvar
-        </Button>
-      </CardActions>
+              <Grid item xs={12} md={6}>
+                <MyAutoComplete
+                  NameId="cursos" 
+                  Options={allCourses} 
+                  Event={updateCourses} 
+                  Label="Cursos" 
+                  Value={cursosSelecionados}
+                />
+              </Grid>
 
+              <Grid item xs={12} md={6}>
+                <MyAutoComplete
+                  NameId="interesses" 
+                  Options={allInteresses} 
+                  Event={updateAreas} 
+                  Label="Áreas" 
+                  Value={areasSelecionadas}
+                />
+              </Grid>
+            </Grid>
+          </CardContent>
+
+          <CardActions className={classes.actions}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleEditProject}
+              disabled={isLoading}
+            >
+              Salvar
+            </Button>
+          </CardActions>
+        </>
+      }
     </CardPage>
   );
 };

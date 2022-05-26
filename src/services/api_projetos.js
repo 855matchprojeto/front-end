@@ -22,22 +22,16 @@ proj.interceptors.response.use(
     }
 )
 
-export const getProjetos = async (dados,isID) => {
+export const getProjetos = async (dados, isID) => {
     if (isID)
     {
         return proj.get(`/projetos`,{ params: {id:dados}})
             .then(res => res)
             .catch(err => console.log(err))
     }
-    else if (dados === "")
-    {
-        return proj.get(`/projetos`)
-            .then(res => res)
-            .catch(err => console.log(err))
-    }
     else
     {
-        return proj.get(`/projetos`,{ params: {titulo_ilike:dados}})
+        return proj.get(`/projetos`,{ params: {titulo_ilike: dados[2]}})
             .then(res => res)
             .catch(err => console.log(err))
     }

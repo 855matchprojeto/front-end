@@ -66,7 +66,7 @@ function CriarProjeto()
     titulo: "",
     descricao: "",
     cursos: [],
-    areas: [],
+    areas: []
   };
 
   const validationScheme = Yup.object().shape({
@@ -79,11 +79,18 @@ function CriarProjeto()
   const classes = useStyles();
   const mountedRef = useRef(true);
   const { enqueueSnackbar } = useSnackbar();
-  const imageRef = useRef(null);
   const history = useHistory();
-  const [imageFile, setImageFile] = useState(null);
 
+  const imageRef = useRef(null);
+  const [imageFile, setImageFile] = useState(null);
   const [image, setImage] = useState(null);
+
+  // pagina carregando, esconde conteudo
+  const [pageLoading, setPageLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [allInteresses, setAllInteresses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]);
 
   async function handleCreateProject(values) 
   {
@@ -93,31 +100,28 @@ function CriarProjeto()
     const form = {
       titulo: values.titulo,
       descricao: values.descricao,
-      entidades: [],
-      tags: [],
       interesses: values.areas.map((area) => area.id),
       cursos: values.cursos.map((curso) => curso.id),
     };
+    
+    // imagem (optional)
+    if(imageFile)
+      form['imagem_projeto'] = imageFile;
 
     await postProjetos(form).then(res => 
       {
         if (res.status === 200) 
         {
-          const msg = "Projeto criado com sucesso!";
-          const type = "success";  
-          enqueueMySnackBar(enqueueSnackbar, msg, type);
+          enqueueMySnackBar(enqueueSnackbar, "Projeto criado com sucesso!", "success");
           history.push("/projeto", { data: [res.data.id, res.data.guid] });
         }
         else
         {
-          const msg = "Erro ao criar o projeto!";
-          const type = "error";
-          enqueueMySnackBar(enqueueSnackbar, msg, type);
+          enqueueMySnackBar(enqueueSnackbar, "Erro ao criar o projeto!", "error");
+          setIsLoading(false);
         }
       }
     )
-
-    setIsLoading(false);
   }
 
   async function updateImage(e) 
@@ -136,13 +140,6 @@ function CriarProjeto()
     setImage(url);
     setImageFile(img);
   }
-
-  // pagina carregando, esconde conteudo
-  const [pageLoading, setPageLoading] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [allInteresses, setAllInteresses] = useState([]);
-  const [allCourses, setAllCourses] = useState([]);
 
   useEffect(() => {
     async function getSelects() 

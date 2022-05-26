@@ -132,6 +132,10 @@ function CardPerfil(props)
           <CardContent sx={{width: "100%"}}>
             <Typography variant="subtitle1">{info.nome_exibicao}</Typography>
 
+            { hasMatch &&
+              <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
+            }
+
             <Typography component="div" variant="body2" className={classes.desc}>
               {info.bio && limitString(info.bio, 150)} 
 
@@ -170,11 +174,7 @@ function CardPerfil(props)
                 Ver Perfil
               </Button>
 
-              { hasMatch &&
-                <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
-              }
             </CardActions>
-          
         </Card>
         
     </Grid>
