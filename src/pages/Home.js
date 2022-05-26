@@ -9,8 +9,7 @@ import { doGetAllInteresses as doGetAllInteressesPJ } from "../services/api_proj
 import { doGetAllCourses as doGetAllCoursesPJ } from "../services/api_projetos";
 
 import { getProfiles, doGetDataUser } from "../services/api_perfil";
-import { getMeusProjetos } from "../services/api_projetos";
-import { getProjetos } from "../services/api_projetos";
+import { getMeusProjetos, getProjetos } from "../services/api_projetos";
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -244,6 +243,41 @@ function Home()
       setGuidProjeto(false);
   }
 
+  const SearchAutoComplete = (props) => {
+    const name_id = props.NameId;
+    const options = props.Options;
+    const event = props.Event;
+    const label = props.Label;
+    const value = props.Value;
+    const isProj = props.isProj;
+
+    return (
+      <>
+        <Autocomplete
+            options={options}
+            getOptionLabel={(o) => (isProj ? o.titulo : o.nome_exibicao)}
+            value={value}
+            isOptionEqualToValue={(o, v) => o.id === v.id}
+            name={name_id}
+            id={name_id}
+            size="small"
+            multiple={!isProj}
+            freeSolo
+
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="standard"
+                label={label}
+              />
+            )}
+
+            onChange={(e,v) => event(v)}
+          />  
+      </>
+    )
+  }
+
   return (
     <>
       { !pageLoading &&
@@ -268,76 +302,36 @@ function Home()
               <Grid container style={{marginTop: "5px"}} spacing={1} rowGap={1}>
                 { typeSearch &&
                   <Grid item xs={12}>
-                    <Autocomplete
-                      options={meusProjetos}
-                      getOptionLabel={(o) => o.titulo}
-                      value={selectedProj}
-                      isOptionEqualToValue={(o, v) => o.id === v.id}
-                      name="projeto"
-                      id="projeto"
-                      size="small"
-                      freeSolo
-
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          label="Escolha um projeto"
-                          fullWidth
-                        />
-                      )}
-
-                      onChange={(e,v) => changeSelectedProjeto(v)}
-                    />  
+                    <SearchAutoComplete 
+                      NameId="projeto" 
+                      Options={meusProjetos} 
+                      Event={changeSelectedProjeto} 
+                      Label="Escolha um projeto" 
+                      Value={selectedProj}
+                      isProj={true}
+                    />
                   </Grid>
                 }
 
                 <Grid item xs={12} md={6}>
-                  <Autocomplete
-                    options={allInteresses}
-                    getOptionLabel={(o) => o.nome_exibicao}
-                    value={selectedInteresses}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="interesses"
-                    id="interesses"
-                    size="small"
-                    multiple
-                    freeSolo
-
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        label="Filtrar Interesses"
-                      />
-                    )}
-
-                    onChange={(e,v) => setSelectedInteresses(v)}
-                  />  
+                 <SearchAutoComplete 
+                    NameId="interesses" 
+                    Options={allInteresses} 
+                    Event={setSelectedInteresses} 
+                    Label="Filtrar Interesses" 
+                    Value={selectedInteresses}
+                    isProj={false}
+                  />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                  <Autocomplete
-                    options={allCourses}
-                    getOptionLabel={(o) => o.nome_exibicao}
-                    value={selectedCourses}
-                    isOptionEqualToValue={(o, v) => o.id === v.id}
-                    name="cursos"
-                    id="cursos"
-                    size="small"
-                    multiple
-                    freeSolo
-
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        label="Filtrar Cursos"
-                        fullWidth
-                      />
-                    )}
-
-                    onChange={(e, v) => setSelectedCourses(v)}
+                  <SearchAutoComplete 
+                    NameId="cursos" 
+                    Options={allCourses} 
+                    Event={setSelectedCourses} 
+                    Label="Filtrar Cursos" 
+                    Value={selectedCourses}
+                    isProj={false}
                   />
                 </Grid>
               </Grid>
