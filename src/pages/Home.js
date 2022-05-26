@@ -2,16 +2,23 @@ import React, {useRef, useState, useEffect} from "react";
 import { Container, Grid, Typography, useMediaQuery, IconButton } from "@mui/material";
 import { Autocomplete, Box, TextField, MenuItem, Stack, InputBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import SearchIcon from "@mui/icons-material/Search";
-import { getProjetos } from "../services/api_projetos";
-import { getProfiles } from "../services/api_perfil";
-import LoadingBox from "../components/LoadingBox";
-import {doGetAllCourses,doGetAllInteresses,doGetDataUser} from "../services/api_perfil";
+
+import { doGetAllCourses as doGetAllCoursesPF } from "../services/api_perfil";
+import { doGetAllInteresses as doGetAllInteressesPF } from "../services/api_perfil";
+import { doGetAllInteresses as doGetAllInteressesPJ } from "../services/api_projetos";
+import { doGetAllCourses as doGetAllCoursesPJ } from "../services/api_projetos";
+
+import { getProfiles, doGetDataUser } from "../services/api_perfil";
 import { getMeusProjetos } from "../services/api_projetos";
+import { getProjetos } from "../services/api_projetos";
+
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import SearchIcon from "@mui/icons-material/Search";
+
 import CardGroup from "../components/customCards/CardGroup";
 import AlertDialog from "../components/dialogs/AlertDialog";
+import LoadingBox from "../components/LoadingBox";
 
 //--estilo--
 const useStyles = makeStyles(theme => ({
@@ -121,24 +128,34 @@ function Home()
       async function loadSelects() 
       { 
         setPageLoading(true);
+        let proms = [];
 
         if(typeSearch)
-        {                    
-          await Promise.all([doGetAllInteresses(), doGetAllCourses(), getMeusProjetos()]).then(data => 
-            {
-              if (!mountedRef.current)
-                return
-              if (data[0].status === 200 && data[0].statusText === "OK") 
-                setAllInteresses(data[0].data);
-              if (data[1].status === 200 && data[1].statusText === "OK") 
-                setAllCourses(data[1].data); 
-              if (data[2].status === 200) 
-                setMeusProjetos(data[2].data);
-              
-              setPageLoading(false);
-            }
-          )
+        {                 
+          proms.push(doGetAllInteressesPF());
+          proms.push(doGetAllCoursesPF());
+          proms.push(getMeusProjetos());
         }
+        else
+        {
+          proms.push(doGetAllInteressesPJ());
+          proms.push(doGetAllCoursesPJ());
+        }
+
+        await Promise.all(proms).then(data => 
+          {
+            if (!mountedRef.current)
+              return
+            if (data[0].status === 200 && data[0].statusText === "OK") 
+              setAllInteresses(data[0].data);
+            if (data[1].status === 200 && data[1].statusText === "OK") 
+              setAllCourses(data[1].data); 
+            if (typeSearch && data[2].status === 200) 
+              setMeusProjetos(data[2].data);
+            
+            setPageLoading(false);
+          }
+        )
       }
 
       loadSelects();
@@ -149,43 +166,42 @@ function Home()
       async function loadCards() 
       { 
         setPageLoading(true);
+        let dados = [];
+        dados.push(selectedInteresses);
+        dados.push(selectedCourses);
+        dados.push(pesquisa);
+
+        let proms = [];
 
         if(!typeSearch)
         {
           setGuidProjeto(false);
-
-          await getProjetos(pesquisa,false).then(res =>
-            {
-              if (!mountedRef.current)
-                return
-              if(res.status === 200)
-                setCardsProjetos(res.data);
-            }
-          );
-
-          await doGetDataUser().then(res =>
-            {
-              if (!mountedRef.current)
-                return
-              if(res.status === 200)
-                setGuidUsuario(res.data.guid_usuario);
-              setPageLoading(false);
-            }
-          );
+          proms.push(getProjetos(dados,false));
+          proms.push(doGetDataUser());
         }
         else
         {        
-          let dados = [selectedInteresses, selectedCourses, pesquisa];
-
-          await getProfiles(dados,n_cards).then(res =>
-            {
-              if (!mountedRef.current)
-                return
-              setCardsProfiles(res);
-              setPageLoading(false);
-            }
-          );
+          proms.push(getProfiles(dados,n_cards));
         }
+
+        await Promise.all(proms).then(data => 
+          {
+            if (!mountedRef.current)
+              return
+
+            if (!typeSearch)
+            {
+              if (data[0].status === 200) 
+                setCardsProjetos(data[0].data);
+              if (data[1].status === 200) 
+                setGuidUsuario(data[1].data.guid_usuario);
+            }
+            else
+              setCardsProfiles(data[0]);
+
+            setPageLoading(false);
+          }
+        )
       }
 
       loadCards();
@@ -244,7 +260,6 @@ function Home()
 
           <Container>
               <Grid container style={{marginTop: "5px"}} spacing={1} rowGap={1}>
-                  
                 { typeSearch &&
                   <Grid item xs={12}>
                     <Autocomplete
@@ -270,58 +285,54 @@ function Home()
                   </Grid>
                 }
 
-                { typeSearch &&
-                  <Grid item xs={12} md={6}>
-                    <Autocomplete
-                      options={allInteresses}
-                      getOptionLabel={(option) => option.nome_exibicao}
-                      value={selectedInteresses}
-                      isOptionEqualToValue={(o, v) => o.id === v.id}
-                      name="interesses"
-                      id="interesses"
-                      size="small"
-                      multiple
-                      freeSolo
+                <Grid item xs={12} md={6}>
+                  <Autocomplete
+                    options={allInteresses}
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    value={selectedInteresses}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    name="interesses"
+                    id="interesses"
+                    size="small"
+                    multiple
+                    freeSolo
 
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          label="Filtrar Interesses"
-                        />
-                      )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        label="Filtrar Interesses"
+                      />
+                    )}
 
-                      onChange={(e,v) => setSelectedInteresses(v)}
-                    />  
-                  </Grid>
-                }
+                    onChange={(e,v) => setSelectedInteresses(v)}
+                  />  
+                </Grid>
 
-                { typeSearch &&
-                  <Grid item xs={12} md={6}>
-                    <Autocomplete
-                      options={allCourses}
-                      getOptionLabel={(option) => option.nome_exibicao}
-                      value={selectedCourses}
-                      isOptionEqualToValue={(o, v) => o.id === v.id}
-                      name="cursos"
-                      id="cursos"
-                      size="small"
-                      multiple
-                      freeSolo
+                <Grid item xs={12} md={6}>
+                  <Autocomplete
+                    options={allCourses}
+                    getOptionLabel={(option) => option.nome_exibicao}
+                    value={selectedCourses}
+                    isOptionEqualToValue={(o, v) => o.id === v.id}
+                    name="cursos"
+                    id="cursos"
+                    size="small"
+                    multiple
+                    freeSolo
 
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          label="Filtrar Cursos"
-                          fullWidth
-                        />
-                      )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        label="Filtrar Cursos"
+                        fullWidth
+                      />
+                    )}
 
-                      onChange={(e, v) => setSelectedCourses(v)}
-                    />
-                  </Grid>
-                }
+                    onChange={(e, v) => setSelectedCourses(v)}
+                  />
+                </Grid>
               </Grid>
           </Container>
 
@@ -370,11 +381,19 @@ function Home()
           { typeSearch &&
             <>
               <Container className={classes.pagination}>
-                <IconButton aria-label="prev" disabled={!cardsProfiles.previous_cursor && !cardsProfiles.current_cursor} onClick={() => changePage(cardsProfiles.previous_cursor)}>
+                <IconButton 
+                  aria-label="prev" 
+                  disabled={!cardsProfiles.previous_cursor && !cardsProfiles.current_cursor} 
+                  onClick={() => changePage(cardsProfiles.previous_cursor)}
+                >
                   <NavigateBeforeIcon />
                 </IconButton>
 
-                <IconButton aria-label="next" disabled={!cardsProfiles.next_cursor} onClick={() => changePage(cardsProfiles.next_cursor)}>
+                <IconButton 
+                  aria-label="next" 
+                  disabled={!cardsProfiles.next_cursor} 
+                  onClick={() => changePage(cardsProfiles.next_cursor)}
+                >
                   <NavigateNextIcon />
                 </IconButton>
               </Container>

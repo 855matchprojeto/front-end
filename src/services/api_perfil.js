@@ -89,31 +89,28 @@ export const doGetAllInteresses = async () => {
 // retorna todos os perfis
 export const getProfiles = async (data, page_size) => {
   // lista de ids de interesses, filtro
-  let interests_in = [];
-  data[0].forEach((element) => interests_in.push(element.id));
-
   // lista de ids de cursos, filtro
-  let courses_in = [];
-  data[1].forEach((element) => courses_in.push(element.id));
-
   // pesquisa, nomes de usuarios
+  let interests_in = data[0].map(el => el.id);
+  let courses_in = data[1].map(el => el.id);
   let pesquisa = data[2];
 
   let query_its = "";
-  interests_in.forEach(
-    (element) => (query_its += "interests_in=" + element + "&")
-  );
+  interests_in.forEach((el) => (query_its += "interests_in=" + el + "&"));
 
   let query_crs = "";
-  courses_in.forEach((element) => (query_crs += "courses_in=" + element + "&"));
+  courses_in.forEach((el) => (query_crs += "courses_in=" + el + "&"));
 
   let query = query_its + query_crs;
 
-  if (pesquisa.length === 0) query += `page_size=${page_size}`;
-  else query += `display_name_ilike=${pesquisa}&page_size=${page_size}`;
+  if (pesquisa.length === 0) 
+    query += `page_size=${page_size}`;
+  else 
+    query += `display_name_ilike=${pesquisa}&page_size=${page_size}`;
 
   // cursor
-  if (data.length === 4) query += `&cursor=${data[3]}`;
+  if (data.length === 4) 
+    query += `&cursor=${data[3]}`;
 
   return perf
     .get(`profiles?${query}`)
