@@ -225,9 +225,12 @@ function Home()
     else
       dados = [selectedInteresses,selectedCourses,pesquisa,v];
 
-    let aux = await getProfiles(dados,n_cards);
-    setCardsProfiles(aux);
-    setPageLoading(false);
+    await getProfiles(dados,n_cards).then(res => 
+      {
+        setCardsProfiles(res);
+        setPageLoading(false);
+      }
+    );
   }
 
   function changeSelectedProjeto(v)

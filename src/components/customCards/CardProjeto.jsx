@@ -125,6 +125,9 @@ function CardProjeto(props)
 
           <CardContent sx={{width: "100%"}}>
             <Typography variant="h6">{info.titulo}</Typography>
+            { hasMatch &&
+              <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
+            }
 
             <Typography component="div" variant="body2" className={classes.desc}>
                 {info.descricao && limitString(info.descricao, 200)}
@@ -172,10 +175,6 @@ function CardProjeto(props)
               >
                 Detalhes
               </Button>
-
-              { hasMatch &&
-                <FavoriteIcon style={{marginLeft:"3px"}} color='error'/>
-              }
             </CardActions>
           
         </Card>
