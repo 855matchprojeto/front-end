@@ -326,7 +326,7 @@ function Perfil()
                     type="text"
                     label="Nome"
                     name="Nome"
-                    value={user ? user.name : ""}
+                    value={user.name}
                     size="small"
                     fullWidth
                     onChange={(e) => handleFieldChange(e)}
@@ -338,7 +338,7 @@ function Perfil()
                     type="text"
                     label="Sobrenome"
                     name="Sobrenome"
-                    value={user ? user.sobrenome : ""}
+                    value={user.sobrenome}
                     size="small"
                     fullWidth
                     onChange={(e) => handleFieldChange(e)}
@@ -350,7 +350,7 @@ function Perfil()
                     type="text"
                     label="Bio"
                     name="Bio"
-                    value={user ? user.bio : ""}
+                    value={user.bio}
                     onChange={(e) => handleFieldChange(e)}
                     size="small"
                     fullWidth
