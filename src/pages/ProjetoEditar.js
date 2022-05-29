@@ -240,8 +240,8 @@ const ProjetoEditar = () => {
   }
 
   const validationSchema = Yup.object().shape({
-    titulo: Yup.string().required("Digite um título."),
-    descricao: Yup.string().required("Digite uma descrição."),
+    titulo: Yup.string().required("Digite um título para o projeto"),
+    descricao: Yup.string().required("Digite uma descrição para o projeto."),
   });
 
   return (
