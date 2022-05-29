@@ -152,6 +152,14 @@ const ProjetoEditar = () => {
           if(res.status === 200)
           {
             let aux = res.data[0];
+
+            let body = {
+              titulo: aux.titulo,
+              descricao: aux.descricao,
+              url_imagem: aux.imagem_projeto !== null ? aux.imagem_projeto.url : null,
+            };
+
+            setFields(body);
             
             setMyCourses(aux.cursos);
             setMyNewCourses(aux.cursos);
@@ -188,37 +196,6 @@ const ProjetoEditar = () => {
 
     getDados();
   }, []);
-
-  useEffect(() => {
-    async function getInfos() 
-    {
-      await getProjetos(pid, true).then(res =>
-        {
-          if (!mountedRef.current)
-            return
-          if (res.status === 200) 
-          {
-            let aux = res.data[0];
-            let body = {
-              titulo: aux.titulo,
-              descricao: aux.descricao,
-              url_imagem: aux.imagem_projeto !== null ? aux.imagem_projeto.url : null,
-            };
-
-            setFields(body);
-
-            setMyCourses(aux.cursos);
-            setMyNewCourses(aux.cursos);
-
-            setMyInteresses(aux.interesses);
-            setMyNewInteresses(aux.interesses);
-          }
-        }
-      );
-    }
-
-    getInfos();
-  }, [pid]);
 
   // cleanup
   useEffect(() => {
@@ -303,8 +280,8 @@ const ProjetoEditar = () => {
           <Formik
             initialValues={
               {
-                'titulo': fields.titulo,
-                'descricao': fields.descricao
+                titulo: fields.titulo,
+                descricao: fields.descricao
               }
             }
             validationSchema={validationSchema}
