@@ -177,7 +177,7 @@ function CriarProjeto()
         <Formik
           initialValues={values}
           validationSchema={validationScheme}
-          onSubmit={(values) => {handleCreateProject(values);}}
+          onSubmit={(values) => {handleCreateProject(values)}}
         >
           {({
             handleChange,
