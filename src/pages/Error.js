@@ -27,7 +27,9 @@ function Error()
   return (
     <Grid container className={classes.grid}>
       <div className={classes.paper}>
-        <Typography component="h1" variant="h5"> Erro 404. Página não encontrada. </Typography>
+        <Typography component="h1" variant="h5"> 
+          Erro 404. Página não encontrada. 
+        </Typography>
       </div>
     </Grid>
   );

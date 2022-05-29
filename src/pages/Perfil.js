@@ -13,11 +13,12 @@ import UploadIcon from "@mui/icons-material/Upload";
 import { doGetAllCourses, doGetAllInteresses } from "../services/api_perfil";
 import { doGetDataUser, doSaveProfile } from "../services/api_perfil";
 import { doUpdateCourses, doUpdateInteresse } from "../services/api_perfil";
+import { deletePhones, postPhones } from "../services/api_perfil";
+import { deleteEmail, postEmail } from "../services/api_perfil";
 
 import { enqueueMySnackBar, Base64, getLoginData } from "../services/util";
 import ImageDialog from "../components/dialogs/ImageDialog";
-import MyEmails from "../components/dialogs/MyEmails";
-import MyPhones from "../components/dialogs/MyPhones";
+import MySelectDialog  from "../components/dialogs/MySelectDialog";
 import CardPage from "../components/customCards/CardPage";
 
 //--estilo--
@@ -64,12 +65,16 @@ function Perfil()
 
   const [user, setUser] = useState(null);
   const [loginInfo, setLoginInfo] = useState(false);
+
   const [myCourses, setMyCourses] = useState([]);
   const [myNewCourses, setMyNewCourses] = useState([]);
+
   const [myInteresses, setMyInteresses] = useState([]);
   const [myNewInteresses, setMyNewInteresses] = useState([]);
+
   const [myEmails, setMyEmails] = useState([]);  
   const [myPhones, setMyPhones] = useState([]);
+
   const [changeSelect, setChangeSelect] = useState(false);
 
   useEffect(() => {
@@ -85,17 +90,20 @@ function Perfil()
           if(res.status === 200)
           {
             let aux = res.data;
+
             setMyCourses(aux.cursos);
-            setMyInteresses(aux.interesses);
             setMyNewCourses(aux.cursos);
+
+            setMyInteresses(aux.interesses);
             setMyNewInteresses(aux.interesses);      
+
             setMyEmails(aux.emails);
             setMyPhones(aux.phones);
           }
+          
+          setIsLoading(false);
         }
       );
-
-      setIsLoading(false);
     }
 
     getDataUser();
@@ -215,7 +223,7 @@ function Perfil()
     setUser({ ...user, url_imagem: url, imagem_perfil: img });
   }
 
-  function handleFieldChange(e)
+  function changeData(e)
   {setUser({ ...user, [e.target.name]: e.target.value });}
 
   const cardContentValues = [
@@ -223,14 +231,30 @@ function Perfil()
       type: "text",
       label: "Username",
       name: "Username",
+      dis: true,
       value: (loginInfo ? loginInfo.username : ""),
     },
     {
       type: "email",
       label: "Email",
       name: "Email",
+      dis: true,
       value: (loginInfo ? loginInfo.email : ""),
-    }
+    },
+    {
+      type: "text",
+      label: "Nome",
+      name: "name",
+      dis: false,
+      value: (user ? user.name : ""),
+    },
+    {
+      type: "text",
+      label: "Sobrenome",
+      name: "sobrenome",
+      dis: false,
+      value: (user ? user.sobrenome : ""),
+    },
   ];
 
   const MyAutoComplete = (props) => {
@@ -266,6 +290,16 @@ function Perfil()
           />  
       </>
     )
+  }
+
+  function addPhonePayload(newData)
+  {
+    return {"phone": newData, "id_tipo_contato": 1};
+  }
+
+  function addEmailPayload(newData)
+  {
+    return {"email": newData};
   }
 
   return (
@@ -313,46 +347,23 @@ function Perfil()
                         label={el.label}
                         name={el.name}
                         value={el.value}
+                        disabled={el.dis}
                         size="small"
                         fullWidth
-                        disabled
+                        onChange={(e) => changeData(e)}
                       />
                     </Grid>
                   )
                 }
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    type="text"
-                    label="Nome"
-                    name="Nome"
-                    value={user ? user.name : ""}
-                    size="small"
-                    fullWidth
-                    onChange={(e) => handleFieldChange(e)}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    type="text"
-                    label="Sobrenome"
-                    name="Sobrenome"
-                    value={user ? user.sobrenome : ""}
-                    size="small"
-                    fullWidth
-                    onChange={(e) => handleFieldChange(e)}
-                  />
-                </Grid>
-                
+              
                 <Grid item xs={12}>
                   <TextField
                     type="text"
                     label="Bio"
-                    name="Bio"
-                    value={user ? user.bio : ""}
-                    onChange={(e) => handleFieldChange(e)}
+                    name="bio"
                     size="small"
+                    value={user.bio}
+                    onChange={(e) => changeData(e)}
                     fullWidth
                     multiline
                   />
@@ -361,29 +372,51 @@ function Perfil()
                 <Grid item xs={12} md={6}>
                   <MyAutoComplete 
                     NameId="cursos" 
+                    Label="Cursos" 
                     Options={allCourses} 
                     Event={setMyNewCourses} 
-                    Label="Cursos" 
                     Value={myNewCourses}
                   />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
                   <MyAutoComplete 
-                    NameId="interesses" 
+                    NameId="interesses"
+                    Label="Áreas de Interesse" 
                     Options={allInteresses} 
                     Event={setMyNewInteresses} 
-                    Label="Áreas de Interesse" 
                     Value={myNewInteresses}
                   />
                 </Grid>
 
                 <Grid item md={6}>
-                  <MyPhones data={myPhones} btnIcon={<PhoneIcon/>}/>                    
+                  <MySelectDialog  
+                    data={myPhones} 
+                    dataValue="phone"
+                    btnTxt="Números de contato" 
+                    fieldType="text"
+                    fieldName="phones"
+                    fieldLabel="Número"
+                    deleteEvent={deletePhones}
+                    addEvent={postPhones}
+                    addPayload={addPhonePayload}
+                    btnIcon={<PhoneIcon/>}
+                  />                    
                 </Grid>
 
                 <Grid item lg={6} sm={6} xs={12}>
-                  <MyEmails data={myEmails} btnIcon={<ContactMailIcon/>}/>  
+                  <MySelectDialog 
+                    data={myEmails} 
+                    dataValue="email"
+                    btnTxt="Emails de contato" 
+                    fieldType="email"
+                    fieldName="emails"
+                    fieldLabel="Email"
+                    deleteEvent={deleteEmail}
+                    addEvent={postEmail}
+                    addPayload={addEmailPayload}
+                    btnIcon={<ContactMailIcon/>}
+                  />  
                 </Grid>
 
               </Grid>
