@@ -139,7 +139,9 @@ function EsqueciSenha()
             </form>
           )}
         </Formik>
-        <Box mt={6} mb={4}> <Copyright /> </Box>
+        <Box mt={1} mb={1}>
+          <Copyright />
+        </Box>
       </div>
     </Container>
   );

@@ -614,13 +614,11 @@ const Header = () => {
   return (
     <>
       { ntfSelected && 
-        (
-          <DialogNotification
-            notification={ntfSelected}
-            setOpen={setNtfSelected}
-            user={user}
-          />
-        )
+        <DialogNotification
+          notif={ntfSelected}
+          setOpen={setNtfSelected}
+          user={user}
+        />
       }
 
       <AppBar position="static">
