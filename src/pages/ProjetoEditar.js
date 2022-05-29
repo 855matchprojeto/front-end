@@ -18,6 +18,9 @@ import ProjectDefault from "../icons/project.svg";
 import CardPage from "../components/customCards/CardPage";
 import ImageDialog from "../components/dialogs/ImageDialog";
 
+import { Form,Formik } from "formik";
+import * as Yup from "yup";
+
 //--estilo--
 const useStyles = makeStyles((theme) => ({
   cardContent: {
@@ -61,11 +64,15 @@ const ProjetoEditar = () => {
   const [allInteresses, setAllInteresses] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
 
-  // enquanto estiver criando um projeto, nao deixa clicar no botao
   const [isLoading, setIsLoading] = useState(false);
 
-  const [areasSelecionadas, setAreasSelecionadas] = useState([]);
-  const [cursosSelecionados, setCursosSelecionados] = useState([]);
+  const [myInteresses, setMyInteresses] = useState([]);
+  const [myNewInteresses, setMyNewInteresses] = useState([]);
+
+  const [myCourses, setMyCourses] = useState([]);
+  const [myNewCourses, setMyNewCourses] = useState([]);
+
+  const [changeSelect, setChangeSelect] = useState(false);
 
   async function updateImage(e) 
   {
@@ -83,58 +90,35 @@ const ProjetoEditar = () => {
     setFields({ ...fields, url_imagem: url, imagem_projeto: img });
   }
 
-  const handleChangeFields = (e) => {
-    setFields({ ...fields, [e.target.name]: e.target.value });
-  };
-
-  async function updateCourses(v) {
-    let aux = cursosSelecionados;
-    let flag;
-
-    if (aux.length > v.length) {
-      //delete
-      aux = aux.filter(({ id }) => !v.find((el) => el.id === id));
-      flag = false;
-    } //insert
-    else {
-      aux = v.filter(({ id }) => !aux.find((el) => el.id === id));
-      flag = true;
-    }
-
-    await doUpdateCourses([{ id_projetos: pid, id_cursos: aux[0].id }], flag);
-    setCursosSelecionados(v);
-  }
-
-  async function updateAreas(v) {
-    let aux = areasSelecionadas;
-    let flag;
-
-    if (aux.length > v.length) {
-      //delete
-      aux = aux.filter(({ id }) => !v.find((el) => el.id === id));
-      flag = false;
-    } //insert
-    else {
-      aux = v.filter(({ id }) => !aux.find((el) => el.id === id));
-      flag = true;
-    }
-
-    await doUpdateAreas([{ id_projetos: pid, id_interesses: aux[0].id }], flag);
-    setAreasSelecionadas(v);
-  }
-
-  async function handleEditProject(e) 
+  async function handleEditProject(values) 
   {
     setIsLoading(true);
 
+     // titulo e descricao (required)
     const form = {
-      titulo: fields.titulo,
-      descricao: fields.descricao
+      titulo: values.titulo,
+      descricao: values.descricao
     };
 
     // imagem (optional)
     if(fields.imagem_projeto)
       form['imagem_projeto'] = fields.imagem_projeto;
+
+    // campos de cursos (optional)
+    let deleteArr = myCourses.filter(({ id }) => !myNewCourses.find((el) => el.id === id));
+    let insertArr = myNewCourses.filter(({ id }) => !myCourses.find((el) => el.id === id));
+    deleteArr = deleteArr.map(el => ({'id_projetos': pid, 'id_cursos': el.id}));
+    insertArr = insertArr.map(el => ({'id_projetos': pid, 'id_cursos': el.id}));
+    await doUpdateCourses(deleteArr, false);
+    await doUpdateCourses(insertArr, true);
+
+    // campos de interesses (optional)
+    deleteArr = myInteresses.filter(({ id }) => !myNewInteresses.find((el) => el.id === id));
+    insertArr = myNewInteresses.filter(({ id }) => !myInteresses.find((el) => el.id === id));
+    deleteArr = deleteArr.map(el => ({'id_projetos': pid, 'id_interesses': el.id}));
+    insertArr = insertArr.map(el => ({'id_projetos': pid, 'id_interesses': el.id}));
+    await doUpdateAreas(deleteArr, false);
+    await doUpdateAreas(insertArr, true);
 
     await updateProjetos(guid, form).then(res => 
       {
@@ -148,36 +132,58 @@ const ProjetoEditar = () => {
           const msg = "Erro ao atualizar o projeto!";
           enqueueMySnackBar(enqueueSnackbar, msg, "error");
         }
-
+        
         setIsLoading(false);
       }
     );
+
+    setChangeSelect(!changeSelect);
   }
+
+  useEffect(() => {  
+    async function getInfos() 
+    {
+      setIsLoading(true);
+
+      await getProjetos(pid, true).then(res =>
+        {
+          if (!mountedRef.current)
+            return
+          if(res.status === 200)
+          {
+            let aux = res.data[0];
+            
+            setMyCourses(aux.cursos);
+            setMyNewCourses(aux.cursos);
+
+            setMyInteresses(aux.interesses);
+            setMyNewInteresses(aux.interesses);
+          }
+
+          setIsLoading(false);
+        }
+      );
+    }
+
+    getInfos();
+  },[changeSelect, pid])
 
   useEffect(() => {
     async function getDados() 
     {
       setPageLoading(true);
 
-      await doGetAllInteresses().then(res => 
+      await Promise.all([doGetAllInteresses(),doGetAllCourses()]).then(data => 
         {
           if (!mountedRef.current)
             return
-          if (res.status === 200 && res.statusText === "OK")
-            setAllInteresses(res.data);
-        }
-      )
-      
-      await doGetAllCourses().then(res => 
-        {
-          if (!mountedRef.current)
-            return
-          if (res.status === 200 && res.statusText === "OK")
-            setAllCourses(res.data);
+          if (data[0].status === 200 && data[0].statusText === "OK")
+            setAllInteresses(data[0].data);
+          if (data[1].status === 200 && data[1].statusText === "OK")
+            setAllCourses(data[1].data);
           setPageLoading(false);
         }
-      )
-      
+      );      
     }
 
     getDados();
@@ -200,12 +206,15 @@ const ProjetoEditar = () => {
             };
 
             setFields(body);
-            setCursosSelecionados(aux.cursos);
-            setAreasSelecionadas(aux.interesses);
+
+            setMyCourses(aux.cursos);
+            setMyNewCourses(aux.cursos);
+
+            setMyInteresses(aux.interesses);
+            setMyNewInteresses(aux.interesses);
           }
         }
       );
-      
     }
 
     getInfos();
@@ -253,6 +262,11 @@ const ProjetoEditar = () => {
     )
   }
 
+  const validationSchema = Yup.object().shape({
+    titulo: Yup.string().required("Digite um título."),
+    descricao: Yup.string().required("Digite uma descrição."),
+  });
+
   return (
     <CardPage loading={pageLoading}>
       { fields &&
@@ -286,65 +300,92 @@ const ProjetoEditar = () => {
             </Button> 
           </Grid>
 
-          <CardContent className={classes.cardContent}>
-            <Grid container spacing={1} rowGap={1}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  type="input"
-                  label="Título do projeto"
-                  name="titulo"
-                  value={fields ? fields.titulo : ""}
-                  size="small"
-                  fullWidth
-                  onChange={(e) => handleChangeFields(e, null)}
-                />
-              </Grid>
+          <Formik
+            initialValues={
+              {
+                'titulo': fields.titulo,
+                'descricao': fields.descricao
+              }
+            }
+            validationSchema={validationSchema}
+            onSubmit={(values) => {handleEditProject(values)}}
+          >
+            {(props) => (
+              <Form onSubmit={props.handleSubmit} style={{display:"flex", flexDirection:"column"}}>
 
-              <Grid item xs={12}>
-                <TextField
-                  type="input"
-                  label="Descrição do projeto"
-                  name="descricao"
-                  value={fields ? fields.descricao : ""}
-                  onChange={(e) => handleChangeFields(e, null)}
-                  size="small"
-                  multiline
-                  fullWidth
-                />
-              </Grid>
+                <CardContent className={classes.cardContent}>
+                  <Grid container spacing={1} rowGap={1}>
 
-              <Grid item xs={12} md={6}>
-                <MyAutoComplete
-                  NameId="cursos" 
-                  Options={allCourses} 
-                  Event={updateCourses} 
-                  Label="Cursos" 
-                  Value={cursosSelecionados}
-                />
-              </Grid>
+                        <Grid item xs={12} md={6}>
+                          <TextField
+                            type="input"
+                            label="Título do projeto"
+                            name="titulo"
+                            value={props.values.titulo}
+                            size="small"
+                            autoComplete="off"
+                            fullWidth
+                            onChange={props.handleChange}
+                            error={Boolean(props.touched.titulo && props.errors.titulo)}
+                            helperText={props.errors.titulo}
+                            onBlur={props.handleBlur}
+                          />
+                        </Grid>
 
-              <Grid item xs={12} md={6}>
-                <MyAutoComplete
-                  NameId="interesses" 
-                  Options={allInteresses} 
-                  Event={updateAreas} 
-                  Label="Áreas" 
-                  Value={areasSelecionadas}
-                />
-              </Grid>
-            </Grid>
-          </CardContent>
+                        <Grid item xs={12} md={12}>
+                          <TextField
+                            type="input"
+                            label="Descrição do projeto"
+                            name="descricao"
+                            value={props.values.descricao}
+                            size="small"
+                            autoComplete="off"
+                            multiline
+                            fullWidth
+                            onChange={props.handleChange}
+                            error={Boolean(props.touched.descricao && props.errors.descricao)}
+                            helperText={props.errors.descricao}
+                            onBlur={props.handleBlur}
+                          />
+                        </Grid>
 
-          <CardActions className={classes.actions}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleEditProject}
-              disabled={isLoading}
-            >
-              Salvar
-            </Button>
-          </CardActions>
+                        <Grid item xs={12} md={6}>
+                          <MyAutoComplete
+                            NameId="cursos"
+                            Label="Cursos" 
+                            Options={allCourses} 
+                            Event={setMyNewCourses} 
+                            Value={myNewCourses}
+                          />
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+                          <MyAutoComplete
+                            NameId="interesses" 
+                            Label="Áreas" 
+                            Options={allInteresses} 
+                            Event={setMyNewInteresses} 
+                            Value={myNewInteresses}
+                          />
+                        </Grid>
+                  </Grid>
+                </CardContent>
+
+                <CardActions className={classes.actions}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={isLoading}
+                  >
+                    Salvar
+                  </Button>
+                </CardActions>
+
+
+              </Form>
+            )}
+          </Formik>
         </>
       }
     </CardPage>

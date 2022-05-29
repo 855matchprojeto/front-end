@@ -4,24 +4,28 @@ import { Button, Dialog, DialogContent } from "@mui/material";
 import { List, ListItem, ListItemText, Divider, Slide } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { postPhones, deletePhones } from "../../services/api_perfil";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function MyPhones(props)
+function MySelectDialog(props)
 {
   const [open, setOpen] = useState(false);
   const [newData, setNewData] = useState("");
   const [arrayData, setArrayData] = useState(props.data);
   const btnIcon = props.btnIcon;
-  
+
+  const deleteEvent = props.deleteEvent;
+  const addEvent = props.addEvent;
+  const addPayload = props.addPayload;
+
   const DeleteButton = (props) =>
   {
+
     async function handleDeleteValue()
     {
-      await deletePhones(props.phone).then(res => 
+      await deleteEvent(props.guid).then(res => 
         {
           if(res.status === 204)
             setArrayData(arrayData.filter(el => el.guid !== props.guid));   
@@ -40,7 +44,7 @@ function MyPhones(props)
   {      
     async function handleNewValue()
     {
-      await postPhones({"phone": newData, "id_tipo_contato": 1}).then(res =>
+      await addEvent(addPayload(newData)).then(res =>
         {
           if(res.status === 200)
           {
@@ -60,8 +64,13 @@ function MyPhones(props)
 
   return(
   <>
-      <Button size="medium" variant="outlined" startIcon={btnIcon} onClick={() => setOpen(true)}>
-        Números de contato
+      <Button 
+        size="medium" 
+        variant="outlined" 
+        startIcon={btnIcon} 
+        onClick={() => setOpen(true)}
+      >
+        {props.btnTxt}
       </Button>
 
       <Dialog 
@@ -75,11 +84,11 @@ function MyPhones(props)
             <ListItem secondaryAction={<AddButton/>}>                  
               <ListItemText>
                 <TextField
-                  type="text"
-                  name="phones"
+                  type={props.fieldType}
+                  name={props.fieldName}
                   size="small"
                   value={newData}
-                  label="Número"
+                  label={props.fieldLabel}
                   onChange={(e) => setNewData(e.target.value)}
                   fullWidth
                 />
@@ -92,7 +101,7 @@ function MyPhones(props)
               arrayData.map((obj, i) => 
               <ListItem key={i} secondaryAction={<DeleteButton guid={obj.guid}/>}>
                 <ListItemText>
-                  <ListItemText primary={obj.phone} />
+                  <ListItemText primary={obj[props.dataValue]} />
                 </ListItemText>
               </ListItem>
               )
@@ -104,4 +113,4 @@ function MyPhones(props)
   )
 }
 
-export default MyPhones;
+export default MySelectDialog;
