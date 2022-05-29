@@ -237,9 +237,8 @@ function Cadastro()
           {" "}
           Já tem uma conta? Logar{" "}
         </Link>
-        <Box mt={6} mb={4}>
-          {" "}
-          <Copyright />{" "}
+        <Box mt={1} mb={1}>
+          <Copyright />
         </Box>
       </div>
     </Container>

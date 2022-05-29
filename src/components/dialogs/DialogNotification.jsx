@@ -10,8 +10,12 @@ const IconButton = React.lazy(() => import('@mui/material/IconButton'));
 const DialogContent = React.lazy(() => import('@mui/material/DialogContent'));
 const DialogActions = React.lazy(() => import('@material-ui/core/DialogActions'));
 
-const DialogNotification = ({ notif, setOpen, user }) => {
+const DialogNotification = (props) => {
   const history = useHistory();
+
+  const notif = props.notif;
+  const setOpen = props.setOpen;
+  const user = props.user;
   
   function getLetterAvatar() 
   {
@@ -65,7 +69,7 @@ const DialogNotification = ({ notif, setOpen, user }) => {
           user.guid_usuario,
       ];
     }
-
+    
     history.push(url, {data: aux});
     setOpen(null);
   }
