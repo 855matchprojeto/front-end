@@ -11,6 +11,7 @@ import ProjectDefault from "../icons/project.svg";
 import { makeStyles } from "@mui/styles";
 import CardPage from "../components/customCards/CardPage";
 import ImageDialog from "../components/dialogs/ImageDialog";
+import CardMini from "../components/customCards/CardMini";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -207,8 +208,8 @@ function ProjetoInfo() {
             )}
 
             {currentTab === "contato" && (
-              <Grid container spacing={2} sx={{ p: 3, px: 1 }}>
-               
+              <Grid spacing={2} sx={{ p: 3, px: 1 }}>
+                <CardMini Nome="Ceifador" Contato="19 90000-0000"/>
               </Grid>
             )}
           </CardContent>
