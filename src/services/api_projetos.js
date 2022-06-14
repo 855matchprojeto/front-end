@@ -33,9 +33,7 @@ export const getProjetos = async (dados, isID) => {
     {   
         let body = {
             params: {
-                titulo_ilike: dados[2],
-                //id_curso: dados[1],
-                //id_interesse: dados[0]
+                titulo_ilike: dados[2]
             }
         };
         

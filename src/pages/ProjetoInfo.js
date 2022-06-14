@@ -77,7 +77,7 @@ function ProjetoInfo() {
     async function getData() {
       setPageLoading(true);
 
-      await Promise.all([getProjetos(pid, true), getProjUserRel(guid, true, null),]).then((data) => 
+      await Promise.all([getProjetos(pid, true), getProjUserRel(guid, true, null), ]).then((data) => 
         {
           if (!mountedRef.current) 
             return;
@@ -91,8 +91,7 @@ function ProjetoInfo() {
               descricao: aux.descricao,
               cursos: aux.cursos,
               interesses: aux.interesses,
-              url_imagem: aux.imagem_projeto !== null ? aux.imagem_projeto.url : null,
-              participantes: [1, 2, 3]
+              url_imagem: aux.imagem_projeto !== null ? aux.imagem_projeto.url : null
             };
 
             setProjectInfo(body);
@@ -209,7 +208,7 @@ function ProjetoInfo() {
 
             {currentTab === "contato" && (
               <Grid container spacing={2} sx={{ p: 3, px: 1 }}>
-                <div>Teste</div>
+               
               </Grid>
             )}
           </CardContent>
