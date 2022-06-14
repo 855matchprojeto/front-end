@@ -9,7 +9,7 @@ import { doGetAllInteresses as doGetAllInteressesPJ } from "../services/api_proj
 import { doGetAllCourses as doGetAllCoursesPJ } from "../services/api_projetos";
 
 import { getProfiles, doGetDataUser } from "../services/api_perfil";
-import { getMeusProjetos, getProjetos } from "../services/api_projetos";
+import { getMeusProjetos, getProjetosPag } from "../services/api_projetos";
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -101,8 +101,7 @@ function Home()
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
 
-  const [cardsProfiles, setCardsProfiles] = useState(false);
-  const [cardsProjetos, setCardsProjetos] = useState(false);
+  const [cardsContent, setCardsContent] = useState(false);
   const [pesquisa, setPesquisa] = useState("");
 
   const [n_cards, setNcards] =  useState(5);
@@ -166,6 +165,7 @@ function Home()
       async function loadCards() 
       { 
         setPageLoading(true);
+
         let dados = [];
         dados.push(selectedInteresses);
         dados.push(selectedCourses);
@@ -176,7 +176,7 @@ function Home()
         if(!typeSearch)
         {
           setGuidProjeto(false);
-          proms.push(getProjetos(dados,false));
+          proms.push(getProjetosPag(dados,n_cards));
           proms.push(doGetDataUser());
         }
         else
@@ -192,12 +192,16 @@ function Home()
             if (!typeSearch)
             {
               if (data[0].status === 200) 
-                setCardsProjetos(data[0].data);
+              {  
+                setCardsContent(data[0].data);
+              } 
               if (data[1].status === 200) 
                 setGuidUsuario(data[1].data.guid_usuario);
             }
             else
-              setCardsProfiles(data[0]);
+            {
+              setCardsContent(data[0].data);
+            }
 
             setPageLoading(false);
           }
@@ -220,17 +224,30 @@ function Home()
     setPageLoading(true);
     let dados = [];
 
-    if(v === null && cardsProfiles.current_cursor !== null)
+    if(v === null && cardsContent.current_cursor !== null)
       dados = [selectedInteresses,selectedCourses,pesquisa];
     else
       dados = [selectedInteresses,selectedCourses,pesquisa,v];
 
-    await getProfiles(dados,n_cards).then(res => 
-      {
-        setCardsProfiles(res);
-        setPageLoading(false);
-      }
-    );
+    if (typeSearch)
+    {
+      await getProfiles(dados,n_cards).then(res => 
+        {
+          setCardsContent(res.data);
+          setPageLoading(false);
+        }
+      );
+    }
+    else
+    {
+      await getProjetosPag(dados, n_cards).then(res => 
+        {
+          setCardsContent(res.data);
+        }
+      );
+    }
+
+    
   }
 
   function changeSelectedProjeto(v)
@@ -361,7 +378,7 @@ function Home()
                 id="select-type-search" 
                 value={typeSearch} 
                 label="Tipo de pesquisa" 
-                onChange={(e) => setTypeSearch(e.target.value)}
+                onChange={(e) => {setTypeSearch(e.target.value); setCardsContent(false); setSelectedCourses([]); setSelectedInteresses([])}}
                 sx={{width: "100px"}}
                 variant="standard"
                 select
@@ -376,30 +393,27 @@ function Home()
           <CardGroup 
             guidRef={typeSearch ? guidProjeto : guidUsuario} 
             cardsType={typeSearch ? "usuarios" : "projetos"} 
-            valores={typeSearch ? cardsProfiles.items : cardsProjetos}
+            valores={cardsContent.items}
           />
 
-          { typeSearch &&
-            <>
-              <Container className={classes.pagination}>
-                <IconButton 
-                  aria-label="prev" 
-                  disabled={!cardsProfiles.previous_cursor && !cardsProfiles.current_cursor} 
-                  onClick={() => changePage(cardsProfiles.previous_cursor)}
-                >
-                  <NavigateBeforeIcon />
-                </IconButton>
 
-                <IconButton 
-                  aria-label="next" 
-                  disabled={!cardsProfiles.next_cursor} 
-                  onClick={() => changePage(cardsProfiles.next_cursor)}
-                >
-                  <NavigateNextIcon />
-                </IconButton>
-              </Container>
-            </>
-          }
+          <Container className={classes.pagination}>
+            <IconButton 
+              aria-label="prev" 
+              disabled={!cardsContent.previous_cursor && !cardsContent.current_cursor} 
+              onClick={() => changePage(cardsContent.previous_cursor)}
+            >
+              <NavigateBeforeIcon />
+            </IconButton>
+
+            <IconButton 
+              aria-label="next" 
+              disabled={!cardsContent.next_cursor} 
+              onClick={() => changePage(cardsContent.next_cursor)}
+            >
+              <NavigateNextIcon />
+            </IconButton>
+          </Container>
         </Grid>
       }
 

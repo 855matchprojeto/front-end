@@ -88,33 +88,28 @@ export const doGetAllInteresses = async () => {
 
 // retorna todos os perfis
 export const getProfiles = async (data, page_size) => {
-  // lista de ids de interesses, filtro
-  // lista de ids de cursos, filtro
-  // pesquisa, nomes de usuarios
   let interests_in = data[0].map(el => el.id);
   let courses_in = data[1].map(el => el.id);
-  let pesquisa = data[2];
 
-  let query_its = "";
-  interests_in.forEach((el) => (query_its += "interests_in=" + el + "&"));
+  let body = {
+      params: {
+          display_name_ilike: data[2],
+          page_size: page_size,
+      }
+  };
 
-  let query_crs = "";
-  courses_in.forEach((el) => (query_crs += "courses_in=" + el + "&"));
+  if (interests_in.length > 0)
+    body.params.interests_in = interests_in.join(',');
 
-  let query = query_its + query_crs;
+  if (courses_in.length > 0)
+    body.params.courses_in = courses_in.join(',');
 
-  if (pesquisa.length === 0) 
-    query += `page_size=${page_size}`;
-  else 
-    query += `display_name_ilike=${pesquisa}&page_size=${page_size}`;
-
-  // cursor
-  if (data.length === 4) 
-    query += `&cursor=${data[3]}`;
+  if (data.length === 4)
+    body.params.cursor = data[3];
 
   return perf
-    .get(`profiles?${query}`)
-    .then((res) => res.data)
+    .get(`profiles`, body)
+    .then((res) => res)
     .catch((err) => console.log(err));
 };
 

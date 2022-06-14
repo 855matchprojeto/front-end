@@ -5,7 +5,7 @@ import { NavLink as RouterLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography} from "@mui/material";
 import { useTheme, Menu, MenuItem} from "@mui/material";
 import { Avatar, Box, Divider, Badge} from "@mui/material";
-import { IconButton, Drawer, Link } from "@mui/material";
+import { IconButton, Drawer, Link, useMediaQuery } from "@mui/material";
 
 import { makeStyles } from "@mui/styles";
 import { logout } from "../services/auth";
@@ -22,6 +22,8 @@ import { setNotificationsAsRead } from "../services/api_notifications";
 import { getNotifications } from "../services/api_notifications";
 
 import DialogNotification from "./dialogs/DialogNotification";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import { getPrefMode } from "../services/util";
 
 //--estilo--
 const useStyles = makeStyles((theme) => ({
@@ -103,35 +105,6 @@ const useStyles = makeStyles((theme) => ({
       transition: "transform .4s ease-in-out",
       transform: "rotate(360deg)",
     },
-  },
-
-  notifPaper: {
-    maxHeight: "300px",
-    overflowY: "auto",
-    mt: 1.5,
-    maxWidth: "650px",
-    border: "1px solid #e1e1e1",
-    borderTop: "0px",
-
-    "& .MuiAvatar-root": {
-      width: 32,
-      height: 32,
-      ml: -0.5,
-      mr: 1,
-    },  
-
-    "&:before": {
-        content: '""',
-        display: "block",
-        position: "absolute",
-        top: 0,
-        right: 10,
-        width: 10,
-        height: 10,
-        bgcolor: "background.paper",
-        transform: "translateY(-50%) rotate(45deg)",
-        zIndex: 0,
-    },
   }
 }));
 
@@ -143,6 +116,7 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const [view, setView] = useState({ mobileView: false, drawerOpen: false });
   const classes = useStyles();
+  const matches = useMediaQuery("(max-width: 900px)");
 
   const markNotificationsAsRead = async () => {
     if (notifsNotRead.length <= 0) 
@@ -315,7 +289,7 @@ const Header = () => {
         </IconButton>
 
         <IconButton
-          onClick={() => {event(true)}}
+          onClick={(e) => {event(e)}}
           sx={{mr: 1, ml: 1, transform: "translateY(5%)"}}
         >
           <Badge
@@ -333,6 +307,42 @@ const Header = () => {
     const anchorElNotif = props.anchorElNotif;
     const handleMenuNotif = props.handleMenuNotif;
 
+    const notifPaper = {
+      height: "80vh",
+      mt: 1.5,
+      border: "1px solid #e1e1e1",
+      borderTop: "0px",
+      maxWidth: "650px",
+      overflowX: "initial",
+      overflowY: "initial",
+  
+      "& .MuiAvatar-root": {
+        width: 32,
+        height: 32,
+        ml: -0.5,
+        mr: 1,
+      },  
+  
+      "&:before": {
+          content: '""',
+          display: "block",
+          position: "absolute",
+          top: 0,
+          right: 14,
+          width: 10,
+          height: 10,
+          bgcolor: "background.paper",
+          transform: "translateY(-50%) rotate(45deg)",
+          zIndex: 0,
+      },
+
+      "& .MuiList-root": {
+        display: "flex",
+        flexDirection: "column",
+        maxHeight: "100%"
+      }
+    };
+
     return (
       <Menu
         anchorEl={anchorElNotif}
@@ -340,10 +350,11 @@ const Header = () => {
         open={Boolean(anchorElNotif)}
         onClose={() => handleMenuNotif(false)}
         onClick={() => handleMenuNotif(false)}
-        PaperProps={{elevation: 0, sx: classes.notifPaper}}
+        PaperProps={{elevation: 0, sx: notifPaper}}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
+    
         <Box sx={{ width: "100%", p: 1, pl: 2 }}>
           <Typography variant="subtitle1" sx={{fontWeight: "700"}}>
             Notificações
@@ -352,24 +363,34 @@ const Header = () => {
 
         <Divider/>
 
-        { notifs.map((notif,i) => (
-            <MenuItem
-              key={i}
-              component="button"
-              sx={{ width: "100%", p: 2 }}
-              onClick={() => setNtfSelected(notif)}
-            >
-              <Avatar {...stringAvatar(notif)}>
-                {getLetterAvatar(notif)}
-              </Avatar>
+        <OverlayScrollbarsComponent
+          className={(getPrefMode() === 'dark') ? "os-theme-light" : "os-theme-dark"}
+          resize="b"
+          options={{ 
+            scrollbars: { autoHide: matches ? "scroll" : "never"},
+            overflowBehavior : {x: "s", y: "s"}
+          }}
+        >    
+          { notifs.map((notif,i) => (
+              <MenuItem
+                key={i}
+                component="button"
+                sx={{ width: "100%", p: 1.5 }}
+                onClick={() => setNtfSelected(notif)}
+              >
+                <Avatar {...stringAvatar(notif)}>
+                  {getLetterAvatar(notif)}
+                </Avatar>
 
-              <Typography sx={{ml: 1, whiteSpace: "normal", textAlign: "justify"}}>
-                {notif.conteudo}
-              </Typography>
-            </MenuItem>
+                <Typography sx={{ml: 1, whiteSpace: "normal", textAlign: "justify"}}>
+                  {notif.conteudo}
+                </Typography>
+              </MenuItem>
+              )
             )
-          )
-        }
+          }
+        </OverlayScrollbarsComponent>
+
       </Menu>
     );
   }
@@ -395,16 +416,8 @@ const Header = () => {
     const handleClick = () => {setAnchorEl(menuRef.current)};
     const handleClose = () => {setAnchorEl(null)};
 
-    function handleMenuNotif(open)
-    {
-      if(open) 
-        setAnchorElNotif(notificacoesRef.current);
-      else 
-      {
-        setAnchorElNotif(null);
-        markNotificationsAsRead();
-      }
-    };
+    const handleClickNotif = (e) => {setAnchorElNotif(e.currentTarget)};
+    const handdleCloseNotif = () => {setAnchorElNotif(null); markNotificationsAsRead();}
 
     return (
       <Toolbar className={classes.toolbar}>
@@ -413,9 +426,14 @@ const Header = () => {
         <nav className={classes.nav}>
 
           <IconBox 
-            Event={handleMenuNotif} 
+            Event={handleClickNotif} 
             anchor={anchorElNotif} 
             refPass={notificacoesRef}
+          />
+
+          <NotifDrawer 
+            anchorElNotif={anchorElNotif} 
+            handleMenuNotif={handdleCloseNotif}
           />
 
           { menuList.map((v,i) => 
@@ -496,11 +514,6 @@ const Header = () => {
               <LogoutIcon sx={{ mr: 1.3 }} /> Sair
             </MenuItem>
           </Menu>
-
-          <NotifDrawer 
-            anchorElNotif={anchorElNotif} 
-            handleMenuNotif={handleMenuNotif}
-          />
         </nav>
       </Toolbar>
     );

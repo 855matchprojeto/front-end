@@ -30,11 +30,42 @@ export const getProjetos = async (dados, isID) => {
             .catch(err => console.log(err))
     }
     else
-    {
-        return proj.get(`/projetos`,{ params: {titulo_ilike: dados[2]}})
+    {   
+        let body = {
+            params: {
+                titulo_ilike: dados[2]
+            }
+        };
+        
+        return proj.get(`/projetos`, body)
             .then(res => res)
             .catch(err => console.log(err))
     }
+}
+
+export const getProjetosPag = async (data, page_size) => {
+    let interests_in = data[0].map(el => el.id);
+    let courses_in = data[1].map(el => el.id);
+
+    let body = {
+        params: {
+            titulo_ilike: data[2],
+            page_size: page_size
+        }
+    };
+
+    if (interests_in.length > 0)
+        body.params.id_interesse = interests_in.join(',');
+
+    if (courses_in.length > 0)
+        body.params.id_curso = courses_in.join(',');
+    
+    if (data.length === 4)
+        body.params.cursor = data[3];
+
+    return proj.get(`/projetos-pag`, body)
+        .then(res => res)
+        .catch(err => console.log(err))
 }
 
 export const postProjetos = async (dados) => {
