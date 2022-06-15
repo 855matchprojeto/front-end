@@ -243,6 +243,7 @@ function Home()
       await getProjetosPag(dados, n_cards).then(res => 
         {
           setCardsContent(res.data);
+          setPageLoading(false);
         }
       );
     }
