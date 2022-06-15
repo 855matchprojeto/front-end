@@ -132,12 +132,11 @@ const ProjetoEditar = () => {
           const msg = "Erro ao atualizar o projeto!";
           enqueueMySnackBar(enqueueSnackbar, msg, "error");
         }
-        
-        setIsLoading(false);
       }
     );
 
     setChangeSelect(!changeSelect);
+    setIsLoading(false);
   }
 
   useEffect(() => {  
