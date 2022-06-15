@@ -21,6 +21,9 @@ import ImageDialog from "../components/dialogs/ImageDialog";
 import MySelectDialog  from "../components/dialogs/MySelectDialog";
 import CardPage from "../components/customCards/CardPage";
 
+import { Form,Formik } from "formik";
+import * as Yup from "yup";
+
 //--estilo--
 const useStyles = makeStyles((theme) => ({
   cardContent: {
@@ -163,15 +166,15 @@ function Perfil()
     }
   }, [])
 
-  async function handleSave() 
+  async function handleSave(values) 
   {
     setIsLoading(true);
     
     // nome e sobrenome (required)
     // bio (optional)
     let aux = {
-      nome_exibicao: `${user.name} ${user.sobrenome}`,
-      bio: user.bio
+      nome_exibicao: `${values.name} ${values.sobrenome}`,
+      bio: values.bio
     };
 
     // imagem (optional)
@@ -197,8 +200,7 @@ function Perfil()
         if (res.status === 200) 
         {
           const msg = "Dados atualizados com sucesso!";
-          const type = "success";
-          enqueueMySnackBar(enqueueSnackbar, msg, type);
+          enqueueMySnackBar(enqueueSnackbar, msg, "success");
         }
       }
     ); 
@@ -223,38 +225,19 @@ function Perfil()
     setUser({ ...user, url_imagem: url, imagem_perfil: img });
   }
 
-  function changeData(e)
-  {setUser({ ...user, [e.target.name]: e.target.value });}
-
   const cardContentValues = [
     {
       type: "text",
       label: "Username",
       name: "Username",
-      dis: true,
       value: (loginInfo ? loginInfo.username : ""),
     },
     {
       type: "email",
       label: "Email",
       name: "Email",
-      dis: true,
       value: (loginInfo ? loginInfo.email : ""),
-    },
-    {
-      type: "text",
-      label: "Nome",
-      name: "name",
-      dis: false,
-      value: (user ? user.name : ""),
-    },
-    {
-      type: "text",
-      label: "Sobrenome",
-      name: "sobrenome",
-      dis: false,
-      value: (user ? user.sobrenome : ""),
-    },
+    }
   ];
 
   const MyAutoComplete = (props) => {
@@ -293,21 +276,22 @@ function Perfil()
   }
 
   function addPhonePayload(newData)
-  {
-    return {"phone": newData, "id_tipo_contato": 1};
-  }
+  {return {"phone": newData, "id_tipo_contato": 1};}
 
   function addEmailPayload(newData)
-  {
-    return {"email": newData};
-  }
+  {return {"email": newData};}
+
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required("Digite seu nome."),
+    sobrenome: Yup.string().required("Digite seu sobrenome."),
+    bio: Yup.string().required("Digite uma descrição para o perfil."),
+  });
 
   return (
     <CardPage loading={componentLoading}>
         { user &&
           <>
             <CardHeader title={<Typography style={{display:"flex", justifyContent:"center"}} variant="h6">Perfil</Typography>} />
-
             <input
               ref={imageUpload}
               type="file"
@@ -337,101 +321,154 @@ function Perfil()
               </Button>
             </Grid>
 
-            <CardContent className={classes.cardContent}>
-              <Grid container spacing={1} rowGap={1}>
+            <Formik
+              initialValues={
+                {
+                  name: user.name,
+                  sobrenome: user.sobrenome,
+                  bio: user.bio,
+                }
+              }
+              validationSchema={validationSchema}
+              onSubmit={(values) => {handleSave(values)}}
+            >
+            {(props) => (
+              <Form onSubmit={props.handleSubmit} style={{display:"flex", flexDirection:"column"}}>
 
-                { cardContentValues.map((el,i) => 
-                    <Grid item xs={12} md={6} key={i}>
+                <CardContent className={classes.cardContent}>
+                  <Grid container spacing={1} rowGap={1}>
+
+                    { cardContentValues.map((el,i) => 
+                        <Grid item xs={12} md={6} key={i}>
+                          <TextField
+                            type={el.type}
+                            label={el.label}
+                            name={el.name}
+                            value={el.value}
+                            size="small"
+                            disabled
+                            fullWidth
+                          />
+                        </Grid>
+                      )
+                    }
+
+                    <Grid item xs={12} md={6}>
                       <TextField
-                        type={el.type}
-                        label={el.label}
-                        name={el.name}
-                        value={el.value}
-                        disabled={el.dis}
+                        type="input"
+                        label="Nome"
+                        name="name"
                         size="small"
+                        autoComplete="off"
                         fullWidth
-                        onChange={(e) => changeData(e)}
+                        value={props.values.name}
+                        onChange={props.handleChange}
+                        error={Boolean(props.touched.name && props.errors.name)}
+                        helperText={props.errors.name}
+                        onBlur={props.handleBlur}
                       />
                     </Grid>
-                  )
-                }
-              
-                <Grid item xs={12}>
-                  <TextField
-                    type="text"
-                    label="Bio"
-                    name="bio"
-                    size="small"
-                    value={user.bio}
-                    onChange={(e) => changeData(e)}
-                    fullWidth
-                    multiline
-                  />
-                </Grid>
 
-                <Grid item xs={12} md={6}>
-                  <MyAutoComplete 
-                    NameId="cursos" 
-                    Label="Cursos" 
-                    Options={allCourses} 
-                    Event={setMyNewCourses} 
-                    Value={myNewCourses}
-                  />
-                </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        type="input"
+                        label="Sobrenome"
+                        name="sobrenome"
+                        size="small"
+                        autoComplete="off"
+                        fullWidth
+                        value={props.values.sobrenome}
+                        onChange={props.handleChange}
+                        error={Boolean(props.touched.sobrenome && props.errors.sobrenome)}
+                        helperText={props.errors.sobrenome}
+                        onBlur={props.handleBlur}
+                      />
+                    </Grid>
 
-                <Grid item xs={12} md={6}>
-                  <MyAutoComplete 
-                    NameId="interesses"
-                    Label="Áreas de Interesse" 
-                    Options={allInteresses} 
-                    Event={setMyNewInteresses} 
-                    Value={myNewInteresses}
-                  />
-                </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        type="input"
+                        label="Bio"
+                        name="bio"
+                        size="small"
+                        autoComplete="off"
+                        value={props.values.bio}
+                        onChange={props.handleChange}
+                        error={Boolean(props.touched.bio && props.errors.bio)}
+                        helperText={props.errors.bio}
+                        onBlur={props.handleBlur}
+                        fullWidth
+                        multiline
+                      />
+                    </Grid>
 
-                <Grid item md={6}>
-                  <MySelectDialog  
-                    data={myPhones} 
-                    dataValue="phone"
-                    btnTxt="Números de contato" 
-                    fieldType="text"
-                    fieldName="phones"
-                    fieldLabel="Número"
-                    deleteEvent={deletePhones}
-                    addEvent={postPhones}
-                    addPayload={addPhonePayload}
-                    btnIcon={<PhoneIcon/>}
-                  />                    
-                </Grid>
+                    <Grid item xs={12} md={6}>
+                      <MyAutoComplete 
+                        NameId="cursos" 
+                        Label="Cursos" 
+                        Options={allCourses} 
+                        Event={setMyNewCourses} 
+                        Value={myNewCourses}
+                      />
+                    </Grid>
 
-                <Grid item lg={6} sm={6} xs={12}>
-                  <MySelectDialog 
-                    data={myEmails} 
-                    dataValue="email"
-                    btnTxt="Emails de contato" 
-                    fieldType="email"
-                    fieldName="emails"
-                    fieldLabel="Email"
-                    deleteEvent={deleteEmail}
-                    addEvent={postEmail}
-                    addPayload={addEmailPayload}
-                    btnIcon={<ContactMailIcon/>}
-                  />  
-                </Grid>
+                    <Grid item xs={12} md={6}>
+                      <MyAutoComplete 
+                        NameId="interesses"
+                        Label="Áreas de Interesse" 
+                        Options={allInteresses} 
+                        Event={setMyNewInteresses} 
+                        Value={myNewInteresses}
+                      />
+                    </Grid>
 
-              </Grid>
-            </CardContent>
+                    <Grid item md={6}>
+                      <MySelectDialog  
+                        data={myPhones} 
+                        dataValue="phone"
+                        btnTxt="Números de contato" 
+                        fieldType="text"
+                        fieldName="phones"
+                        fieldLabel="Número"
+                        deleteEvent={deletePhones}
+                        addEvent={postPhones}
+                        addPayload={addPhonePayload}
+                        btnIcon={<PhoneIcon/>}
+                      />                    
+                    </Grid>
 
-            <CardActions className={classes.actions}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleSave()}
-                disabled={isLoading}
-              >
-                Salvar
-              </Button>
-            </CardActions>
+                    <Grid item lg={6} sm={6} xs={12}>
+                      <MySelectDialog 
+                        data={myEmails} 
+                        dataValue="email"
+                        btnTxt="Emails de contato" 
+                        fieldType="email"
+                        fieldName="emails"
+                        fieldLabel="Email"
+                        deleteEvent={deleteEmail}
+                        addEvent={postEmail}
+                        addPayload={addEmailPayload}
+                        btnIcon={<ContactMailIcon/>}
+                      />  
+                    </Grid>
+
+                  </Grid>
+                </CardContent>
+
+                <CardActions className={classes.actions}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={isLoading}
+                  >
+                    Salvar
+                  </Button>
+                </CardActions>
+
+              </Form>
+            )}
+            </Formik>
           </>
         }
     </CardPage>
