@@ -2,8 +2,11 @@ import React, { useState, forwardRef } from "react";
 import { TextField, IconButton } from "@mui/material";
 import { Button, Dialog, DialogContent } from "@mui/material";
 import { List, ListItem, ListItemText, Divider, Slide } from "@mui/material";
+import InputMask from 'react-input-mask';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { enqueueMySnackBar } from "../../services/util";
+import { useSnackbar } from "notistack";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -11,6 +14,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 function MySelectDialog(props)
 {
+  const { enqueueSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [newData, setNewData] = useState("");
   const [arrayData, setArrayData] = useState(props.data);
@@ -20,28 +24,48 @@ function MySelectDialog(props)
   const addEvent = props.addEvent;
   const addPayload = props.addPayload;
 
+  const formatNumber = (number) => {
+    if (number.length === 10) {
+      return `(${number.slice(0,2)}) ${number.slice(2,6)}-${number.slice(6,10)}`
+    }
+    if (number.length === 11) {
+      return `(${number.slice(0,2)}) ${number.slice(2,7)}-${number.slice(7,11)}`
+    }
+
+    return number;
+  }
+
   const DeleteButton = (props) =>
   {
+    const messageOK = props.fieldType === 'tel' ?  "Número removido com sucesso!" : 'Email removido com sucesso!';
+    const messageError = props.fieldType === 'tel' ?  "Erro ao remover o número" : "Erro ao remover o email";
 
     async function handleDeleteValue()
     {
       await deleteEvent(props.guid).then(res => 
         {
-          if(res.status === 204)
-            setArrayData(arrayData.filter(el => el.guid !== props.guid));   
+          if(res.status === 204) {
+            setArrayData(arrayData.filter(el => el.guid !== props.guid));
+            enqueueMySnackBar(enqueueSnackbar, messageOK, "success"); 
+          } else {
+            enqueueMySnackBar(enqueueSnackbar, messageError, "error")
+          }
+             
         }
       );
     }
 
     return(
-      <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteValue()}> 
+      <IconButton title="Remover" edge="end" aria-label="delete" onClick={() => handleDeleteValue()}> 
         <DeleteIcon/> 
       </IconButton>
     )
   }
 
   const AddButton = () =>
-  {      
+  {
+    const messageOK = props.fieldType === 'tel' ?  "Número adicionado com sucesso!" : 'Email adicionado com sucesso!';
+    const messageError = props.fieldType === 'tel' ?  "Erro ao adicionar o número" : "Erro ao adicionar o email";
     async function handleNewValue()
     {
       await addEvent(addPayload(newData)).then(res =>
@@ -50,13 +74,16 @@ function MySelectDialog(props)
           {
             setNewData("");
             setArrayData([res.data, ...arrayData]);
+            enqueueMySnackBar(enqueueSnackbar, messageOK, "success");
+          } else {
+            enqueueMySnackBar(enqueueSnackbar, messageError, "error")
           }
         }
       );   
     }
 
     return(
-      <IconButton edge="end" aria-label="add" onClick={() => handleNewValue()}> 
+      <IconButton title="Adicionar" edge="end" aria-label="add" onClick={() => handleNewValue()}> 
         <AddCircleIcon /> 
       </IconButton>
     )
@@ -74,7 +101,8 @@ function MySelectDialog(props)
       </Button>
 
       <Dialog 
-        open={open} 
+        open={open}
+        maxWidth="md"
         TransitionComponent={Transition}
         onClose={() => setOpen(false)}
       >
@@ -83,15 +111,40 @@ function MySelectDialog(props)
 
             <ListItem secondaryAction={<AddButton/>}>                  
               <ListItemText>
-                <TextField
+                {props.fieldType === 'tel' ? (
+                  <InputMask 
+                    mask={newData.length <= 10 ? '(99) 9999-9999?' : '(99) 99999-9999'}
+                    formatChars={{ 9: '[0-9]', '?': '[0-9 ]' }}
+                    value={newData}
+                    maskChar="" 
+                    onChange={(e) => {
+                      const phone =  e.target.value.replace(/[^0-9]+/g, '');
+                      setNewData(phone);
+                    }}
+                  >
+                    {inputProps => (
+                      <TextField
+                        {...inputProps}
+                        type={props.fieldType}
+                        name={props.fieldName}
+                        size="small"
+                        label={props.fieldLabel}             
+                        fullWidth
+                      />
+                    )}
+                    
+                  </InputMask>
+                ) : (
+                  <TextField
                   type={props.fieldType}
                   name={props.fieldName}
                   size="small"
                   value={newData}
-                  label={props.fieldLabel}
                   onChange={(e) => setNewData(e.target.value)}
+                  label={props.fieldLabel}             
                   fullWidth
                 />
+                )}
               </ListItemText>
             </ListItem>
 
@@ -101,7 +154,7 @@ function MySelectDialog(props)
               arrayData.map((obj, i) => 
               <ListItem key={i} secondaryAction={<DeleteButton guid={obj.guid}/>}>
                 <ListItemText>
-                  <ListItemText primary={obj[props.dataValue]} />
+                  <ListItemText primary={props.fieldType === 'tel' ? formatNumber(obj[props.dataValue]) : obj[props.dataValue]} />
                 </ListItemText>
               </ListItem>
               )
