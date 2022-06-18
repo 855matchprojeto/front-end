@@ -279,6 +279,8 @@ function Perfil() {
     name: Yup.string().required("Digite seu nome."),
     sobrenome: Yup.string().required("Digite seu sobrenome."),
     bio: Yup.string().required("Digite uma descrição para o perfil."),
+    cursos: Yup.array().required("Escolha pelo menos um curso").min(1),
+    areas: Yup.array().required("Escolha pelo menos uma área").min(1),
   });
 
   return (
@@ -329,6 +331,8 @@ function Perfil() {
               name: user.name,
               sobrenome: user.sobrenome,
               bio: user.bio,
+              cursos: myNewCourses,
+              areas: myNewInteresses,
             }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
@@ -408,22 +412,64 @@ function Perfil() {
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                      <MyAutoComplete
-                        NameId="cursos"
-                        Label="Cursos"
-                        Options={allCourses}
-                        Event={setMyNewCourses}
-                        Value={myNewCourses}
+                      <Autocomplete
+                        options={allCourses}
+                        getOptionLabel={(option) => option.nome_exibicao}
+                        isOptionEqualToValue={(o, v) => o.id === v.id}
+                        name="cursos"
+                        id="cursos"
+                        multiple
+                        value={props.values.cursos}
+                        fullWidth
+                        size="small"
+                        onBlur={props.handleBlur}
+                        onChange={(e, value) => {
+                          props.setFieldValue("cursos", value);
+                          setMyNewCourses(value);
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Cursos"
+                            error={Boolean(props.errors.cursos)}
+                            helperText={
+                              props.errors.cursos &&
+                              "Escolha pelo menos um curso"
+                            }
+                            fullWidth
+                          />
+                        )}
                       />
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                      <MyAutoComplete
-                        NameId="interesses"
-                        Label="Áreas de Interesse"
-                        Options={allInteresses}
-                        Event={setMyNewInteresses}
-                        Value={myNewInteresses}
+                      <Autocomplete
+                        options={allInteresses}
+                        getOptionLabel={(option) => option.nome_exibicao}
+                        isOptionEqualToValue={(o, v) => o.id === v.id}
+                        name="areas"
+                        id="areas"
+                        multiple
+                        fullWidth
+                        value={props.values.areas}
+                        size="small"
+                        onBlur={props.handleBlur}
+                        onChange={(e, value) => {
+                          props.setFieldValue("areas", value);
+                          setMyNewInteresses(value);
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Áreas de Interesse"
+                            error={Boolean(props.errors.areas)}
+                            helperText={
+                              props.errors.areas &&
+                              "Escolha pelo menos uma área"
+                            }
+                            fullWidth
+                          />
+                        )}
                       />
                     </Grid>
 
