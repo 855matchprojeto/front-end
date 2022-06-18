@@ -491,6 +491,7 @@ function Perfil() {
                     <Grid item lg={6} sm={6} xs={12}>
                       <MySelectDialog
                         data={myEmails}
+                        setData={setMyEmails}
                         dataValue="email"
                         btnTxt="Emails de contato"
                         fieldType="email"

@@ -23,6 +23,7 @@ function MySelectDialog(props)
   const deleteEvent = props.deleteEvent;
   const addEvent = props.addEvent;
   const addPayload = props.addPayload;
+  const fieldType = props.fieldType;
 
   const formatNumber = (number) => {
     if (number.length === 10) {
@@ -37,8 +38,9 @@ function MySelectDialog(props)
 
   const DeleteButton = (props) =>
   {
-    const messageOK = props.fieldType === 'tel' ?  "Número removido com sucesso!" : 'Email removido com sucesso!';
-    const messageError = props.fieldType === 'tel' ?  "Erro ao remover o número" : "Erro ao remover o email";
+    const messageOK = fieldType === 'tel' ?  "Número removido com sucesso!" : 'Email removido com sucesso!';
+    const messageError = fieldType === 'tel' ?  "Erro ao remover o número" : "Erro ao remover o email";
+    console.log(messageOK);
 
     async function handleDeleteValue()
     {
@@ -64,8 +66,8 @@ function MySelectDialog(props)
 
   const AddButton = () =>
   {
-    const messageOK = props.fieldType === 'tel' ?  "Número adicionado com sucesso!" : 'Email adicionado com sucesso!';
-    const messageError = props.fieldType === 'tel' ?  "Erro ao adicionar o número" : "Erro ao adicionar o email";
+    const messageOK = fieldType === 'tel' ?  "Número adicionado com sucesso!" : 'Email adicionado com sucesso!';
+    const messageError = fieldType === 'tel' ?  "Erro ao adicionar o número" : "Erro ao adicionar o email";
     async function handleNewValue()
     {
       await addEvent(addPayload(newData)).then(res =>
@@ -83,7 +85,16 @@ function MySelectDialog(props)
     }
 
     return(
-      <IconButton title="Adicionar" edge="end" aria-label="add" onClick={() => handleNewValue()}> 
+      <IconButton 
+        title="Adicionar" 
+        edge="end" 
+        aria-label="add" 
+        onClick={() => {
+          if (fieldType === 'tel' && newData.trim().length !== 10 && newData.trim().length !== 11)
+            return;
+          handleNewValue();
+        }}
+      > 
         <AddCircleIcon /> 
       </IconButton>
     )
@@ -111,7 +122,7 @@ function MySelectDialog(props)
 
             <ListItem secondaryAction={<AddButton/>}>                  
               <ListItemText>
-                {props.fieldType === 'tel' ? (
+                {fieldType === 'tel' ? (
                   <InputMask 
                     mask={newData.length <= 10 ? '(99) 9999-9999?' : '(99) 99999-9999'}
                     formatChars={{ 9: '[0-9]', '?': '[0-9 ]' }}
@@ -125,7 +136,7 @@ function MySelectDialog(props)
                     {inputProps => (
                       <TextField
                         {...inputProps}
-                        type={props.fieldType}
+                        type={fieldType}
                         name={props.fieldName}
                         size="small"
                         label={props.fieldLabel}             
@@ -136,7 +147,7 @@ function MySelectDialog(props)
                   </InputMask>
                 ) : (
                   <TextField
-                  type={props.fieldType}
+                  type={fieldType}
                   name={props.fieldName}
                   size="small"
                   value={newData}
@@ -154,7 +165,7 @@ function MySelectDialog(props)
               arrayData.map((obj, i) => 
               <ListItem key={i} secondaryAction={<DeleteButton guid={obj.guid}/>}>
                 <ListItemText>
-                  <ListItemText primary={props.fieldType === 'tel' ? formatNumber(obj[props.dataValue]) : obj[props.dataValue]} />
+                  <ListItemText primary={fieldType === 'tel' ? formatNumber(obj[props.dataValue]) : obj[props.dataValue]} />
                 </ListItemText>
               </ListItem>
               )
