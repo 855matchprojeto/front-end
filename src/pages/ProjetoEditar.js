@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
       (theme.palette.mode === "dark"
         ? theme.palette.grey[100]
         : theme.palette.common.black),
+    backgroundSize: "contain",
   },
 
   mediaContainer: {
