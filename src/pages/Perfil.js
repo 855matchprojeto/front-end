@@ -234,39 +234,6 @@ function Perfil() {
     },
   ];
 
-  const MyAutoComplete = (props) => {
-    const name_id = props.NameId;
-    const options = props.Options;
-    const event = props.Event;
-    const label = props.Label;
-    const value = props.Value;
-
-    return (
-      <>
-        <Autocomplete
-          options={options}
-          getOptionLabel={(o) => o.nome_exibicao}
-          value={value}
-          isOptionEqualToValue={(o, v) => o.id === v.id}
-          name={name_id}
-          id={name_id}
-          disableClearable={true}
-          multiple
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label={label}
-              autoComplete="off"
-              size="small"
-              fullWidth
-            />
-          )}
-          onChange={(e, v) => event(v)}
-        />
-      </>
-    );
-  };
-
   function addPhonePayload(newData) {
     return { phone: newData, id_tipo_contato: 1 };
   }
