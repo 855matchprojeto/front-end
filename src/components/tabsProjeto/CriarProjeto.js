@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
     width: "300px",
     height: "200px",
     boxShadow: "0 0 3px" + (theme.palette.mode === "dark" ? theme.palette.grey[100] : theme.palette.common.black),
+    backgroundSize: "contain",
   }, 
 
   actions: {
