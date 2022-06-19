@@ -189,19 +189,11 @@ function Home()
             if (!mountedRef.current)
               return
 
-            if (!typeSearch)
-            {
-              if (data[0].status === 200) 
-              {  
-                setCardsContent(data[0].data);
-              } 
-              if (data[1].status === 200) 
-                setGuidUsuario(data[1].data.guid_usuario);
-            }
-            else
-            {
+            if (data[0].status === 200) 
               setCardsContent(data[0].data);
-            }
+
+            if (!typeSearch && data[1].status === 200)
+              setGuidUsuario(data[1].data.guid_usuario);
 
             setPageLoading(false);
           }
