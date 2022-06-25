@@ -90,25 +90,18 @@ export const doGetAllInteresses = async () => {
 export const getProfiles = async (data, page_size) => {
   let interests_in = data[0].map(el => el.id);
   let courses_in = data[1].map(el => el.id);
-
-  let body = {
-      params: {
-          display_name_ilike: data[2],
-          page_size: page_size,
-      }
-  };
+  let query = `/profiles?display_name_ilike=${data[2]}&page_size=${page_size}`;
 
   if (interests_in.length > 0)
-    body.params.interests_in = interests_in.join(',');
+  interests_in.forEach(el => {query += `&interests_in=${el}`});
 
   if (courses_in.length > 0)
-    body.params.courses_in = courses_in.join(',');
+    courses_in.forEach(el => {query += `&courses_in=${el}`});
 
   if (data.length === 4)
-    body.params.cursor = data[3];
+    query += `&cursor=${data[3]}`;
 
-  return perf
-    .get(`profiles`, body)
+  return perf.get(query)
     .then((res) => res)
     .catch((err) => console.log(err));
 };

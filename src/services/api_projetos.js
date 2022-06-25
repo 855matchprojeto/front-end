@@ -46,24 +46,18 @@ export const getProjetos = async (dados, isID) => {
 export const getProjetosPag = async (data, page_size) => {
     let interests_in = data[0].map(el => el.id);
     let courses_in = data[1].map(el => el.id);
-
-    let body = {
-        params: {
-            titulo_ilike: data[2],
-            page_size: page_size
-        }
-    };
+    let query = `/projetos-pag?titulo_ilike=${data[2]}&page_size=${page_size}`;
 
     if (interests_in.length > 0)
-        body.params.id_interesse = interests_in.join(',');
-
+        interests_in.forEach(el => {query += `&interests_in=${el}`});
+    
     if (courses_in.length > 0)
-        body.params.id_curso = courses_in.join(',');
+        courses_in.forEach(el => {query += `&courses_in=${el}`});
     
     if (data.length === 4)
-        body.params.cursor = data[3];
+        query += `&cursor=${data[3]}`;
 
-    return proj.get(`/projetos-pag`, body)
+    return proj.get(query)
         .then(res => res)
         .catch(err => console.log(err))
 }
