@@ -78,36 +78,36 @@ function ProjetoInfo() {
     async function getData() {
       setPageLoading(true);
 
-      await Promise.all([getProjetos(pid, true), getProjUserRel(guid, true, null), ]).then((data) => 
-        {
-          if (!mountedRef.current) 
-            return;
+      await Promise.all([
+        getProjetos(pid, true),
+        getProjUserRel(guid, true, null),
+      ]).then((data) => {
+        if (!mountedRef.current) return;
 
-          if (data[0].status === 200) 
-          {
-            let aux = data[0].data[0];
+        if (data[0].status === 200) {
+          let aux = data[0].data[0];
 
-            let body = {
-              titulo: aux.titulo,
-              descricao: aux.descricao,
-              cursos: aux.cursos,
-              interesses: aux.interesses,
-              url_imagem: aux.imagem_projeto !== null ? aux.imagem_projeto.url : null
-            };
+          let body = {
+            titulo: aux.titulo,
+            descricao: aux.descricao,
+            cursos: aux.cursos,
+            interesses: aux.interesses,
+            url_imagem:
+              aux.imagem_projeto !== null ? aux.imagem_projeto.url : null,
+          };
 
-            setProjectInfo(body);
-          }
-
-          if (data[1].status === 200) 
-          {
-            let aux = data[1].data.filter((item) => item.guid_usuario === userGuid);
-            if (aux.length === 1) 
-              setBtnInteresse(true);
-          }
-
-          setPageLoading(false);
+          setProjectInfo(body);
         }
-      );
+
+        if (data[1].status === 200) {
+          let aux = data[1].data.filter(
+            (item) => item.guid_usuario === userGuid
+          );
+          if (aux.length === 1) setBtnInteresse(true);
+        }
+
+        setPageLoading(false);
+      });
     }
 
     getData();
@@ -209,7 +209,7 @@ function ProjetoInfo() {
 
             {currentTab === "contato" && (
               <Grid spacing={2} sx={{ p: 3, px: 1 }}>
-                <CardMini Nome="Ceifador" Contato="19 90000-0000"/>
+                <CardMini Nome="Caio Silveira" Contato="19 90000-0000" />
               </Grid>
             )}
           </CardContent>

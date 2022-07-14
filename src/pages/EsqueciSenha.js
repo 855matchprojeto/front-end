@@ -1,17 +1,25 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import {Formik} from 'formik'
+import { Formik } from "formik";
 import * as Yup from "yup";
 import { Email } from "../services/api_auth";
 
-import { Container, Typography, TextField, Button, Box, Alert, Snackbar } from "@mui/material";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Alert,
+  Snackbar,
+} from "@mui/material";
 import Copyright from "../components/Copyright";
 import { makeStyles } from "@mui/styles";
 import { delay } from "../services/util";
 
 //--estilo--
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -30,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     marginTop: theme.spacing(1),
   },
-  
+
   textFieldInput: {
     marginTop: theme.spacing(2),
   },
@@ -48,51 +56,46 @@ const useStyles = makeStyles(theme => ({
 }));
 //---------
 
-function EsqueciSenha()
-{
+function EsqueciSenha() {
   const classes = useStyles();
   let history = useHistory();
 
   const [alert, setAlert] = useState(false);
-  const [severity, setSeverity] = useState('success');
-  const [alertContent, setAlertContent] = useState('');
+  const [severity, setSeverity] = useState("success");
+  const [alertContent, setAlertContent] = useState("");
 
-  function closeAlert(){
-    setAlert(false)
+  function closeAlert() {
+    setAlert(false);
   }
 
   // initial values / validation / sign up
-  const values = {email: '', password: '', password2: ''}
+  const values = { email: "", password: "", password2: "" };
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("email inválido")
-      .required("campo obrigatório."),
+    email: Yup.string().email("email inválido").required("campo obrigatório."),
   });
 
   async function enviarEmail(usuario) {
-    try 
-    {
+    console.log(usuario);
+    return;
+    try {
       // TODO: - cadastrar usuário
-      const signup = await Email(usuario)
+      const signup = await Email(usuario);
 
-      if(signup.status === 200)
-      {
-        setSeverity('success')
-        setAlertContent('Email enviado com sucesso!')
-        await Email(signup.data.username)
-        
-        setAlert(true)
+      if (signup.status === 200) {
+        setSeverity("success");
+        setAlertContent("Email enviado com sucesso!");
+        await Email(signup.data.username);
 
-        await delay(5000)
-        history.push('/')
+        setAlert(true);
+
+        await delay(5000);
+        history.push("/");
       }
-    } 
-    catch (err) 
-    {
-      setSeverity('error')
-      setAlertContent(err.response.data.detail)
-      setAlert(true)
+    } catch (err) {
+      setSeverity("error");
+      setAlertContent(err.response.data.detail);
+      setAlert(true);
     }
   }
 
@@ -101,24 +104,42 @@ function EsqueciSenha()
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
-
-        <Snackbar open={alert} autoHideDuration={6000} onClose={closeAlert} anchorOrigin={{ vertical:'top', horizontal:'center'}}>
-          <Alert onClose={closeAlert} severity={severity} sx={{ width: '100%' }}>
+        <Snackbar
+          open={alert}
+          autoHideDuration={6000}
+          onClose={closeAlert}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={closeAlert}
+            severity={severity}
+            sx={{ width: "100%" }}
+          >
             {alertContent}
           </Alert>
         </Snackbar>
-        
-        <Typography className={classes.title} align="center" variant="h4">Match de Projetos</Typography>
-        <Typography component="h1" variant="h5" align="center"> Esqueci minha senha </Typography>
+
+        <Typography className={classes.title} align="center" variant="h4">
+          Match de Projetos
+        </Typography>
+        <Typography component="h1" variant="h5" align="center">
+          {" "}
+          Esqueci minha senha{" "}
+        </Typography>
 
         <Formik
-          initialValues = {values}
-          validationSchema = {validationSchema}
-          onSubmit = {values => {enviarEmail(values)}}
+          initialValues={values}
+          validationSchema={validationSchema}
+          onSubmit={(values) => {
+            enviarEmail(values);
+          }}
         >
-          {props => (
-            <form className={classes.form} onSubmit={props.handleSubmit} sx={{ mt: 2}}>
-
+          {(props) => (
+            <form
+              className={classes.form}
+              onSubmit={props.handleSubmit}
+              sx={{ mt: 2 }}
+            >
               <TextField
                 className={classes.textFieldInput}
                 id="email"
@@ -134,8 +155,13 @@ function EsqueciSenha()
               <Button
                 type="submit"
                 variant="contained"
-                fullWidth color="primary"
-                className={classes.submit}> Enviar e-mail de recuperação </Button>
+                fullWidth
+                color="primary"
+                className={classes.submit}
+              >
+                {" "}
+                Enviar e-mail de recuperação{" "}
+              </Button>
             </form>
           )}
         </Formik>
@@ -145,6 +171,6 @@ function EsqueciSenha()
       </div>
     </Container>
   );
-};
+}
 
 export default EsqueciSenha;

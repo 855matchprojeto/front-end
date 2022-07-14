@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
 import { useEffect, useContext } from "react";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink, useHistory } from "react-router-dom";
 
-import { AppBar, Toolbar, Typography} from "@mui/material";
-import { useTheme, Menu, MenuItem} from "@mui/material";
-import { Avatar, Box, Divider, Badge} from "@mui/material";
+import { AppBar, Toolbar, Typography } from "@mui/material";
+import { useTheme, Menu, MenuItem } from "@mui/material";
+import { Avatar, Box, Divider, Badge } from "@mui/material";
 import { IconButton, Drawer, Link, useMediaQuery } from "@mui/material";
 
 import { makeStyles } from "@mui/styles";
@@ -105,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
       transition: "transform .4s ease-in-out",
       transform: "rotate(360deg)",
     },
-  }
+  },
 }));
 
 //---------
@@ -116,38 +116,29 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const [view, setView] = useState({ mobileView: false, drawerOpen: false });
   const classes = useStyles();
+  const history = useHistory();
   const matches = useMediaQuery("(max-width: 900px)");
 
   const markNotificationsAsRead = async () => {
-    if (notifsNotRead.length <= 0) 
-      return;
+    if (notifsNotRead.length <= 0) return;
 
     let aux = notifsNotRead.map((ntf) => ntf.id);
 
-    await setNotificationsAsRead(aux).then(res => 
-      {
-        if (res.status === 200) 
-          setNotifsNotRead([]);
-      }
-    );    
+    await setNotificationsAsRead(aux).then((res) => {
+      if (res.status === 200) setNotifsNotRead([]);
+    });
   };
 
-  async function getUser() 
-  {
-    await doGetDataUser().then(res =>
-      {
-        if(res.status === 200)
-          setUser(res.data);
-      }
-    );
+  async function getUser() {
+    await doGetDataUser().then((res) => {
+      if (res.status === 200) setUser(res.data);
+    });
   }
 
-  function getLetterAvatar(ntf) 
-  {
+  function getLetterAvatar(ntf) {
     let letter = "";
     //console.log(ntf.tipo);
-    switch (ntf.tipo) 
-    {
+    switch (ntf.tipo) {
       case "MATCH_PROJETO":
         letter = "MP";
         break;
@@ -158,10 +149,8 @@ const Header = () => {
 
       case "INTERESSE_USUARIO_PROJETO":
         let user = ntf.json_details?.user;
-        if (user)
-          letter = user.username.length > 0 ? user.username[0] : "U";
-        else
-          letter = "U";
+        if (user) letter = user.username.length > 0 ? user.username[0] : "U";
+        else letter = "U";
         break;
 
       case "INTERESSE_PROJETO_USUARIO":
@@ -175,19 +164,17 @@ const Header = () => {
     return letter.toUpperCase();
   }
 
-  function stringToColor(string) 
-  {
+  function stringToColor(string) {
     let hash = 0;
     let i;
 
     /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) 
+    for (i = 0; i < string.length; i += 1)
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
 
     let color = "#";
 
-    for (i = 0; i < 3; i += 1) 
-    {
+    for (i = 0; i < 3; i += 1) {
       const value = (hash >> (i * 8)) & 0xff;
       color += `00${value.toString(16)}`.slice(-2);
     }
@@ -196,8 +183,7 @@ const Header = () => {
     return color;
   }
 
-  function stringAvatar(ntf) 
-  {
+  function stringAvatar(ntf) {
     let string =
       ntf.tipo === "INTERESSE_USUARIO_PROJETO"
         ? ntf.json_details.user
@@ -214,29 +200,22 @@ const Header = () => {
   useEffect(() => {
     getUser();
 
-    async function fetchNotificationsNotRead()
-    {
-      await getNotifications(false).then(res => 
-        {
-            if (res.status === 200)
-            {
-              const noti = res.data.reverse();
-              setNotifsNotRead(noti);
-              setNotifs((current) => [...noti, ...current]);
-            }
+    async function fetchNotificationsNotRead() {
+      await getNotifications(false).then((res) => {
+        if (res.status === 200) {
+          const noti = res.data.reverse();
+          setNotifsNotRead(noti);
+          setNotifs((current) => [...noti, ...current]);
         }
-      );
-    };
+      });
+    }
 
-    async function fetchNotificationsRead()
-    {
-      await getNotifications(true).then(res => 
-        {
-          if (res.status === 200)
-            setNotifs((current) => [...current, ...res.data.reverse()]);      
-        }
-      );
-    };
+    async function fetchNotificationsRead() {
+      await getNotifications(true).then((res) => {
+        if (res.status === 200)
+          setNotifs((current) => [...current, ...res.data.reverse()]);
+      });
+    }
 
     setInterval(fetchNotificationsNotRead, 60000);
     fetchNotificationsNotRead();
@@ -260,12 +239,17 @@ const Header = () => {
   }, []);
 
   const HeaderTitle = () => {
-    return(
-      <Typography className={classes.brand} variant="h6">
-          {" "} Match de Projetos {" "}
+    return (
+      <Typography
+        className={classes.brand}
+        variant="h6"
+        onClick={() => history.push("/")}
+      >
+        {" "}
+        Match de Projetos{" "}
       </Typography>
     );
-  }
+  };
 
   const IconBox = (props) => {
     const event = props.Event;
@@ -274,32 +258,38 @@ const Header = () => {
 
     const theme = useTheme();
     const colorMode = useContext(ColorModeContext);
-    
+
     return (
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <IconButton
           title={theme.palette.mode === "light" ? "Tema escuro" : "Tema claro"}
           onClick={colorMode.toggleColorMode}
-          sx={{mr: 1, ml: 1, transform: "translateY(5%)"}}
+          sx={{ mr: 1, ml: 1, transform: "translateY(5%)" }}
         >
-          { theme.palette.mode === "light" ? 
-            <DarkModeOutlinedIcon fontSize="small" sx={{ color: "#ffffff" }}/>: 
-            <LightModeOutlinedIcon fontSize="small" sx={{ color: "#ffffff" }}/>
-          }
+          {theme.palette.mode === "light" ? (
+            <DarkModeOutlinedIcon fontSize="small" sx={{ color: "#ffffff" }} />
+          ) : (
+            <LightModeOutlinedIcon fontSize="small" sx={{ color: "#ffffff" }} />
+          )}
         </IconButton>
 
         <IconButton
-          onClick={(e) => {event(e)}}
-          sx={{mr: 1, ml: 1, transform: "translateY(5%)"}}
+          onClick={(e) => {
+            event(e);
+          }}
+          sx={{ mr: 1, ml: 1, transform: "translateY(5%)" }}
         >
           <Badge
-              badgeContent={anchorElNotif ? 0 : notifsNotRead.length}
-              color="error"
+            badgeContent={anchorElNotif ? 0 : notifsNotRead.length}
+            color="error"
           >
-            <NotificationsIcon ref={notificacoesRef} sx={{ color: "#ffffff" }}/>
+            <NotificationsIcon
+              ref={notificacoesRef}
+              sx={{ color: "#ffffff" }}
+            />
           </Badge>
         </IconButton>
-    </Box>
+      </Box>
     );
   };
 
@@ -315,32 +305,32 @@ const Header = () => {
       maxWidth: "650px",
       overflowX: "initial",
       overflowY: "initial",
-  
+
       "& .MuiAvatar-root": {
         width: 32,
         height: 32,
         ml: -0.5,
         mr: 1,
-      },  
-  
+      },
+
       "&:before": {
-          content: '""',
-          display: "block",
-          position: "absolute",
-          top: 0,
-          right: 14,
-          width: 10,
-          height: 10,
-          bgcolor: "background.paper",
-          transform: "translateY(-50%) rotate(45deg)",
-          zIndex: 0,
+        content: '""',
+        display: "block",
+        position: "absolute",
+        top: 0,
+        right: 14,
+        width: 10,
+        height: 10,
+        bgcolor: "background.paper",
+        transform: "translateY(-50%) rotate(45deg)",
+        zIndex: 0,
       },
 
       "& .MuiList-root": {
         display: "flex",
         flexDirection: "column",
-        maxHeight: "100%"
-      }
+        maxHeight: "100%",
+      },
     };
 
     return (
@@ -350,50 +340,48 @@ const Header = () => {
         open={Boolean(anchorElNotif)}
         onClose={() => handleMenuNotif(false)}
         onClick={() => handleMenuNotif(false)}
-        PaperProps={{elevation: 0, sx: notifPaper}}
+        PaperProps={{ elevation: 0, sx: notifPaper }}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-    
         <Box sx={{ width: "100%", p: 1, pl: 2 }}>
-          <Typography variant="subtitle1" sx={{fontWeight: "700"}}>
+          <Typography variant="subtitle1" sx={{ fontWeight: "700" }}>
             Notificações
           </Typography>
         </Box>
 
-        <Divider/>
+        <Divider />
 
         <OverlayScrollbarsComponent
-          className={(getPrefMode() === 'dark') ? "os-theme-light" : "os-theme-dark"}
-          resize="b"
-          options={{ 
-            scrollbars: { autoHide: matches ? "scroll" : "never"},
-            overflowBehavior : {x: "s", y: "s"}
-          }}
-        >    
-          { notifs.map((notif,i) => (
-              <MenuItem
-                key={i}
-                component="button"
-                sx={{ width: "100%", p: 1.5 }}
-                onClick={() => setNtfSelected(notif)}
-              >
-                <Avatar {...stringAvatar(notif)}>
-                  {getLetterAvatar(notif)}
-                </Avatar>
-
-                <Typography sx={{ml: 1, whiteSpace: "normal", textAlign: "justify"}}>
-                  {notif.conteudo}
-                </Typography>
-              </MenuItem>
-              )
-            )
+          className={
+            getPrefMode() === "dark" ? "os-theme-light" : "os-theme-dark"
           }
-        </OverlayScrollbarsComponent>
+          resize="b"
+          options={{
+            scrollbars: { autoHide: matches ? "scroll" : "never" },
+            overflowBehavior: { x: "s", y: "s" },
+          }}
+        >
+          {notifs.map((notif, i) => (
+            <MenuItem
+              key={i}
+              component="button"
+              sx={{ width: "100%", p: 1.5 }}
+              onClick={() => setNtfSelected(notif)}
+            >
+              <Avatar {...stringAvatar(notif)}>{getLetterAvatar(notif)}</Avatar>
 
+              <Typography
+                sx={{ ml: 1, whiteSpace: "normal", textAlign: "justify" }}
+              >
+                {notif.conteudo}
+              </Typography>
+            </MenuItem>
+          ))}
+        </OverlayScrollbarsComponent>
       </Menu>
     );
-  }
+  };
 
   const menuList = [
     {
@@ -403,7 +391,7 @@ const Header = () => {
     {
       link: "/projetos",
       txt: "Projetos",
-    }
+    },
   ];
 
   const DisplayDesktop = () => {
@@ -413,48 +401,52 @@ const Header = () => {
     const [anchorElNotif, setAnchorElNotif] = useState(null);
     const open = Boolean(anchorEl);
 
-    const handleClick = () => {setAnchorEl(menuRef.current)};
-    const handleClose = () => {setAnchorEl(null)};
+    const handleClick = () => {
+      setAnchorEl(menuRef.current);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
 
-    const handleClickNotif = (e) => {setAnchorElNotif(e.currentTarget)};
-    const handdleCloseNotif = () => {setAnchorElNotif(null); markNotificationsAsRead();}
+    const handleClickNotif = (e) => {
+      setAnchorElNotif(e.currentTarget);
+    };
+    const handdleCloseNotif = () => {
+      setAnchorElNotif(null);
+      markNotificationsAsRead();
+    };
 
     return (
       <Toolbar className={classes.toolbar}>
-        <HeaderTitle/>
+        <HeaderTitle />
 
         <nav className={classes.nav}>
-
-          <IconBox 
-            Event={handleClickNotif} 
-            anchor={anchorElNotif} 
+          <IconBox
+            Event={handleClickNotif}
+            anchor={anchorElNotif}
             refPass={notificacoesRef}
           />
 
-          <NotifDrawer 
-            anchorElNotif={anchorElNotif} 
+          <NotifDrawer
+            anchorElNotif={anchorElNotif}
             handleMenuNotif={handdleCloseNotif}
           />
 
-          { menuList.map((v,i) => 
-              <Link
-                key={i}
-                component={RouterLink}
-                to={v.link}
-                className={classes.navLink}
-                activeClassName={classes.activeNav}
-              >
-                {v.txt}
-              </Link>
-            )
-          }
+          {menuList.map((v, i) => (
+            <Link
+              key={i}
+              component={RouterLink}
+              to={v.link}
+              className={classes.navLink}
+              activeClassName={classes.activeNav}
+            >
+              {v.txt}
+            </Link>
+          ))}
 
-          <IconButton
-            onClick={handleClick}
-            sx={{ml: 4}}
-          >
+          <IconButton onClick={handleClick} sx={{ ml: 4 }}>
             <Avatar ref={menuRef}>
-              { user && user.nome_exibicao && user.nome_exibicao.length >= 1
+              {user && user.nome_exibicao && user.nome_exibicao.length >= 1
                 ? user.nome_exibicao[0].toUpperCase()
                 : "U"}
             </Avatar>
@@ -585,60 +577,56 @@ const Header = () => {
             </IconButton>
           </Box>
 
-          { menuList.map((v,i) => 
-              <Link
-                key={i}
-                component={RouterLink}
-                to={v.link}
-                className={classes.navLinkMobile}
-                activeClassName={classes.activeMobile}
-              >
-                {v.txt}
-              </Link>
-            )
-          }
+          {menuList.map((v, i) => (
+            <Link
+              key={i}
+              component={RouterLink}
+              to={v.link}
+              className={classes.navLinkMobile}
+              activeClassName={classes.activeMobile}
+            >
+              {v.txt}
+            </Link>
+          ))}
 
           <Link
             role="button"
             onClick={() => logout()}
             className={classes.navLinkMobile}
           >
-            {" "}Sair{" "}
+            {" "}
+            Sair{" "}
           </Link>
         </Drawer>
 
-        <HeaderTitle/>
+        <HeaderTitle />
 
-        <IconBox 
-            Event={handleMenuNotif} 
-            anchor={anchorElNotif} 
-            refPass={notificacoesRef}
+        <IconBox
+          Event={handleMenuNotif}
+          anchor={anchorElNotif}
+          refPass={notificacoesRef}
         />
 
-        <NotifDrawer 
-          anchorElNotif={anchorElNotif} 
+        <NotifDrawer
+          anchorElNotif={anchorElNotif}
           handleMenuNotif={handleMenuNotif}
         />
-        
       </Toolbar>
     );
   };
 
   return (
     <>
-      { ntfSelected && 
+      {ntfSelected && (
         <DialogNotification
           notif={ntfSelected}
           setOpen={setNtfSelected}
           user={user}
         />
-      }
+      )}
 
       <AppBar position="static">
-        { view.mobileView ? 
-          <DisplayMobile/> : 
-          <DisplayDesktop/>
-        }
+        {view.mobileView ? <DisplayMobile /> : <DisplayDesktop />}
       </AppBar>
     </>
   );

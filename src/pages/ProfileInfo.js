@@ -73,6 +73,15 @@ function ProfileInfo() {
   const classes = useStyles();
   const location = useLocation();
 
+  const formatPhone = (phone) => {
+    let ddd = phone.substring(0, 2);
+    phone =
+      phone.length === 11
+        ? `${phone.substring(2, 7)}-${phone.substring(7)}`
+        : `${phone.substring(2, 6)}-${phone.substring(6)}`;
+
+    return `(${ddd}) ${phone}`;
+  };
   // pagina carregando, esconde conteudo
   const [pageLoading, setPageLoading] = useState(true);
   const guid = location.state?.data[0];
@@ -205,7 +214,7 @@ function ProfileInfo() {
                     {profile.phones.map((phoneObj, index) => (
                       <ListItem key={index} disableGutters disablePadding>
                         <ListItemText>
-                          <ListItemText primary={phoneObj.phone} />
+                          <ListItemText primary={formatPhone(phoneObj.phone)} />
                         </ListItemText>
                       </ListItem>
                     ))}
