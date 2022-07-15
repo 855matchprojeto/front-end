@@ -11,6 +11,7 @@ import { useSnackbar } from "notistack";
 
 import { doGetAllCourses,doGetAllInteresses } from "../../services/api_projetos";
 import { postProjetos } from "../../services/api_projetos";
+import { getProfiles } from "../../services/api_perfil";
 import LoadingBox from "../LoadingBox";
 import { enqueueMySnackBar,Base64 } from "../../services/util";
 import ProjectDefault from "../../icons/project.svg";                           
@@ -92,6 +93,7 @@ function CriarProjeto()
 
   const [allInteresses, setAllInteresses] = useState([]);
   const [allCourses, setAllCourses] = useState([]);
+  const [userList, setUserList] = useState([]);
 
   async function handleCreateProject(values) 
   {
@@ -147,7 +149,12 @@ function CriarProjeto()
     {
       setPageLoading(true);
 
-      await Promise.all([doGetAllInteresses(), doGetAllCourses()]).then(data => 
+      let proms = [];
+      proms.push(doGetAllInteresses());
+      proms.push(doGetAllCourses());
+      proms.push(getProfiles([[],[],""], 5));
+
+      await Promise.all(proms).then(data => 
         {
           if (!mountedRef.current)
             return
@@ -155,6 +162,8 @@ function CriarProjeto()
             setAllInteresses(data[0].data);
           if (data[1].status === 200 && data[1].statusText === "OK") 
             setAllCourses(data[1].data); 
+          if (data[2].status === 200)
+            setUserList(data[2].data.items);
           
           setPageLoading(false);
         }
@@ -309,11 +318,12 @@ function CriarProjeto()
 
                     <Grid item xs={12} md={6}>
                       <Autocomplete
-                        multiple
-                        options={["Teste", "Teste1", "Teste2"]}
-                        getOptionLabel={(option) => option}
+                        options={userList}
+                        getOptionLabel={(option) => option.nome_exibicao}
+                        isOptionEqualToValue={(o, v) => o.guid_usuario === v.guid_usuario}
                         name="participantes"
                         id="participantes"
+                        multiple
                         fullWidth
                         size="small"
                         renderInput={(params) => (
