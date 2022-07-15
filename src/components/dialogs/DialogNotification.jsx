@@ -2,7 +2,7 @@ import React, { Suspense, useState, useEffect, useRef } from "react";
 import { Dialog } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
-import { getUserProjRel } from "../../services/api_projetos";
+import { getUserProjRel, getProjUserRel } from "../../services/api_projetos";
 import { putRel } from "../../services/api_projetos";
 
 const Avatar = React.lazy(() => import('@mui/material/Avatar'));
@@ -27,7 +27,7 @@ const DialogNotification = (props) => {
 
   useEffect(() => {
 
-    async function getStatus()
+    async function getStatusUP()
     {
       await getUserProjRel(true, null, null).then(res => 
         {
@@ -52,11 +52,33 @@ const DialogNotification = (props) => {
       )   
     }
 
+    async function getStatusPU()
+    {
+      await getProjUserRel(notif.json_details.project.guid, null, null).then(res => 
+        {
+          if (!mountedRef.current)
+            return
+          if(res.status === 200)
+          {
+            res = res.data;
+            console.log(res);
+            res = res.filter(el => el.guid_usuario === notif.guid_usuario);
+            res = res[0];
+            setStatus(res.fl_usuario_interesse);
+
+            if(res.fl_usuario_interesse)
+              setBtnInteresse(true);
+            else
+              setBtnInteresse(false);
+          }
+        }
+      )   
+    }
 
     if (notif.tipo === "INTERESSE_USUARIO_PROJETO") 
-    {
-      getStatus();
-    }
+      getStatusUP();
+    else if (notif.tipo === "INTERESSE_PROJETO_USUARIO")
+      getStatusPU();
 
   }, [notif.guid_usuario, notif.json_details.project.guid, notif.tipo]);
   
@@ -117,19 +139,36 @@ const DialogNotification = (props) => {
     setOpen(null);
   }
 
-  async function changeInteresse()
+  async function changeInteresse(type)
   {
-    let aux = {"fl_projeto_interesse": !btnInteresse};
+    if(type === "INTERESSE_USUARIO_PROJETO")
+    {
+      let aux = {"fl_projeto_interesse": !btnInteresse};
 
-    await putRel(notif.json_details.user.guid, notif.json_details.project.guid, aux).then(res =>
-      {
-        if(res.status === 200)
+      await putRel(notif.json_details.user.guid, notif.json_details.project.guid, aux).then(res =>
         {
-          setStatus(res.data.fl_projeto_interesse);
-          setBtnInteresse(!btnInteresse);
+          if(res.status === 200)
+          {
+            setStatus(res.data.fl_projeto_interesse);
+            setBtnInteresse(!btnInteresse);
+          }
         }
-      }
-    );
+      );
+    }
+    else
+    {
+      let aux = {"fl_usuario_interesse": !btnInteresse};
+      
+      await putRel(notif.json_details.user.guid, notif.json_details.project.guid, aux).then(res => 
+        {
+          if(res.status === 200)
+          {
+            setStatus(res.data.fl_usuario_interesse);
+            setBtnInteresse(!btnInteresse);
+          }
+        }
+      );
+    }
   }
 
   return (
@@ -149,12 +188,13 @@ const DialogNotification = (props) => {
         </DialogContent>
 
         <DialogActions>
-          { notif.tipo === "INTERESSE_USUARIO_PROJETO" && 
+          { (notif.tipo === "INTERESSE_USUARIO_PROJETO" ||
+             notif.tipo === "INTERESSE_PROJETO_USUARIO") && 
             <Button
               variant="outlined"
               color={status ? "error" : "success"}
               size="small"
-              onClick={() => changeInteresse()}
+              onClick={() => changeInteresse(notif.tipo)}
             >
               { status
                 ? "Remover Interesse"
